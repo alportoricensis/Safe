@@ -2,7 +2,7 @@
 import datetime
 import flask
 import safe_backend
-from collections import dequeue
+from collections import deque
 
 # Globals
 # VEHICLE_QUEUES maps a vehicle_id to the queue for that assigned vehicle.
@@ -20,7 +20,10 @@ def get_rides():
     """Return all currently active ride requests."""
     # TODO: Authentication
     # TODO: Convert list to JSON
-    context = {}
+    context = {
+        "rides": "/api/v1/rides/",
+        "settings": "/api/v1/settings/"
+    }
     return flask.jsonify(**context), 200
 
 
@@ -37,7 +40,7 @@ def get_driver_rides(driver_id):
     return flask.jsonify(**context), 200
 
 
-@safe_backend.app.route("/api/v1/rides/<int:ride_id>/", methods=["GET"])
+@safe_backend.app.route("/api/v1/rides/passengers/<int:ride_id>/", methods=["GET"])
 # REQUIRES  - User is authenticated with passenger, driver, or dispatcher level permissions
 #             If passenger, ride_id MUST have been booked by the currently authenticated user
 # EFFECTS   - Returns the details for ride_id, including:
@@ -47,9 +50,25 @@ def get_driver_rides(driver_id):
 #               - Estimated dropoff time
 #               - Estimated pickup time
 # MODIFIES  - Nothing
-def get_driver_rides(ride_id):
+def get_passenger_ride(ride_id):
     """Return the queue for driver with driver_id."""
     # TODO: Authentication
     # TODO: Convert details to JSON
+    context = {}
+    return flask.jsonify(**context), 200
+
+
+@safe_backend.app.route("/api/v1/rides/", methods=["POST"])
+# REQUIRES - flask.request.args.user_id is a valid user_id and is currently authenticated
+#            flask.request.args.pickup is a valid pickup location
+#            flask.request.args.dropoff is a valid dropoff location
+# EFFECTS  - Creates a RideRequest for user_id, and triggers a recalculation of driver itineraries
+# MODIFIES - VEHICLE_QUEUES, RIDE_REQUESTS
+def post_ride():
+    """Add a RideRequest to the ride-share service."""
+    # TODO: Authentication
+    # TODO: Create object
+    # TODO: Trigger recalculation
+    # TODO: Return proper status
     context = {}
     return flask.jsonify(**context), 200

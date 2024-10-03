@@ -1,3 +1,4 @@
 """Safe! REST API."""
 
-from safe_backend.api.app import api_get_services
+import safe_backend.api.rides
+import safe_backend.api.app
