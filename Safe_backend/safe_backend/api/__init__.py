@@ -2,3 +2,6 @@
 
 import safe_backend.api.rides
 import safe_backend.api.app
+import safe_backend.api.testing
+import safe_backend.api.settings
+import safe_backend.views
