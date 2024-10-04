@@ -1,27 +1,50 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
+import Vehicle from "./vehicles";
 
 
 export default function Drivers() {
-    // TODO - Add state for React rerender on new requests
+    // Set up REACT state
+    const request_url = "http://127.0.0.1:5000/api/v1/vehicles/"
+    const [vehicles, setVehicles] = useState([]);
 
-    // TODO - Fetch active vehicles from API every so often
+    // Fetch active vehicles from the API
+    const getVehicles = async () => {
+        try {
+            const resp = await fetch(request_url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            const data = await resp.json();
+            if (data !== null) {
+                var arr = Object.values(data);
+                setVehicles(arr);
+            } else {
+                var arr = [];
+                setVehicles(arr);
+            }
+        } catch(e) {
+            console.log(e);
+        }
+    }
+
+    // Set up a callback to call all active rides endpoint on the API every so often
+    // Every four seconds, for now
+    useEffect(() => {
+        const interval = setInterval(() => {
+            getVehicles()
+        }, 4000);
+        return () => clearInterval(interval);
+    }, []);
 
     // For active vehicles, fetch vehicle itineraries from API every so often
 
-    //
     return (
             <div className="driverMenu">
-                <div className="vehicleWidget">
-                    Placeholder - Van #288
-                </div>
-                <div className="vehicleWidget">
-                    Placeholder - Van #272
-                </div>
-                <div className="vehicleWidget">
-                    Placeholder - Van #375
-                </div>
+                {vehicles.map((vehicle) => Vehicle(vehicle))}
             </div>
     )
 }

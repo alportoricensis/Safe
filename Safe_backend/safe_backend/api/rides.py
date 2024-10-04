@@ -5,7 +5,6 @@ import random
 import safe_backend.api.config
 import safe_backend.api.requests
 
-
 # Routes
 @safe_backend.app.route("/api/v1/rides/", methods=["GET"])
 # REQUIRES  - User is authenticated with agency-level permissions
@@ -46,15 +45,15 @@ def get_driver_rides(vehicle_id):
 
     # If vehicle_id is receiving rides, return its current active queue
     context = {}
-    for ride_request in safe_backend.api.config.VEHICLE_QUEUES[vehicle_id]:
-        context[str(ride_request.rider_id)] = {
+    for ride_request in safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].itinerary:
+        context[str(ride_request.request_id)] = {
             "passenger": ride_request.passenger_name,
             "driver": ride_request.driver,
             "pickup": ride_request.pickup,
             "dropoff": ride_request.dropoff,
             "ETA": ride_request.eta,
             "ETP": ride_request.etp,
-            "reqid": ride_request.rider_id
+            "reqid": ride_request.request_id
         }
     return flask.jsonify(**context), 200
 
@@ -101,7 +100,6 @@ def get_passenger_ride(ride_id):
 def delete_ride_request(ride_id):
     """Delete the ride request with ride_id."""
     # TODO: Authentication
-    # TODO: Convert details to JSON
 
     # Check if ride_id is a currently active ride_request
     if ride_id not in safe_backend.api.config.RIDE_REQUESTS:
@@ -115,7 +113,7 @@ def delete_ride_request(ride_id):
     driver_id = str(safe_backend.api.config.RIDE_REQUESTS[ride_id].driver)
     if driver_id != str(-1):
         # Find the specific driver, and remove this passenger request from the driver's list
-        safe_backend.api.config.VEHICLE_QUEUES[driver_id].remove(safe_backend.api.config.RIDE_REQUESTS[ride_id])
+        safe_backend.api.config.VEHICLE_QUEUES[driver_id].itinerary.remove(safe_backend.api.config.RIDE_REQUESTS[ride_id])
 
     # Remove from the passenger requests
     del safe_backend.api.config.RIDE_REQUESTS[ride_id]
@@ -157,10 +155,22 @@ def post_ride():
     #pickup = "EECS"
     #dropoff = "1687 Broadway St"
     #passenger_name = "Alexander Gabriel Nunez-Carrasquillo"
-    passenger = safe_backend.api.requests.RideRequests(rider_id=rider_id, request_id=request_id, vehicle_id=-1, pickup=pickup, dropoff=dropoff, passname=passenger_name)
+    passenger = safe_backend.api.requests.RideRequests(
+        rider_id=rider_id, request_id=request_id, vehicle_id=-1,
+        pickup=pickup, dropoff=dropoff, passname=passenger_name,
+        status="requested"
+    )
+    
+    breakpoint()
+    if safe_backend.api.config.MODE == "ROUNDROBIN":
+        safe_backend.api.config.ROUND_ROBIN_QUEUE[0].itinerary.append(passenger)
+        safe_backend.api.config.ROUND_ROBIN_QUEUE.append(safe_backend.api.config.ROUND_ROBIN_QUEUE[0])
+        safe_backend.api.config.ROUND_ROBIN_QUEUE.pop()
+        safe_backend.api.config.RIDE_REQUESTS[str(request_id)] = passenger
 
-    # TODO: Trigger recalculation
-    safe_backend.api.config.RIDE_REQUESTS[str(request_id)] = passenger
+    else:
+        # TODO: Trigger recalculation
+        safe_backend.api.config.RIDE_REQUESTS[str(request_id)] = passenger
 
     # TODO: Return proper status
 

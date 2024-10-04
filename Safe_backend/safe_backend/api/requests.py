@@ -7,7 +7,7 @@ class RideRequests:
     # REQUIRES
     # EFFECTS
     # MODIFIES
-    def __init__(self, rider_id, vehicle_id, pickup, dropoff, passname, request_id):
+    def __init__(self, rider_id, status, vehicle_id, pickup, dropoff, passname, request_id):
         """Initialize self to be a request."""
         self.rider_id = rider_id
         self.request_id = request_id
@@ -15,6 +15,7 @@ class RideRequests:
         self.driver = vehicle_id
         self.pickup = pickup
         self.dropoff = dropoff
+        self.status = status
         self.etp = 0
         self.eta = 0
 

@@ -3,6 +3,8 @@ import datetime
 import flask
 import safe_backend
 from collections import deque
+import safe_backend.api.vehicles
+import safe_backend.api.config
 
 # Globals
 
@@ -12,28 +14,58 @@ from collections import deque
 # REQUIRES  - User is authenticated with driver-level permissions
 # EFFECTS   - Marks <vehicle_id> as able to receive requests
 # MODIFIES  - VEHICLE_QUEUES
-def login_vehicle():
+def login_vehicle(vehicle_id):
     """Marks <vehicle_id> as ready to receive requests."""
-    # TODO: Authentication
-    # TODO: Convert list to JSON
+    # TODO: Authentication -  must have agency or driver level permissions
+
+    # Check vehicle is not already logged in
+    if vehicle_id in safe_backend.api.config.VEHICLE_QUEUES:
+        context = {
+            "msg": "Vehicle " + vehicle_id + " is already logged in"
+        }
+        return flask.jsonify(**context), 400
+
+    # TODO: Check vehicle is registered and in database
+
+    # TODO: Query database for vehicle capacity and range
+    
+    # Create vehicle
+    new_vehicle = safe_backend.api.vehicles.Vehicle(vehicle_id=vehicle_id, status="active",capacity=10, range=200)
+
+    # Add vehicle to mappings
+    safe_backend.api.config.VEHICLE_QUEUES[vehicle_id] = new_vehicle
+
+    # Return success
     context = {
-        "rides": "/api/v1/rides/",
-        "settings": "/api/v1/settings/"
+        "msg": "Successfully logged in vehicle: " + vehicle_id
     }
+
+    return flask.jsonify(**context), 200
 
 
 @safe_backend.app.route("/api/v1/vehicles/pause/<vehicle_id>/", methods=["POST"])
 # REQUIRES  - User is authenticated with driver-level permissions
 # EFFECTS   - Marks <vehicle_id> as not receiving ride requests
 # MODIFIES  - VEHICLE_QUEUES
-def pause_vehicle():
+def pause_vehicle(vehicle_id):
     """Marks <vehicle_id> as not receiving requests."""
     # TODO: Authentication
-    # TODO: Convert list to JSON
+
+    # If vehicle is not active, return a 404
+    if vehicle_id not in safe_backend.api.config.VEHICLE_QUEUES:
+        context = {
+            "msg": "Vehicle " + vehicle_id + " is not active."
+        }
+        return flask.jsonify(**context), 404
+        
+    # Grab vehicle from mapping and change its status
+    safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].status = "paused"
+
+    # Return success
     context = {
-        "rides": "/api/v1/rides/",
-        "settings": "/api/v1/settings/"
+        "msg": "Successfully paused vehicle: " + vehicle_id
     }
+
     return flask.jsonify(**context), 200
 
 
@@ -41,12 +73,54 @@ def pause_vehicle():
 # REQUIRES  - User is authenticated with driver-level permissions
 # EFFECTS   - Marks <vehicle_id> as logged out
 # MODIFIES  - VEHICLE_QUEUES
-def logout_vehicle():
+def logout_vehicle(vehicle_id):
     """Marks <vehicle_id> as logged out."""
     # TODO: Authentication
-    # TODO: Convert list to JSON
+
+    # If vehicle is not active, return a 404
+    if vehicle_id not in safe_backend.api.config.VEHICLE_QUEUES:
+        context = {
+            "msg": "Vehicle " + vehicle_id + " is not active."
+        }
+        return flask.jsonify(**context), 404
+        
+    # Grab vehicle from mapping and remove it
+    del safe_backend.api.config.VEHICLE_QUEUES[vehicle_id]
+
+    # Return success
     context = {
-        "rides": "/api/v1/rides/",
-        "settings": "/api/v1/settings/"
+        "msg": "Successfully logged out vehicle: " + vehicle_id
     }
+    return flask.jsonify(**context), 200
+
+
+@safe_backend.app.route("/api/v1/vehicles/", methods=["GET"])
+# REQUIRES  - User is authenticated with agency-level permissions
+# EFFECTS   - Returns all active vehicles
+# MODIFIES  - Nothing
+def get_vehicles():
+    """Marks <vehicle_id> as logged out."""
+    # TODO: Authentication
+
+    
+    # Grab vehicle from active list and return, along with their URL
+    context = {}
+    for vehicle_id in safe_backend.api.config.VEHICLE_QUEUES:
+        context[vehicle_id] = {
+            "vehicle_id": vehicle_id,
+            "queue_url": "/api/v1/rides/drivers/" + vehicle_id + "/",
+            "itinerary": []
+        }
+        for ride_request in safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].itinerary:
+            context[vehicle_id]["itinerary"].append({
+                "passenger": ride_request.passenger_name,
+                "driver": ride_request.driver,
+                "pickup": ride_request.pickup,
+                "dropoff": ride_request.dropoff,
+                "ETA": ride_request.eta,
+                "ETP": ride_request.etp,
+                "reqid": ride_request.request_id
+            })
+
+    # Return success
     return flask.jsonify(**context), 200
