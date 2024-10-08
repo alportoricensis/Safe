@@ -161,7 +161,6 @@ def post_ride():
         status="requested"
     )
     
-    breakpoint()
     if safe_backend.api.config.MODE == "ROUNDROBIN":
         safe_backend.api.config.ROUND_ROBIN_QUEUE[0].itinerary.append(passenger)
         safe_backend.api.config.ROUND_ROBIN_QUEUE.append(safe_backend.api.config.ROUND_ROBIN_QUEUE[0])
