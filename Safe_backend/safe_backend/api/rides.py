@@ -167,7 +167,7 @@ def post_ride():
         safe_backend.api.config.ROUND_ROBIN_QUEUE.pop()
         safe_backend.api.config.RIDE_REQUESTS[str(request_id)] = passenger
 
-    else:
+    elif safe_backend.api.config.MODE == "GOOGLEMAPSROUTING":
         # TODO: Trigger recalculation
         safe_backend.api.config.RIDE_REQUESTS[str(request_id)] = passenger
 
