@@ -8,21 +8,15 @@ class Vehicle:
     # REQUIRES
     # EFFECTS
     # MODIFIES
-    def __init__(self, vehicle_id, status, capacity, range):
+    def __init__(self, vehicle_id, status, capacity, range, latin, longin):
         """Initialize self to be a vehicle."""
         self.vehicle_id = vehicle_id
         self.capacity = capacity
         self.range = range
         self.itinerary = []
         self.status = status
-
-
-    # REQUIRES
-    # EFFECTS
-    # MODIFIES
-    def calculate_cost(request_in) -> datetime.time:
-        """Calculate the cost for adding this request into this vehicle."""
-        return datetime.time()
+        self.lat = latin
+        self.log = longin
 
 
     

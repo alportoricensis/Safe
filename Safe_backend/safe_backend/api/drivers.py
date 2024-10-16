@@ -28,9 +28,11 @@ def login_vehicle(vehicle_id):
     # TODO: Check vehicle is registered and in database
 
     # TODO: Query database for vehicle capacity and range
+
+    # TODO: Get location from login request
     
     # Create vehicle
-    new_vehicle = safe_backend.api.vehicles.Vehicle(vehicle_id=vehicle_id, status="active",capacity=10, range=200)
+    new_vehicle = safe_backend.api.vehicles.Vehicle(vehicle_id=vehicle_id, status="active",capacity=10, range=200, latin=42.297238, longin=-83.696062)
 
     # Add vehicle to mappings
     safe_backend.api.config.VEHICLE_QUEUES[vehicle_id] = new_vehicle
@@ -121,6 +123,23 @@ def get_vehicles():
                 "ETP": ride_request.etp,
                 "reqid": ride_request.request_id
             })
+
+    # Return success
+    return flask.jsonify(**context), 200
+
+
+@safe_backend.app.route("/api/v1/vehicles/location/<vehicle_id>/", methods=["POST"])
+# REQUIRES  - User is authenticated with driver-level permissions
+# EFFECTS   - Posts the location of <vehicle_id>
+# MODIFIES  - Nothing
+def post_loc(vehicle_id):
+    """Marks <vehicle_id> as logged out."""
+    # TODO: Authentication
+
+    # Get locations from request
+    context = {
+        "MSG": "Placeholder"
+    }
 
     # Return success
     return flask.jsonify(**context), 200

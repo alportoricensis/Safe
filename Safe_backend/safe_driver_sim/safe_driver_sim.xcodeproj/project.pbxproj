@@ -1,0 +1,361 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		78FAE2F12CBEFE3D00E23373 /* Safe_Driver_SimApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78FAE2F02CBEFE3D00E23373 /* Safe_Driver_SimApp.swift */; };
+		78FAE2F32CBEFE3D00E23373 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78FAE2F22CBEFE3D00E23373 /* ContentView.swift */; };
+		78FAE2F52CBEFE3F00E23373 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78FAE2F42CBEFE3F00E23373 /* Assets.xcassets */; };
+		78FAE2F82CBEFE3F00E23373 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78FAE2F72CBEFE3F00E23373 /* Preview Assets.xcassets */; };
+		78FAE2FF2CBF005A00E23373 /* Vehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78FAE2FE2CBF005A00E23373 /* Vehicle.swift */; };
+		78FAE3012CBF02A500E23373 /* NavView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78FAE3002CBF02A500E23373 /* NavView.swift */; };
+		78FAE3032CC053B700E23373 /* LocManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78FAE3022CC053B700E23373 /* LocManager.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		78FAE2ED2CBEFE3D00E23373 /* Safe_Driver_Sim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Safe_Driver_Sim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		78FAE2F02CBEFE3D00E23373 /* Safe_Driver_SimApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Safe_Driver_SimApp.swift; sourceTree = "<group>"; };
+		78FAE2F22CBEFE3D00E23373 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		78FAE2F42CBEFE3F00E23373 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		78FAE2F72CBEFE3F00E23373 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		78FAE2FE2CBF005A00E23373 /* Vehicle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vehicle.swift; sourceTree = "<group>"; };
+		78FAE3002CBF02A500E23373 /* NavView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavView.swift; sourceTree = "<group>"; };
+		78FAE3022CC053B700E23373 /* LocManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocManager.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		78FAE2EA2CBEFE3D00E23373 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		78FAE2E42CBEFE3D00E23373 = {
+			isa = PBXGroup;
+			children = (
+				78FAE2EF2CBEFE3D00E23373 /* Safe_Driver_Sim */,
+				78FAE2EE2CBEFE3D00E23373 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		78FAE2EE2CBEFE3D00E23373 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				78FAE2ED2CBEFE3D00E23373 /* Safe_Driver_Sim.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		78FAE2EF2CBEFE3D00E23373 /* Safe_Driver_Sim */ = {
+			isa = PBXGroup;
+			children = (
+				78FAE2F02CBEFE3D00E23373 /* Safe_Driver_SimApp.swift */,
+				78FAE3002CBF02A500E23373 /* NavView.swift */,
+				78FAE2FE2CBF005A00E23373 /* Vehicle.swift */,
+				78FAE3022CC053B700E23373 /* LocManager.swift */,
+				78FAE2F22CBEFE3D00E23373 /* ContentView.swift */,
+				78FAE2F42CBEFE3F00E23373 /* Assets.xcassets */,
+				78FAE2F62CBEFE3F00E23373 /* Preview Content */,
+			);
+			path = Safe_Driver_Sim;
+			sourceTree = "<group>";
+		};
+		78FAE2F62CBEFE3F00E23373 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				78FAE2F72CBEFE3F00E23373 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		78FAE2EC2CBEFE3D00E23373 /* Safe_Driver_Sim */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 78FAE2FB2CBEFE3F00E23373 /* Build configuration list for PBXNativeTarget "Safe_Driver_Sim" */;
+			buildPhases = (
+				78FAE2E92CBEFE3D00E23373 /* Sources */,
+				78FAE2EA2CBEFE3D00E23373 /* Frameworks */,
+				78FAE2EB2CBEFE3D00E23373 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Safe_Driver_Sim;
+			productName = Safe_Driver_Sim;
+			productReference = 78FAE2ED2CBEFE3D00E23373 /* Safe_Driver_Sim.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		78FAE2E52CBEFE3D00E23373 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					78FAE2EC2CBEFE3D00E23373 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = 78FAE2E82CBEFE3D00E23373 /* Build configuration list for PBXProject "Safe_Driver_Sim" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 78FAE2E42CBEFE3D00E23373;
+			productRefGroup = 78FAE2EE2CBEFE3D00E23373 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				78FAE2EC2CBEFE3D00E23373 /* Safe_Driver_Sim */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		78FAE2EB2CBEFE3D00E23373 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				78FAE2F82CBEFE3F00E23373 /* Preview Assets.xcassets in Resources */,
+				78FAE2F52CBEFE3F00E23373 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		78FAE2E92CBEFE3D00E23373 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				78FAE3012CBF02A500E23373 /* NavView.swift in Sources */,
+				78FAE3032CC053B700E23373 /* LocManager.swift in Sources */,
+				78FAE2FF2CBF005A00E23373 /* Vehicle.swift in Sources */,
+				78FAE2F32CBEFE3D00E23373 /* ContentView.swift in Sources */,
+				78FAE2F12CBEFE3D00E23373 /* Safe_Driver_SimApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		78FAE2F92CBEFE3F00E23373 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		78FAE2FA2CBEFE3F00E23373 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		78FAE2FC2CBEFE3F00E23373 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Safe_Driver_Sim/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Safe needs your location to service ride requests.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "anunezc.edu.umich.Safe-Driver-Sim";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		78FAE2FD2CBEFE3F00E23373 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Safe_Driver_Sim/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Safe needs your location to service ride requests.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "anunezc.edu.umich.Safe-Driver-Sim";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		78FAE2E82CBEFE3D00E23373 /* Build configuration list for PBXProject "Safe_Driver_Sim" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				78FAE2F92CBEFE3F00E23373 /* Debug */,
+				78FAE2FA2CBEFE3F00E23373 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		78FAE2FB2CBEFE3F00E23373 /* Build configuration list for PBXNativeTarget "Safe_Driver_Sim" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				78FAE2FC2CBEFE3F00E23373 /* Debug */,
+				78FAE2FD2CBEFE3F00E23373 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 78FAE2E52CBEFE3D00E23373 /* Project object */;
+}

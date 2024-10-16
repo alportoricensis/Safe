@@ -14,11 +14,13 @@
         <a href="/logout"><button>Logout</button></a>
     </div>
     <div class="queue">
-        {% for service in services %}
-        <a href="/dispatch"><button>{{service}}</button></a>
-        {% endfor %}
+        <a href="/settings/services"><button>Services Available</button></a>
+        <a href="/settings/ranges"><button>Service Ranges</button></a>
+        <a href="/settings/times"><button>Service Times</button></a>
+        <a href="/settings/vehicles"><button>Register Vehicles</button></a>
+        <a href="/settings/routing"><button>Routing Options</button></a>
     </div>
     <h1>
-        Welcome, {{username}}!
+        Select a setting from the left pane.
     </h1>
 </div>
