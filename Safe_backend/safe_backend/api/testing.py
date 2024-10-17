@@ -16,7 +16,7 @@ def gen_data(num_req):
     vehicles = ["288", "3005", "3004", "3003"]
     for i in range(0, num_req):
         rid = random.randint(0, 10000)
-        vehicle = safe_backend.api.vehicles.Vehicle(vehicle_id=random.choice(vehicles), status="active", capacity=10, range=200)
+        vehicle = safe_backend.api.vehicles.Vehicle(vehicle_id=random.choice(vehicles), status="active", capacity=10, range=200, latin=0.0, longin=0.0)
         passenger = safe_backend.api.requests.RideRequests(rider_id=i, vehicle_id=vehicle.vehicle_id, status="assigned", pickup=random.choice(pickups), request_id=rid, dropoff=random.choice(dropoffs), passname=random.choice(names))
         if vehicle.vehicle_id not in safe_backend.api.config.VEHICLE_QUEUES:
             safe_backend.api.config.VEHICLE_QUEUES[vehicle.vehicle_id] = vehicle

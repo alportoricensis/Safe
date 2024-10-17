@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>
+        Safe!
+    </title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<div class="rowFlex">
+    <div class="navMenu">
+        <a href="/"><button>Home</button></a>
+        <a href="/settings"><button>Settings</button></a>
+        <a href="/logout"><button>Logout</button></a>
+    </div>
+    <div class="queue">
+        <a href="/settings/services"><button>Services Available</button></a>
+        <a href="/settings/ranges"><button>Service Ranges</button></a>
+        <a href="/settings/times"><button>Service Times</button></a>
+        <a href="/settings/vehicles"><button>Register Vehicles</button></a>
+        <a href="/settings/routing"><button>Routing Options</button></a>
+    </div>
+    <div class="colFlex">
+        <h1>
+            Service Ranges
+        </h1>
+        <h2>
+            Locations
+        </h2>
+        <div className="rowFlex">
+            <form action="/api/v1/settings/pickups/?target=/settings/ranges" method="post" encType="multipart/form-data">
+                <input type="hidden" name="operation" value="create"/>
+                Location Name
+                <input type="text" name="LocationName" required/>
+                <br></br>
+                Latitude
+                <input type="text" name="LocationLatitude" required/>
+                <br></br>
+                Longitude
+                <input type="text" name="LocationLongitude" required/>
+                <br></br>
+                Accept pick-ups at this location?
+                <input type="checkbox" name="isPickup" required/>
+                <br></br>
+                Accept drop-offs at this location?
+                <input type="checkbox" name="isDropoff" required/>
+                <br></br>
+                <input type="submit" name="submit" value="Create Pick-up Location"/>
+            </form>
+        </div>
+        <h2>
+            Service Ranges
+        </h2>
+    </div>
+</div>

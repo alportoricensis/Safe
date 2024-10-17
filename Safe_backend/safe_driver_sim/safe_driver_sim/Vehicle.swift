@@ -29,7 +29,7 @@ final class Vehicle {
             self.isRetrieving = true
         }
         
-        guard let apiurl = URL(string: "\(serverUrl)api/v1/vehicles/location/\(vehicle_id)/") else {
+        guard let apiurl = URL(string: "\(serverUrl)api/v1/vehicles/location/") else {
             print("postLocation: Bad URL")
             return
         }
@@ -68,14 +68,23 @@ final class Vehicle {
     }
     
     func loginVehicle() {
-        guard let apiurl = URL(string: "\(serverUrl)api/v1/vehicles/login/\(vehicle_id)/") else {
+        guard let apiurl = URL(string: "\(serverUrl)api/v1/vehicles/login/") else {
             print("loginVehicle: Bad URL")
+            return
+        }
+        let jsonObj = ["vehicle_id": vehicle_id,
+                       "latitude": LocManager.shared.location.coordinate.latitude,
+                       "longitude": LocManager.shared.location.coordinate.longitude,
+        ] as [String : Any]
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonObj) else {
+            print("postLocation: jsonData serialization error")
             return
         }
         DispatchQueue.global(qos: .background).async {
             var request = URLRequest(url: apiurl)
             request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             request.httpMethod = "POST"
+            request.httpBody = jsonData
 
             URLSession.shared.dataTask(with: request) { data, response, error in
                 guard let _ = data, error == nil else {

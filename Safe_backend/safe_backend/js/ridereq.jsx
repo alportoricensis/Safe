@@ -4,7 +4,7 @@ import React from "react";
 
 export default function RideRequest(req) {
     const cancelRide = async (req_id) => {
-        const request_url = "http://127.0.0.1:5000//api/v1/rides/passengers/" + req_id + "/"
+        const request_url = "http://127.0.0.1:5000/api/v1/rides/passengers/" + req_id + "/"
         try { 
             const resp = await fetch(request_url, {
                 method: "DELETE",

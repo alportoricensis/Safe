@@ -18,7 +18,7 @@ export default function CallInForm(req) {
                     <br></br>
                 </div>
                 <div className="colFlex">
-                    <form action="/api/v1/rides/?target=/" method="post" encType="multipart/form-data">
+                    <form action="/api/v1/rides/" target="hiddenFrame" method="post" encType="multipart/form-data">
                         <input type="hidden" name="operation" value="create"/>
                         <input type="text" name="passenger_name" required/>
                         <br></br>

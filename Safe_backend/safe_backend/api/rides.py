@@ -6,7 +6,7 @@ import safe_backend.api.config
 import safe_backend.api.requests
 
 # Routes
-@safe_backend.app.route("/api/v1/rides/", methods=["GET"])
+@safe_backend.app.route("/api/v1/rides/", methods=["GET", "OPTIONS"])
 # REQUIRES  - User is authenticated with agency-level permissions
 # EFFECTS   - Returns all currently active ride requests
 # MODIFIES  - Nothing
@@ -152,9 +152,6 @@ def post_ride():
     # Debug
     rider_id = random.randint(0, 100)
     request_id = random.randint(0, 100)
-    #pickup = "EECS"
-    #dropoff = "1687 Broadway St"
-    #passenger_name = "Alexander Gabriel Nunez-Carrasquillo"
     passenger = safe_backend.api.requests.RideRequests(
         rider_id=rider_id, request_id=request_id, vehicle_id=-1,
         pickup=pickup, dropoff=dropoff, passname=passenger_name,
@@ -163,6 +160,7 @@ def post_ride():
     
     if safe_backend.api.config.MODE == "ROUNDROBIN":
         safe_backend.api.config.ROUND_ROBIN_QUEUE[0].itinerary.append(passenger)
+        passenger.driver = safe_backend.api.config.ROUND_ROBIN_QUEUE[0].vehicle_id
         safe_backend.api.config.ROUND_ROBIN_QUEUE.append(safe_backend.api.config.ROUND_ROBIN_QUEUE[0])
         safe_backend.api.config.ROUND_ROBIN_QUEUE.pop()
         safe_backend.api.config.RIDE_REQUESTS[str(request_id)] = passenger

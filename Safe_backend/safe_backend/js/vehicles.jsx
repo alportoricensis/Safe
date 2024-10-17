@@ -11,7 +11,11 @@ export default function Vehicle(vehicle) {
     // Return vehicle widget
     return (
         <div className="vehicleWidget">
+            <br></br>
             {vehicle.vehicle_id}
+            <br></br>
+            {vehicle.lat}, {vehicle.long}
+            <br></br>
             {vehicleItinerary.map((req) => RideRequest(req))}
         </div>
     )

@@ -33,3 +33,24 @@ def show_settings():
     """Display /settings route."""
     # TODO Check Logged-In and Proper Permissions
     return flask.render_template("settings.html")
+
+
+@safe_backend.app.route('/settings/ranges')
+def show_range_settings():
+    """Display /settings/ranges route."""
+    # TODO Check Logged-In and Proper Permissions
+    return flask.render_template("ranges.html")
+
+
+@safe_backend.app.route('/settings/vehicles')
+def show_vehicle_settings():
+    """Display /settings/vehicles route."""
+    # TODO Check Logged-In and Proper Permissions
+    return flask.render_template("vehicles.html")
+
+
+@safe_backend.app.route('/settings/times')
+def show_time_settings():
+    """Display /settings/times route."""
+    # TODO Check Logged-In and Proper Permissions
+    return flask.render_template("times.html")

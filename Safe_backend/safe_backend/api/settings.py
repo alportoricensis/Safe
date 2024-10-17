@@ -28,7 +28,7 @@ def vehicles():
 #             GET all pickup/dropoff locations
 # MODIFIES  - database
 def locations():
-    """Create a new vehicle with given parameters."""
+    """Create or get a new pickup/dropoff location."""
     # TODO: Authentication
     # TODO: Convert list to JSON
     context = {

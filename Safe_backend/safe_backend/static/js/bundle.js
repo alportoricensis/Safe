@@ -29,7 +29,8 @@ function CallInForm(req) {
   }, "Passenger Name:", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), "Pickup Location:", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), "Dropoff Location:", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "colFlex"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("form", {
-    action: "/api/v1/rides/?target=/",
+    action: "/api/v1/rides/",
+    target: "hiddenFrame",
     method: "post",
     encType: "multipart/form-data"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
@@ -209,7 +210,13 @@ __webpack_require__.r(__webpack_exports__);
 function Navbar() {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "navMenu"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", null, "Home"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", null, "Settings"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", null, "Logout"));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    href: "/"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", null, "Home")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    href: "/settings"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", null, "Settings")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", {
+    href: "/logout"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", null, "Logout")));
 }
 
 /***/ }),
@@ -338,7 +345,7 @@ function RideRequest(req) {
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
-            request_url = "http://127.0.0.1:5000//api/v1/rides/passengers/" + req_id + "/";
+            request_url = "http://127.0.0.1:5000/api/v1/rides/passengers/" + req_id + "/";
             _context.prev = 1;
             _context.next = 4;
             return fetch(request_url, {
@@ -408,7 +415,7 @@ function Vehicle(vehicle) {
   // Return vehicle widget
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "vehicleWidget"
-  }, vehicle.vehicle_id, vehicleItinerary.map(function (req) {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), vehicle.vehicle_id, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), vehicle.lat, ", ", vehicle["long"], /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), vehicleItinerary.map(function (req) {
     return (0,_ridereq__WEBPACK_IMPORTED_MODULE_1__["default"])(req);
   }));
 }

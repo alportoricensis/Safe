@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>
+        Safe!
+    </title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<div class="rowFlex">
+    <div class="navMenu">
+        <a href="/"><button>Home</button></a>
+        <a href="/settings"><button>Settings</button></a>
+        <a href="/logout"><button>Logout</button></a>
+    </div>
+    <div class="queue">
+        <a href="/settings/services"><button>Services Available</button></a>
+        <a href="/settings/ranges"><button>Service Ranges</button></a>
+        <a href="/settings/times"><button>Service Times</button></a>
+        <a href="/settings/vehicles"><button>Register Vehicles</button></a>
+        <a href="/settings/routing"><button>Routing Options</button></a>
+    </div>
+    <div class="colFlex">
+        <h1>
+            Vehicles
+        </h1>
+        <h2>
+            Register Vehicle
+        </h2>
+        <div className="rowFlex">
+            <form action="/api/v1/settings/vehicles/?target=/settings/vehicles" method="post" encType="multipart/form-data">
+                <input type="hidden" name="operation" value="create"/>
+                Vehicle Name
+                <input type="text" name="vehicleName" required/>
+                <br></br>
+                Vehicle Capacity
+                <input type="number" name="vehicleCapacity" min="1" required/>
+                <br></br>
+                Vehicle Range
+                <input type="number" name="vehicleRange" min="1" required/>
+                <br></br>
+                ADA Accessible?
+                <input type="checkbox" name="isADA" required/>
+                <br></br>
+                <input type="submit" name="submit" value="Create Pick-up Location"/>
+            </form>
+        </div>
+        <h2>
+            Registered Vehicles
+        </h2>
+    </div>
+</div>
