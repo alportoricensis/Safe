@@ -61,7 +61,7 @@ body {
     overflow: auto;
 }
 
-.mapView {
+.map {
     width: 75vw;
     height: 80vh;
     background-color: aqua;

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>
+        Safe!
+    </title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<div class="rowFlex">
+    <div class="navMenu">
+        <a href="/"><button>Home</button></a>
+        <a href="/settings"><button>Settings</button></a>
+        <a href="/logout"><button>Logout</button></a>
+    </div>
+    <div class="queue">
+        <a href="/settings/services"><button>Services Available</button></a>
+        <a href="/settings/ranges"><button>Service Ranges</button></a>
+        <a href="/settings/locations"><button>Service Locations</button></a>
+        <a href="/settings/times"><button>Service Times</button></a>
+        <a href="/settings/vehicles"><button>Register Vehicles</button></a>
+        <a href="/settings/routing"><button>Routing Options</button></a>
+    </div>
+    <div class="colFlex">
+        <h1>
+            Locations
+        </h1>
+        <h3>Add a Location</h3>
+            <div className="rowFlex">
+                <form action="/api/v1/settings/pickups/?target=/settings/ranges" method="post" encType="multipart/form-data">
+                    <input type="hidden" name="operation" value="create"/>
+                    Location Name
+                    <input type="text" name="locationName" required/>
+                    <br></br>
+                    Latitude
+                    <input type="text" name="locationLatitude" required/>
+                    <br></br>
+                    Longitude
+                    <input type="text" name="locationLongitude" required/>
+                    <br></br>
+                    Accept pick-ups at this location?
+                    <input type="checkbox" name="isPickup"/>
+                    <br></br>
+                    Accept drop-offs at this location?
+                    <input type="checkbox" name="isDropoff"/>
+                    <br></br>
+                    <input type="submit" name="submit" value="Create Pick-up Location"/>
+                </form>
+            </div>
+        <h3>Existing Locations</h3>
+            <div className="rowFlex">
+                {% for location in locations %}
+                Location Name: {{location.name}}
+                <br>
+                Longitude: {{location.long}}
+                <br>
+                Latitude: {{location.lat}}
+                <br>
+                Accepting Pick-Ups?: {{location.isPickup}} Accepting Drop-Offs? {{location.isDropoff}}
+                <br>
+                <form action="/api/v1/settings/pickups/?target=/settings/ranges" method="delete" enctype="multipart/form-data">
+                    <input type="hidden" name="loc_name" value={{location.name}}>
+                    <button type="submit" name="submit" value="Delete Location">Delete Location</button>
+                </form>
+                <br>
+                {% endfor %}
+            </div>
+    </div>
+</div>

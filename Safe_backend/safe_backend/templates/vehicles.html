@@ -16,6 +16,7 @@
     <div class="queue">
         <a href="/settings/services"><button>Services Available</button></a>
         <a href="/settings/ranges"><button>Service Ranges</button></a>
+        <a href="/settings/locations"><button>Service Locations</button></a>
         <a href="/settings/times"><button>Service Times</button></a>
         <a href="/settings/vehicles"><button>Register Vehicles</button></a>
         <a href="/settings/routing"><button>Routing Options</button></a>
@@ -40,13 +41,21 @@
                 <input type="number" name="vehicleRange" min="1" required/>
                 <br></br>
                 ADA Accessible?
-                <input type="checkbox" name="isADA" required/>
+                <input type="checkbox" name="isADA"/>
                 <br></br>
-                <input type="submit" name="submit" value="Create Pick-up Location"/>
+                <input type="submit" name="submit" value="Create Vehicle"/>
             </form>
         </div>
         <h2>
             Registered Vehicles
         </h2>
+        <ul>
+            {% for vehicle in vehicles %}
+            <li>{{vehicle.name}}
+            Range: {{vehicle.range}}
+            Capacity: {{vehicle.capacity}}
+            </li>
+            {% endfor %}
+        </ul>
     </div>
 </div>
