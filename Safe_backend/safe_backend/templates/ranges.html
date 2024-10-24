@@ -25,5 +25,46 @@
         <h1>
             Service Ranges
         </h1>
+        <h3>Add a Range</h3>
+            <div className="rowFlex">
+                <form action="/api/v1/settings/ranges/?target=/settings/ranges" method="post" encType="multipart/form-data">
+                    Center Latitude
+                    <input type="text" name="rangeLatitude" required/>
+                    <br></br>
+                    Center Longitude
+                    <input type="text" name="rangeLongitude" required/>
+                    <br></br>
+                    Radius (in miles)
+                    <input type="text" name="rangeRadius" required/>
+                    <br></br>
+                    Accept pick-ups within this range?
+                    <input type="checkbox" name="isPickup"/>
+                    <br></br>
+                    Accept drop-offs within this range?
+                    <input type="checkbox" name="isDropoff"/>
+                    <br></br>
+                    <input type="submit" name="submit" value="Create New Service Range"/>
+                </form>
+            </div>
+        <h3>Existing Ranges</h3>
+            <div className="rowFlex">
+                {% for range in ranges %}
+                <br>
+                Longitude: {{range.long}}
+                <br>
+                Latitude: {{range.lat}}
+                <br>
+                Radius: {{range.radius}}
+                <br>
+                Accepting Pick-Ups?: {{range.isPickup}} Accepting Drop-Offs? {{range.isDropoff}}
+                <br>
+                <form action="/api/v1/settings/pickups/?target=/settings/ranges" method="delete" enctype="multipart/form-data">
+                    <input type="hidden" name="loc_name" value={{range.name}}>
+                    <button type="submit" name="submit" value="Delete Range">Delete Range</button>
+                </form>
+                <br>
+                {% endfor %}
+            </div>
+    </div>
     </div>
 </div>

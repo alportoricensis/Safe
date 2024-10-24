@@ -105,9 +105,7 @@ def locations():
         return flask.redirect(flask.url_for("show_range_settings"))
 
 
-
-
-@safe_backend.app.route("/api/v1/settings/range/", methods=["GET", "POST"])
+@safe_backend.app.route("/api/v1/settings/ranges/", methods=["GET", "POST"])
 # REQUIRES  - User is authenticated with agency-level permissions (for POST)
 #             User is authenticated with passenger-level permissions (for GET)
 # EFFECTS   - CREATE new pickup/dropoff ranges
@@ -116,9 +114,58 @@ def locations():
 def range():
     """Create a new vehicle with given parameters."""
     # TODO: Authentication
-    # TODO: Convert list to JSON
-    context = {
-        "rides": "/api/v1/rides/",
-        "settings": "/api/v1/settings/"
-    }
-    return flask.jsonify(**context), 200
+    
+    # Get data from request
+    if flask.request.method == "POST":
+        lat = flask.request.form["rangeLatitude"]
+        long = flask.request.form["rangeLongitude"]
+        radius_miles = flask.request.form["rangeRadius"]
+        conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                                port="5432")
+        cur = conn.cursor() 
+        cur.execute("SELECT * FROM locations WHERE lat = %s AND long = %s", (lat, long, ))
+        sel = cur.fetchone()
+        if sel is not None:
+            flask.flash(f"Error: Range with center at (latitude, longitude) {lat, long} already exists!")
+        isPickup = False
+        if "isPickup" in flask.request.form:
+            isPickup = flask.request.form["isPickup"]
+        isDropoff = False
+        if "isDropoff" in flask.request.form:
+            isDropoff = flask.request.form["isDropoff"]
+        cur.execute("INSERT INTO ranges (lat, long, radius_miles, isPickup, isDropoff) VALUES (%s, %s, %s, %s, %s)", (lat, long, radius_miles, isPickup, isDropoff))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return flask.redirect(flask.url_for("show_range_settings"))
+
+
+
+
+@safe_backend.app.route("/api/v1/settings/services/", methods=["GET", "POST", "DELETE"])
+# REQUIRES  - User is authenticated with agency-level permissions (for POST)
+#             User is authenticated with passenger-level permissions (for GET)
+# EFFECTS   - CREATE a new service provided by this agency
+#             GET all services
+# MODIFIES  - database
+def services():
+    """Create a new service with given parameters."""
+    # TODO: Authentication
+    
+    # Get data from request
+    if flask.request.method == "POST":
+        sname = flask.request.form["serviceName"]
+        stime = flask.request.form["startTime"]
+        etime = flask.request.form["endTime"]
+        conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                                port="5432")
+        cur = conn.cursor() 
+        cur.execute("SELECT * FROM services WHERE service_name = %s", (sname, ))
+        sel = cur.fetchone()
+        if sel is not None:
+            flask.flash(f"Error: Service {sname} already exists!")
+        cur.execute("INSERT INTO services (service_name, start_time, end_time) VALUES (%s, %s, %s)", (sname, str(datetime.datetime.strptime(stime, "%H:%M").time()), str(datetime.datetime.strptime(etime, "%H:%M").time())))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return flask.redirect(flask.url_for("show_service_settings"))

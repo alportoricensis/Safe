@@ -27,7 +27,7 @@
         </h1>
         <h3>Add a Location</h3>
             <div className="rowFlex">
-                <form action="/api/v1/settings/pickups/?target=/settings/ranges" method="post" encType="multipart/form-data">
+                <form action="/api/v1/settings/pickups/?target=/settings/locations" method="post" encType="multipart/form-data">
                     <input type="hidden" name="operation" value="create"/>
                     Location Name
                     <input type="text" name="locationName" required/>
@@ -58,7 +58,7 @@
                 <br>
                 Accepting Pick-Ups?: {{location.isPickup}} Accepting Drop-Offs? {{location.isDropoff}}
                 <br>
-                <form action="/api/v1/settings/pickups/?target=/settings/ranges" method="delete" enctype="multipart/form-data">
+                <form action="/api/v1/settings/pickups/?target=/settings/locations" method="delete" enctype="multipart/form-data">
                     <input type="hidden" name="loc_name" value={{location.name}}>
                     <button type="submit" name="submit" value="Delete Location">Delete Location</button>
                 </form>

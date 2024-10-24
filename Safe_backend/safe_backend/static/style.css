@@ -70,7 +70,7 @@ body {
 .vehicleWidget {
     display: flex;
     flex-direction: column;
-    width: 200px;
+    width: 300px;
     padding: 5px;
     overflow: auto;
     background-color: #ffffff;

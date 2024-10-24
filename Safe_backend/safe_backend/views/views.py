@@ -40,7 +40,27 @@ def show_settings():
 def show_range_settings():
     """Display /settings/ranges route."""
     # TODO Check Logged-In and Proper Permissions
-    return flask.render_template("ranges.html")
+
+    conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                            port="5432")
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM ranges;")
+    sel = cur.fetchall()
+    context = {
+        "ranges": []
+    }
+    if len(sel) != 0:
+        for loc in sel:
+            context["ranges"].append({
+                "lat": loc[1],
+                "long": loc[2],
+                "radius": loc[3],
+                "isPickup": loc[4],
+                "isDropoff": loc[5] 
+            })
+    cur.close()
+    conn.close()
+    return flask.render_template("ranges.html", **context)
 
 
 @safe_backend.app.route('/settings/locations')
@@ -93,6 +113,31 @@ def show_vehicle_settings():
     cur.close()
     conn.close()
     return flask.render_template("vehicles.html", **context)
+
+
+@safe_backend.app.route('/settings/services')
+def show_service_settings():
+    """Display /settings/services route."""
+    # TODO Check Logged-In and Proper Permissions
+
+    conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                            port="5432")
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM services;")
+    sel = cur.fetchall()
+    context = {
+        "services": []
+    }
+    if len(sel) != 0:
+        for service in sel:
+            context["services"].append({
+                "service_name": service[1],
+                "start_time": str(service[2]),
+                "end_time": str(service[3])
+            })
+    cur.close()
+    conn.close()
+    return flask.render_template("services.html", **context)
 
 
 @safe_backend.app.route('/settings/times')
