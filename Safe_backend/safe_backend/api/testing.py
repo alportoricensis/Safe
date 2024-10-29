@@ -29,3 +29,7 @@ def gen_data(num_req):
         "Success": True
     }
     return flask.jsonify(**context), 200
+@safe_backend.app.route("/login_passenger", methods=["GET"])
+def login_passenger():
+    
+    return flask.render_template("login_passenger.html"), 200

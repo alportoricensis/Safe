@@ -65,7 +65,7 @@ def locations():
         conn.commit()
         cur.close()
         conn.close()
-        return flask.redirect(flask.url_for("show_range_settings"))
+        return flask.redirect(flask.url_for("show_location_settings"))
     
     elif flask.request.method == "GET":
         conn = psycopg2.connect(database="safe_backend", user="safe", password="",
@@ -102,7 +102,7 @@ def locations():
         cur.execute("DELETE * FROM locations WHERE loc_name = %s;", (location_name, ))
         cur.close()
         conn.close()
-        return flask.redirect(flask.url_for("show_range_settings"))
+        return flask.redirect(flask.url_for("show_location_settings"))
 
 
 @safe_backend.app.route("/api/v1/settings/ranges/", methods=["GET", "POST"])
@@ -169,3 +169,16 @@ def services():
         cur.close()
         conn.close()
         return flask.redirect(flask.url_for("show_service_settings"))
+    
+    elif flask.request.method == "GET":
+        conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                                port="5432")
+        cur = conn.cursor() 
+        cur.execute("SELECT * FROM services", ())
+        services = cur.fetchall()
+        context = {
+            "services": []
+        }
+        for service in services:
+            context["services"].append(service[1])
+        return flask.jsonify(context), 200

@@ -1,9 +1,11 @@
 """REST API for ride requests."""
 import datetime
-import flask
 import random
+import flask
+import psycopg2
 import safe_backend.api.config
-import safe_backend.api.requests
+from safe_backend.api.requests import RideRequests
+from safe_backend.api.utils import check_pickup, check_time, check_dropoff
 
 # Routes
 @safe_backend.app.route("/api/v1/rides/", methods=["GET", "OPTIONS"])
@@ -16,7 +18,7 @@ def get_rides():
     context = {}
     for key, value in safe_backend.api.config.RIDE_REQUESTS.items():
         context[key] = {
-            "passenger": value.passenger_name,
+            "passenger": value.firstName + " " + value.lastName,
             "driver": value.driver,
             "pickup": value.pickup,
             "dropoff": value.dropoff,
@@ -111,7 +113,7 @@ def delete_ride_request(ride_id):
     # If the ride is active, check what driver it has been assigned to, and remove it
     # from that drivers queue
     driver_id = str(safe_backend.api.config.RIDE_REQUESTS[ride_id].driver)
-    if driver_id != str(-1):
+    if driver_id != "Pending Assignment":
         # Find the specific driver, and remove this passenger request from the driver's list
         safe_backend.api.config.VEHICLE_QUEUES[driver_id].itinerary.remove(safe_backend.api.config.RIDE_REQUESTS[ride_id])
 
@@ -135,40 +137,64 @@ def delete_ride_request(ride_id):
 def post_ride():
     """Add a RideRequest to the ride-share service."""
     url = flask.request.args.get('target')
+    rideOrigin = flask.request.form["rideOrigin"]
+
+    # Three options exist for booking a ride: through a call-in (dispatcher), through a walk-on (driver),
+    # or through the passenger app. These follow slightly different paths.
+
     # TODO: Authentication - can be either flask.request.args.user_id or an agency-level account
 
-    # TODO: Check pickup validity
+    # Check the service the user is booking for, and the service times
+    if rideOrigin == "callIn":
+        serviceName = flask.request.form["services"]
+        conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                                port="5432")
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM services WHERE service_name = %s;", (serviceName, ))
+        services = cur.fetchall()
 
-    # TODO: Check dropoff validity
+        # If service is not valid,
+        if services is None:
+            context = {
+                "msg": f"Service {serviceName} not found!"
+            }
+            return flask.jsonify(**context), 404
 
-    # TODO: Create object
-    # Proper
-    # rider_id = flask.request.args.user_id
-    # request_id comes from the rownum of the database
-    pickup = flask.request.form["pickup"]
-    dropoff = flask.request.form["dropoff"]
-    passenger_name = flask.request.form["passenger_name"]
+        # If the current time is not in the service's time range, do not allow the booking
+        currTime = datetime.datetime.now().time()
+        startTime = services[0][2]
+        endTime = services[0][3]
+        if not check_time(startTime, endTime, currTime):
+            context = {
+                "msg": f"Service {serviceName} is not currently active."
+            }
+            return flask.jsonify(**context), 400
+        
+        # Check the pickup and dropoff validity
+        pickup = flask.request.form["pickupLocation"]
+        dropoff = flask.request.form["dropoffLocation"]
+        if not check_pickup(pickup) or not check_dropoff(dropoff):
+            context = {
+                "msg": f"Service {serviceName} does not service {pickup} or {dropoff}."
+            }
+            return flask.jsonify(**context), 400
+        
+        # Insert the booking into the database, and retrieve their ID
+        firstName = flask.request.form["passengerFirstName"]
+        lastName = flask.request.form["passengerLastName"]
+        phone = flask.request.form["passengerPhoneNumber"]
 
-    # Debug
-    rider_id = random.randint(0, 100)
-    request_id = random.randint(0, 100)
-    passenger = safe_backend.api.requests.RideRequests(
-        rider_id=rider_id, request_id=request_id, vehicle_id=-1,
-        pickup=pickup, dropoff=dropoff, passname=passenger_name,
-        status="requested"
-    )
-    
-    if safe_backend.api.config.MODE == "ROUNDROBIN":
-        safe_backend.api.config.ROUND_ROBIN_QUEUE[0].itinerary.append(passenger)
-        passenger.driver = safe_backend.api.config.ROUND_ROBIN_QUEUE[0].vehicle_id
-        safe_backend.api.config.ROUND_ROBIN_QUEUE.append(safe_backend.api.config.ROUND_ROBIN_QUEUE[0])
-        safe_backend.api.config.ROUND_ROBIN_QUEUE.pop()
-        safe_backend.api.config.RIDE_REQUESTS[str(request_id)] = passenger
+        # TODO - database integration
 
-    elif safe_backend.api.config.MODE == "GOOGLEMAPSROUTING":
-        # TODO: Trigger recalculation
-        safe_backend.api.config.RIDE_REQUESTS[str(request_id)] = passenger
+        # Create ride request object
+        rider_id = random.randint(0, 1000)
+        request_id = random.randint(0, 1000)
+        newRequest = RideRequests(
+            rider_id=rider_id, status="Pending Assignment", vehicle_id="Pending Assignment", pickup=pickup,
+            dropoff=dropoff, firstName=firstName, lastName=lastName, request_id=request_id
+        )
 
-    # TODO: Return proper status
+        # Add to mappings
+        safe_backend.api.config.RIDE_REQUESTS[str(request_id)] = newRequest
 
-    return flask.redirect(url)
+        return flask.redirect(url)

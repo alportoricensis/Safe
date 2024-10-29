@@ -7,11 +7,12 @@ class RideRequests:
     # REQUIRES
     # EFFECTS
     # MODIFIES
-    def __init__(self, rider_id, status, vehicle_id, pickup, dropoff, passname, request_id):
+    def __init__(self, rider_id, status, vehicle_id, pickup, dropoff, firstName, lastName, request_id):
         """Initialize self to be a request."""
         self.rider_id = rider_id
         self.request_id = request_id
-        self.passenger_name = passname
+        self.firstName = firstName
+        self.lastName = lastName
         self.driver = vehicle_id
         self.pickup = pickup
         self.dropoff = dropoff
@@ -26,14 +27,6 @@ class RideRequests:
     def __eq__(self, other):
         """Initialize self to be a request."""
         return self.request_id == other.request_id
-
-
-    # REQUIRES
-    # EFFECTS
-    # MODIFIES
-    def calculate_wait() -> datetime.time:
-        """Calculate the estimated wait time for this ride request, based on assigned vehicle itinerary."""
-        return datetime.time()
 
 
     

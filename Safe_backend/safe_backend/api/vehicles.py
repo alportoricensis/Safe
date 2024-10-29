@@ -19,4 +19,13 @@ class Vehicle:
         self.log = longin
 
 
+    # REQUIRES
+    # EFFECTS
+    # MODIFIES
+    def assign_rides():
+        """Parse the active rides and find a tour using the optimization API."""
+
+    
+
+
     
