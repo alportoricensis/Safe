@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import {Autocomplete, LoadScript} from '@react-google-maps/api'
 
 export default function CallInForm() {
     const rootUrl = "http://127.0.0.1:5000/";
@@ -8,6 +9,17 @@ export default function CallInForm() {
     const pickupsUrl = rootUrl + "api/v1/settings/pickups/"
     const [services, setServices] = useState([]);
     const [pickups, setPickups] = useState([]);
+
+    const [autocomplete, setAutocomplete] = useState(null);
+    const [dropOff, setDropOff] = useState('')
+    const [dropOffLocation, setDropOffLocation] = useState({});
+
+    const bounds = {
+        north: 43,
+        south: 42,
+        east: -83,
+        west: -84,
+    }
 
     const getServices = async () => {
         try {
@@ -52,6 +64,23 @@ export default function CallInForm() {
         }
     }
 
+    const handleLoad = (autocomplete) => {
+        setAutocomplete(autocomplete);
+    }
+
+    const handlePlaceChanged = () => {
+        if (autocomplete) {
+            const place = autocomplete.getPlace();
+            
+            setDropOff(place.name)
+
+            setDropOffLocation({
+                'lat': place.geometry.location.lat(),
+                'lng': place.geometry.location.lng()
+            })
+        }
+    };
+
     // Set up a callback to call all active services endpoint on the API every so often
     // Every four seconds, for now
     useEffect(() => {
@@ -70,7 +99,7 @@ export default function CallInForm() {
                     <form action="/api/v1/rides/" target="hiddenFrame" method="post" encType="multipart/form-data">
                         <input type="hidden" name="rideOrigin" value="callIn"/>
                         <select name="services" id="services">
-                            {services.map((service) => <option value={service}>{service}</option>)}
+                            {services.map((service) => <option value={service} key={service}>{service}</option>)}
                         </select>
                         <br></br>
                         <input type="text" placeholder="First Name" name="passengerFirstName" required/>
@@ -82,10 +111,14 @@ export default function CallInForm() {
                         <input type="number" placeholder="Number of Passengers" name="numPassengers" required/>
                         <br></br>
                         <select name="pickupLocation" id="pickupLocation">
-                            {pickups.map((pickup) => <option value={pickup.name}>{pickup.name}</option>)}
+                            {pickups.map((pickup) => <option value={pickup.name} key={pickup.name}>{pickup.name}</option>)}
                         </select>
                         <br></br>
-                        <input type="text" placeholder="Dropoff Location" name="dropoffLocation" required/>
+                        <LoadScript googleMapsApiKey="AIzaSyB93jLylKO64g8nNQoxcPhcYTB1HsNL64g" libraries={['places']}>
+                            <Autocomplete onLoad={handleLoad} onPlaceChanged={handlePlaceChanged} bounds={bounds} options={{strictBounds: true}}>
+                                <input type="text" placeholder="Dropoff Loation" />
+                            </Autocomplete>
+                        </LoadScript>
                         <br></br>
                         <input type="submit" name="callin" value="Add Passenger"/>
                     </form>
