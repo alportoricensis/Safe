@@ -1,6 +1,7 @@
 """Request class definition in a micro-transit service."""
 import datetime
 from google.maps import routeoptimization_v1
+from google.auth import credentials
 import safe_backend.api.requests
 import safe_backend.api.config
 
@@ -88,8 +89,21 @@ class Vehicle:
 
         ShipmentModel.global_start_time = datetime.datetime.now()
         ShipmentModel.global_end_time = datetime.datetime.now() + datetime.timedelta(days = 1)
-        
+
         # Instantiate the client to send and receive the request
+        creds = credentials.Credentials()
+        creds.token = "TOKENTODO"
+        client = routeoptimization_v1.RouteOptimizationClient(credentials = creds)
+        
+        # Initialize the arguments
+        request = routeoptimization_v1.OptimizeToursRequest()
+        request.model = ShipmentModel
+
+        # Send and retrieve the request
+        response = client.optimize_tours(
+            request = request
+        )
+        breakpoint()
         
 
 
