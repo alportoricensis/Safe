@@ -3,6 +3,7 @@ import datetime
 import random
 import flask
 import psycopg2
+import safe_backend.config
 import safe_backend.api.config
 from safe_backend.api.requests import RideRequests
 from safe_backend.api.utils import check_pickup, check_time, check_dropoff
@@ -20,8 +21,8 @@ def get_rides():
         context[key] = {
             "passenger": value.firstName + " " + value.lastName,
             "driver": value.driver,
-            "pickup": value.pickup,
-            "dropoff": value.dropoff,
+            "pickup": value.pickupName,
+            "dropoff": value.dropoffName,
             "ETA": value.eta,
             "ETP": value.etp,
             "reqid": value.request_id
@@ -51,8 +52,8 @@ def get_driver_rides(vehicle_id):
         context[str(ride_request.request_id)] = {
             "passenger": ride_request.passenger_name,
             "driver": ride_request.driver,
-            "pickup": ride_request.pickup,
-            "dropoff": ride_request.dropoff,
+            "pickup": ride_request.pickupName,
+            "dropoff": ride_request.dropoffName,
             "ETA": ride_request.eta,
             "ETP": ride_request.etp,
             "reqid": ride_request.request_id
@@ -85,7 +86,7 @@ def get_passenger_ride(ride_id):
     context[ride_id] = {
         "passenger": safe_backend.api.config.RIDE_REQUESTS[ride_id].passenger_name,
         "driver": safe_backend.api.config.RIDE_REQUESTS[ride_id].driver,
-        "pickup": safe_backend.api.config.RIDE_REQUESTS[ride_id].pickup,
+        "pickup": safe_backend.api.config.RIDE_REQUESTS[ride_id].pickupName,
         "dropoff": safe_backend.api.config.RIDE_REQUESTS[ride_id].dropoff,
         "ETA": safe_backend.api.config.RIDE_REQUESTS[ride_id].eta,
         "ETP": safe_backend.api.config.RIDE_REQUESTS[ride_id].etp,
@@ -144,8 +145,8 @@ def post_ride():
 
     # TODO: Authentication - can be either flask.request.args.user_id or an agency-level account
 
-    # Check the service the user is booking for, and the service times
     if rideOrigin == "callIn":
+        # Check the service the user is booking for, and the service times
         serviceName = flask.request.form["services"]
         conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                                 port="5432")
@@ -172,10 +173,19 @@ def post_ride():
         
         # Check the pickup and dropoff validity
         pickup = flask.request.form["pickupLocation"]
-        dropoff = flask.request.form["dropoffLocation"]
-        if not check_pickup(pickup) or not check_dropoff(dropoff):
+        dropoffName = flask.request.form["dropoffLocation"]
+        dropoffCoord = (flask.request.form["dropoffLat"], flask.request.form["dropoffLong"])
+        cur.execute("SELECT * FROM locations WHERE loc_name = %s", (pickup, ))
+        location = cur.fetchone()
+        if location is None:
             context = {
-                "msg": f"Service {serviceName} does not service {pickup} or {dropoff}."
+                "msg": f"Service {serviceName} does not service {location}."
+            }
+            return flask.jsonify(**context), 400
+
+        if not check_dropoff(dropoffName, dropoffCoord):
+            context = {
+                "msg": f"Service {serviceName} does not service {dropoffName}."
             }
             return flask.jsonify(**context), 400
         
@@ -183,18 +193,48 @@ def post_ride():
         firstName = flask.request.form["passengerFirstName"]
         lastName = flask.request.form["passengerLastName"]
         phone = flask.request.form["passengerPhoneNumber"]
+        numPass = flask.request.form["numPassengers"]
 
         # TODO - database integration
+        cur.execute(
+            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, service_id) VALUES \
+                (%s, %s, %s, %s, %s, %s) RETURNING ride_id", (location[2], location[3], dropoffCoord[0], dropoffCoord[1], "requested",
+                                            services[0][0])
+        )
+        req_id = cur.fetchone()
 
         # Create ride request object
-        rider_id = random.randint(0, 1000)
-        request_id = random.randint(0, 1000)
+        rider_id = -1
         newRequest = RideRequests(
-            rider_id=rider_id, status="Pending Assignment", vehicle_id="Pending Assignment", pickup=pickup,
-            dropoff=dropoff, firstName=firstName, lastName=lastName, request_id=request_id
+            rider_id=rider_id, status="requested", vehicle_id="Pending Assignment", pickupName=pickup, pickupCoord=(location[2], location[3]),
+            dropoff=dropoffCoord, phone=phone, firstName=firstName, lastName=lastName, request_id=req_id[0], numpass=numPass, dropoffName=dropoffName
         )
 
         # Add to mappings
-        safe_backend.api.config.RIDE_REQUESTS[str(request_id)] = newRequest
+        safe_backend.api.config.RIDE_REQUESTS[str(req_id[0])] = newRequest
+
+        # If there is a vehicle with no active rides, call its assignment function
+        for vehicle in safe_backend.api.config.VEHICLE_QUEUES:
+            if safe_backend.api.config.VEHICLE_QUEUES[vehicle].empty():
+                safe_backend.api.config.VEHICLE_QUEUES[vehicle].assign_rides()
+
+        # Return success
+        context = {
+            "msg": "Successfully created booking!"
+        }
+        flask.flash(f"Successfully booked passenger! {firstName} {lastName}")
+        return flask.jsonify(**context), 200
+    
+    # If the ride came from a passenger app,
+    elif rideOrigin == "passenger":
 
         return flask.redirect(url)
+
+    elif rideOrigin == "walkOn":
+
+        return flask.redirect(url)
+
+    else:
+
+        return flask.redirect(url)
+        

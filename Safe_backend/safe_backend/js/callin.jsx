@@ -98,6 +98,8 @@ export default function CallInForm() {
                     <h3>Create a Booking</h3>
                     <form action="/api/v1/rides/" target="hiddenFrame" method="post" encType="multipart/form-data">
                         <input type="hidden" name="rideOrigin" value="callIn"/>
+                        <input type="hidden" name="dropoffLat" value={dropOffLocation.lat}/>
+                        <input type="hidden" name="dropoffLong" value={dropOffLocation.lng}/>
                         <select name="services" id="services">
                             {services.map((service) => <option value={service} key={service}>{service}</option>)}
                         </select>
