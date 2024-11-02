@@ -3,34 +3,23 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		22A575FB2CD596DB00D9A43E /* driver_frontendApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A575FA2CD596DB00D9A43E /* driver_frontendApp.swift */; };
-		22A575FD2CD596DB00D9A43E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A575FC2CD596DB00D9A43E /* ContentView.swift */; };
-		22A575FF2CD596DC00D9A43E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22A575FE2CD596DC00D9A43E /* Assets.xcassets */; };
-		22A576022CD596DC00D9A43E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22A576012CD596DC00D9A43E /* Preview Assets.xcassets */; };
-		22A576092CD5982A00D9A43E /* DriverRides.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A576082CD5982A00D9A43E /* DriverRides.swift */; };
-		22A5760B2CD59FF500D9A43E /* RideList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A5760A2CD59FF500D9A43E /* RideList.swift */; };
-		22A5760D2CD5ACC000D9A43E /* RideStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A5760C2CD5ACC000D9A43E /* RideStore.swift */; };
-		22A5760F2CD5BB5300D9A43E /* CurrRidesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A5760E2CD5BB5300D9A43E /* CurrRidesView.swift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
-		22A575F72CD596DB00D9A43E /* driver_frontend.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = driver_frontend.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		22A575FA2CD596DB00D9A43E /* driver_frontendApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = driver_frontendApp.swift; sourceTree = "<group>"; };
-		22A575FC2CD596DB00D9A43E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		22A575FE2CD596DC00D9A43E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		22A576012CD596DC00D9A43E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		22A576082CD5982A00D9A43E /* DriverRides.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverRides.swift; sourceTree = "<group>"; };
-		22A5760A2CD59FF500D9A43E /* RideList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideList.swift; sourceTree = "<group>"; };
-		22A5760C2CD5ACC000D9A43E /* RideStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideStore.swift; sourceTree = "<group>"; };
-		22A5760E2CD5BB5300D9A43E /* CurrRidesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrRidesView.swift; sourceTree = "<group>"; };
+		5F1CFAA82CD6D6F00080CBB3 /* passenger_frontend.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = passenger_frontend.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		5F1CFAAA2CD6D6F00080CBB3 /* passenger_frontend */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = passenger_frontend;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
-		22A575F42CD596DB00D9A43E /* Frameworks */ = {
+		5F1CFAA52CD6D6F00080CBB3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -40,128 +29,103 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		22A575EE2CD596DB00D9A43E = {
+		5F1CFA9F2CD6D6F00080CBB3 = {
 			isa = PBXGroup;
 			children = (
-				22A575F92CD596DB00D9A43E /* driver_frontend */,
-				22A575F82CD596DB00D9A43E /* Products */,
+				5F1CFAAA2CD6D6F00080CBB3 /* passenger_frontend */,
+				5F1CFAA92CD6D6F00080CBB3 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		22A575F82CD596DB00D9A43E /* Products */ = {
+		5F1CFAA92CD6D6F00080CBB3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				22A575F72CD596DB00D9A43E /* driver_frontend.app */,
+				5F1CFAA82CD6D6F00080CBB3 /* passenger_frontend.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		22A575F92CD596DB00D9A43E /* driver_frontend */ = {
-			isa = PBXGroup;
-			children = (
-				22A575FA2CD596DB00D9A43E /* driver_frontendApp.swift */,
-				22A5760A2CD59FF500D9A43E /* RideList.swift */,
-				22A5760C2CD5ACC000D9A43E /* RideStore.swift */,
-				22A575FC2CD596DB00D9A43E /* ContentView.swift */,
-				22A5760E2CD5BB5300D9A43E /* CurrRidesView.swift */,
-				22A575FE2CD596DC00D9A43E /* Assets.xcassets */,
-				22A576002CD596DC00D9A43E /* Preview Content */,
-				22A576082CD5982A00D9A43E /* DriverRides.swift */,
-			);
-			path = driver_frontend;
-			sourceTree = "<group>";
-		};
-		22A576002CD596DC00D9A43E /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				22A576012CD596DC00D9A43E /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		22A575F62CD596DB00D9A43E /* driver_frontend */ = {
+		5F1CFAA72CD6D6F00080CBB3 /* passenger_frontend */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 22A576052CD596DC00D9A43E /* Build configuration list for PBXNativeTarget "driver_frontend" */;
+			buildConfigurationList = 5F1CFAB62CD6D6F10080CBB3 /* Build configuration list for PBXNativeTarget "passenger_frontend" */;
 			buildPhases = (
-				22A575F32CD596DB00D9A43E /* Sources */,
-				22A575F42CD596DB00D9A43E /* Frameworks */,
-				22A575F52CD596DB00D9A43E /* Resources */,
+				5F1CFAA42CD6D6F00080CBB3 /* Sources */,
+				5F1CFAA52CD6D6F00080CBB3 /* Frameworks */,
+				5F1CFAA62CD6D6F00080CBB3 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = driver_frontend;
-			productName = driver_frontend;
-			productReference = 22A575F72CD596DB00D9A43E /* driver_frontend.app */;
+			fileSystemSynchronizedGroups = (
+				5F1CFAAA2CD6D6F00080CBB3 /* passenger_frontend */,
+			);
+			name = passenger_frontend;
+			packageProductDependencies = (
+			);
+			productName = passenger_frontend;
+			productReference = 5F1CFAA82CD6D6F00080CBB3 /* passenger_frontend.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		22A575EF2CD596DB00D9A43E /* Project object */ = {
+		5F1CFAA02CD6D6F00080CBB3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1540;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
-					22A575F62CD596DB00D9A43E = {
-						CreatedOnToolsVersion = 15.4;
+					5F1CFAA72CD6D6F00080CBB3 = {
+						CreatedOnToolsVersion = 16.0;
 					};
 				};
 			};
-			buildConfigurationList = 22A575F22CD596DB00D9A43E /* Build configuration list for PBXProject "driver_frontend" */;
-			compatibilityVersion = "Xcode 14.0";
+			buildConfigurationList = 5F1CFAA32CD6D6F00080CBB3 /* Build configuration list for PBXProject "passenger_frontend" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 22A575EE2CD596DB00D9A43E;
-			productRefGroup = 22A575F82CD596DB00D9A43E /* Products */;
+			mainGroup = 5F1CFA9F2CD6D6F00080CBB3;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 5F1CFAA92CD6D6F00080CBB3 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				22A575F62CD596DB00D9A43E /* driver_frontend */,
+				5F1CFAA72CD6D6F00080CBB3 /* passenger_frontend */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		22A575F52CD596DB00D9A43E /* Resources */ = {
+		5F1CFAA62CD6D6F00080CBB3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22A576022CD596DC00D9A43E /* Preview Assets.xcassets in Resources */,
-				22A575FF2CD596DC00D9A43E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		22A575F32CD596DB00D9A43E /* Sources */ = {
+		5F1CFAA42CD6D6F00080CBB3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22A5760F2CD5BB5300D9A43E /* CurrRidesView.swift in Sources */,
-				22A575FD2CD596DB00D9A43E /* ContentView.swift in Sources */,
-				22A5760B2CD59FF500D9A43E /* RideList.swift in Sources */,
-				22A576092CD5982A00D9A43E /* DriverRides.swift in Sources */,
-				22A575FB2CD596DB00D9A43E /* driver_frontendApp.swift in Sources */,
-				22A5760D2CD5ACC000D9A43E /* RideStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		22A576032CD596DC00D9A43E /* Debug */ = {
+		5F1CFAB42CD6D6F10080CBB3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -213,7 +177,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -224,7 +188,7 @@
 			};
 			name = Debug;
 		};
-		22A576042CD596DC00D9A43E /* Release */ = {
+		5F1CFAB52CD6D6F10080CBB3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -270,7 +234,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -280,14 +244,14 @@
 			};
 			name = Release;
 		};
-		22A576062CD596DC00D9A43E /* Debug */ = {
+		5F1CFAB72CD6D6F10080CBB3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"driver_frontend/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"passenger_frontend/Preview Content\"";
 				DEVELOPMENT_TEAM = 82AWW7824G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -301,7 +265,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "edu.umich.bvuyyuru.driver-frontend";
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.umich.kmans.passenger-frontend";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -309,14 +273,14 @@
 			};
 			name = Debug;
 		};
-		22A576072CD596DC00D9A43E /* Release */ = {
+		5F1CFAB82CD6D6F10080CBB3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"driver_frontend/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"passenger_frontend/Preview Content\"";
 				DEVELOPMENT_TEAM = 82AWW7824G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -330,7 +294,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "edu.umich.bvuyyuru.driver-frontend";
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.umich.kmans.passenger-frontend";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -341,25 +305,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		22A575F22CD596DB00D9A43E /* Build configuration list for PBXProject "driver_frontend" */ = {
+		5F1CFAA32CD6D6F00080CBB3 /* Build configuration list for PBXProject "passenger_frontend" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				22A576032CD596DC00D9A43E /* Debug */,
-				22A576042CD596DC00D9A43E /* Release */,
+				5F1CFAB42CD6D6F10080CBB3 /* Debug */,
+				5F1CFAB52CD6D6F10080CBB3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		22A576052CD596DC00D9A43E /* Build configuration list for PBXNativeTarget "driver_frontend" */ = {
+		5F1CFAB62CD6D6F10080CBB3 /* Build configuration list for PBXNativeTarget "passenger_frontend" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				22A576062CD596DC00D9A43E /* Debug */,
-				22A576072CD596DC00D9A43E /* Release */,
+				5F1CFAB72CD6D6F10080CBB3 /* Debug */,
+				5F1CFAB82CD6D6F10080CBB3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 22A575EF2CD596DB00D9A43E /* Project object */;
+	rootObject = 5F1CFAA02CD6D6F00080CBB3 /* Project object */;
 }
