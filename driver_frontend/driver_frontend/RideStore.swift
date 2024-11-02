@@ -10,9 +10,9 @@ import Observation
 
 @Observable
 final class RideStore {
-    static let shared = RideStore() // create one instance of the class to be shared
-    private init() {}                // and make the constructor private so no other
-                                     // instances can be created
+    static let shared = RideStore() 
+    private init() {}
+                                     
 
     private var isRetrieving = false
     private let synchronized = DispatchQueue(label: "synchronized", qos: .background)

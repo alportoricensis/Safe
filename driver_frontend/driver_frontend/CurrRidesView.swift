@@ -8,15 +8,15 @@ struct CurrRidesView: View {
             List(store.rides) { ride in
                 RideList(ride: ride)
                     .listRowSeparator(.hidden)
-                    .listRowBackground(Color(red:0.2, green:0.2, blue:0.5)) // Set a single color for all rows
+                    .listRowBackground(Color(red:0.2, green:0.2, blue:0.5)) 
             }
-            .listStyle(.plain) // Use plain style to avoid default background color
+            .listStyle(.plain) 
             .onAppear {
-                store.getRides() // Populate rides when the view appears
+                store.getRides()
             }
         }
-        .background(Color(red: 0.2, green: 0.2, blue: 0.5)) // Set the background color to match the parent
-        .edgesIgnoringSafeArea(.all) // Ensure it fills the entire area
+        .background(Color(red: 0.2, green: 0.2, blue: 0.5))
+        .edgesIgnoringSafeArea(.all)
     }
 }
 

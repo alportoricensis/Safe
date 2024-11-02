@@ -13,11 +13,9 @@ struct RideList: View {
     var body: some View {
         VStack(alignment: .leading) {
             ZStack {
-                // Background color for the box
                 Color.white
                     .cornerRadius(10)
                 
-                // VStack to display pick-up and drop-off locations vertically
                 VStack(alignment: .leading, spacing: 4) {
                     if let pickupLoc = ride.pickcupLoc {
                         Text("Pick-up: \(pickupLoc)")
@@ -31,9 +29,9 @@ struct RideList: View {
                             .foregroundColor(.primary)
                     }
                 }
-                .padding() // Adds padding inside the gray box
+                .padding() 
             }
-            .padding() // Adds padding around the gray box
+            .padding()
         }
     }
 }
