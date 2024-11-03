@@ -133,13 +133,14 @@ def get_vehicles():
         }
         for ride_request in safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].itinerary:
             context[vehicle_id]["itinerary"].append({
-                "passenger": ride_request.passenger_name,
+                "passenger": ride_request.firstName + " " + ride_request.lastName,
                 "driver": ride_request.driver,
-                "pickup": ride_request.pickup,
-                "dropoff": ride_request.dropoff,
+                "pickup": ride_request.pickupName,
+                "dropoff": ride_request.dropoffName,
                 "ETA": ride_request.eta,
                 "ETP": ride_request.etp,
-                "reqid": ride_request.request_id
+                "reqid": ride_request.request_id,
+                "isPickup": ride_request.isPickup
             })
 
     # Return success

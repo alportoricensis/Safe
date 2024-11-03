@@ -30,37 +30,6 @@ def get_rides():
     return flask.jsonify(**context), 200
 
 
-@safe_backend.app.route("/api/v1/rides/drivers/<vehicle_id>/", methods=["GET"])
-# REQUIRES  - User is authenticated with driver-level permissions
-#             vehicle_id is a valid vehicle
-# EFFECTS   - Returns the queue for driver with vehicle_id
-# MODIFIES  - Nothing
-def get_driver_rides(vehicle_id):
-    """Return the queue for driver with driver_id."""
-    # TODO: Authentication
-
-    # If vehicle_id is not currently receiving rides, return a 404
-    if vehicle_id not in safe_backend.api.config.VEHICLE_QUEUES:
-        context = {
-            "msg": "Vehicle not found in active queues. Is the vehicle logged in?"
-        }
-        return flask.jsonify(**context), 404
-
-    # If vehicle_id is receiving rides, return its current active queue
-    context = {}
-    for ride_request in safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].itinerary:
-        context[str(ride_request.request_id)] = {
-            "passenger": ride_request.passenger_name,
-            "driver": ride_request.driver,
-            "pickup": ride_request.pickupName,
-            "dropoff": ride_request.dropoffName,
-            "ETA": ride_request.eta,
-            "ETP": ride_request.etp,
-            "reqid": ride_request.request_id
-        }
-    return flask.jsonify(**context), 200
-
-
 @safe_backend.app.route("/api/v1/rides/passengers/<ride_id>/", methods=["GET"])
 # REQUIRES  - User is authenticated with passenger, driver, or dispatcher level permissions
 #             If passenger, ride_id MUST have been booked by the currently authenticated user

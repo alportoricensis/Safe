@@ -9890,7 +9890,7 @@ function CallInForm() {
   };
   var getServices = /*#__PURE__*/function () {
     var _ref = (0,_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0__["default"])(/*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee() {
-      var resp, data, arr;
+      var resp, data, arr, names, i;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -9909,8 +9909,12 @@ function CallInForm() {
           case 6:
             data = _context.sent;
             if (data !== null) {
-              arr = Object.values(data);
-              setServices(arr[0]);
+              arr = Object.values(data)[0];
+              names = [];
+              for (i = 0; i < arr.length; i++) {
+                names.push(arr[i]["serviceName"]);
+              }
+              setServices(names);
             } else {
               arr = [];
               setServices(arr);

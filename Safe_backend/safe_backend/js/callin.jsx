@@ -31,8 +31,12 @@ export default function CallInForm() {
             });
             const data = await resp.json();
             if (data !== null) {
-                var arr = Object.values(data);
-                setServices(arr[0]);
+                var arr = Object.values(data)[0];
+                var names = []
+                for (let i = 0; i < arr.length; i++) {
+                    names.push(arr[i]["serviceName"])
+                }
+                setServices(names);
             } else {
                 var arr = [];
                 setServices(arr);

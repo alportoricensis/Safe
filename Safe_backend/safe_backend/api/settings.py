@@ -180,5 +180,9 @@ def services():
             "services": []
         }
         for service in services:
-            context["services"].append(service[1])
+            context["services"].append({
+                "serviceName": service[1],
+                "startTime": str(service[2]),
+                "endTime": str(service[3]),
+            })
         return flask.jsonify(context), 200
