@@ -83,27 +83,28 @@ class Vehicle:
                 delivery_req.duration = "160s"
 
                 shipment.pickups.append(pickup_req)
+                shipment.display_name = f"{safe_backend.api.config.RIDE_REQUESTS[req_id].firstName}_{safe_backend.api.config.RIDE_REQUESTS[req_id].lastName}_{str(req_id)}"
                 shipment.deliveries.append(delivery_req)
 
                 ShipmentModel.shipments.append(shipment)
 
-        ShipmentModel.global_start_time = datetime.datetime.now()
-        ShipmentModel.global_end_time = datetime.datetime.now() + datetime.timedelta(days = 1)
+        #ShipmentModel.global_start_time = datetime.datetime.now()
+        #ShipmentModel.global_end_time = datetime.datetime.now() + datetime.timedelta(days = 1)
 
         # Instantiate the client to send and receive the request
-        creds = credentials.Credentials()
-        creds.token = "TOKENTODO"
-        client = routeoptimization_v1.RouteOptimizationClient(credentials = creds)
+        breakpoint()
+        client = routeoptimization_v1.RouteOptimizationClient()
         
         # Initialize the arguments
         request = routeoptimization_v1.OptimizeToursRequest()
         request.model = ShipmentModel
+        request.parent = "projects/eecs-441-safe"
 
         # Send and retrieve the request
         response = client.optimize_tours(
             request = request
         )
-        breakpoint()
+        print(response)
         
 
 
