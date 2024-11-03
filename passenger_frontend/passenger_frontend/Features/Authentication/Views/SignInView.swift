@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct SignInView: View {
+    @State private var navigateToServices = false
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -44,7 +46,12 @@ struct SignInView: View {
                     }
                     .padding(.horizontal, 40)
                     
+                    NavigationLink(destination: RideServicesView(), isActive: $navigateToServices) {
+                        EmptyView()
+                    }
+                    
                     Button(action: {
+                        navigateToServices = true
                     }) {
                         Text("Continue as guest")
                             .font(.subheadline)
