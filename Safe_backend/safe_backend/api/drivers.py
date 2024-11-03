@@ -88,15 +88,16 @@ def pause_vehicle(vehicle_id):
     return flask.jsonify(**context), 200
 
 
-@safe_backend.app.route("/api/v1/vehicles/logout/<vehicle_id>/", methods=["POST"])
+@safe_backend.app.route("/api/v1/vehicles/logout/", methods=["POST"])
 # REQUIRES  - User is authenticated with driver-level permissions
 # EFFECTS   - Marks <vehicle_id> as logged out
 # MODIFIES  - VEHICLE_QUEUES
-def logout_vehicle(vehicle_id):
+def logout_vehicle():
     """Marks <vehicle_id> as logged out."""
     # TODO: Authentication
 
     # If vehicle is not active, return a 404
+    vehicle_id = flask.request.json["vehicle_id"]
     if vehicle_id not in safe_backend.api.config.VEHICLE_QUEUES:
         context = {
             "msg": "Vehicle " + vehicle_id + " is not active."

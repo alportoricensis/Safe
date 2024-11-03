@@ -1,12 +1,23 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import RideRequest from "./ridereq";
 
 export default function Vehicle(vehicle) {
     // TODO - This is redundant since queue also calls the API
     // Can have less data transfer by passing down data from queue
     var vehicleItinerary = vehicle.itinerary;
+
+    function ItineraryRide(req) {
+        var type = (req.isPickup) ? "Picking Up" : "Dropping Off"
+        var location = (req.isPickup) ? req.pickup : req.dropoff
+        return (
+            <div className="rideWidget">
+                <b>{req.passenger}</b> <br></br>
+                {location} <br></br>
+                {type}
+            </div>
+        )
+    }
 
     // Return vehicle widget
     return (
@@ -16,7 +27,8 @@ export default function Vehicle(vehicle) {
             <br></br>
             {vehicle.lat}, {vehicle.long}
             <br></br>
-            {vehicleItinerary.map((req) => RideRequest(req))}
+            Vehicle Itinerary:
+            {vehicleItinerary.map((req) => ItineraryRide(req))}
         </div>
     )
 

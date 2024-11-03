@@ -1,5 +1,6 @@
 """Request class definition in a micro-transit service."""
 import datetime
+import copy
 from google.maps import routeoptimization_v1
 from google.auth import credentials
 import safe_backend.api.requests
@@ -28,17 +29,19 @@ class Vehicle:
     def response_to_queue(self, response: routeoptimization_v1.OptimizeToursResponse) -> None:
         """Transform a response from the Route Optimization API to a queue of places to visit."""
         # For each visit in the returns routes response,
+        dict_copy = copy.deepcopy(safe_backend.api.config.RIDE_REQUESTS)
         for visit in response.routes[0].visits:
             # If this is a pickup, get the pickup coordinates corresponding to shipment_label
             if visit.is_pickup == True:
                 # Add to itinerary WITH isPickup = true - used to display order of assignment
                 self.itinerary.append(safe_backend.api.config.RIDE_REQUESTS[visit.shipment_label])
+                safe_backend.api.config.RIDE_REQUESTS[visit.shipment_label].status = "Assigned"
+                safe_backend.api.config.RIDE_REQUESTS[visit.shipment_label].driver = self.vehicle_id
             # Otherwise, this is a dropoff, so get the dropoff coordinates corresponding to shipment index
             else:
                 # Add to itinerary WITH isPickup = false - used to display order of assignment
-                copy = safe_backend.api.config.RIDE_REQUESTS[visit.shipment_label]
-                copy.isPickup = False
-                self.itinerary.append(copy)
+                dict_copy[visit.shipment_label].isPickup = False
+                self.itinerary.append(dict_copy[visit.shipment_label])
 
 
     # REQUIRES
