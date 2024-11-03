@@ -9,6 +9,10 @@ __pycache__/
 # Private keys/tokens
 tokens.py
 
+# Bundles
+bundle.js
+bundle.js.map
+
 # Distribution / packaging
 .Python
 build/
