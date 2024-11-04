@@ -25,9 +25,15 @@ struct RideList: View {
                     
                     if let dropLoc = ride.dropLoc {
                         Text("Drop-off: \(dropLoc)")
-                            .font(.subheadline)
+                            .font(.headline)
                             .foregroundColor(.primary)
                     }
+                    if let passenger = ride.passenger{
+                        Text("Passenger: \(passenger)")
+                            .font(.headline)
+                            .foregroundColor(.primary)
+                    }
+                    
                 }
                 .padding() 
             }

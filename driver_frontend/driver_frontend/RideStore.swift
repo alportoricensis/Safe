@@ -25,8 +25,8 @@ final class RideStore {
     
     func getRides(){
         self.rides = [
-                    Ride(pickcupLoc: "Location A", dropLoc: "Location B", id: UUID()),
-                    Ride(pickcupLoc: "Location C", dropLoc: "Location D", id: UUID())
+            Ride(pickcupLoc: "Location A", dropLoc: "Location B", passenger: "Pass A", id: UUID()),
+            Ride(pickcupLoc: "Location C", dropLoc: "Location D", passenger: "Pass B", id: UUID())
                 ]
         
     }

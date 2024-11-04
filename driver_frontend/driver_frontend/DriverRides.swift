@@ -10,6 +10,7 @@ import Foundation
 struct Ride: Identifiable {
     var pickcupLoc: String?
     var dropLoc: String?
+    var passenger: String?
     var id: UUID?
     
     static func ==(lhs: Ride, rhs: Ride) -> Bool {
