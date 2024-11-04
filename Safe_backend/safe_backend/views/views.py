@@ -133,7 +133,9 @@ def show_service_settings():
             context["services"].append({
                 "service_name": service[1],
                 "start_time": str(service[2]),
-                "end_time": str(service[3])
+                "end_time": str(service[3]),
+                "provider": service[4],
+                "cost": str(service[5])
             })
     cur.close()
     conn.close()

@@ -157,6 +157,8 @@ def services():
         sname = flask.request.form["serviceName"]
         stime = flask.request.form["startTime"]
         etime = flask.request.form["endTime"]
+        provider = flask.request.form["provider"]
+        cost = flask.request.form["cost"]
         conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                                 port="5432")
         cur = conn.cursor() 
@@ -164,7 +166,10 @@ def services():
         sel = cur.fetchone()
         if sel is not None:
             flask.flash(f"Error: Service {sname} already exists!")
-        cur.execute("INSERT INTO services (service_name, start_time, end_time) VALUES (%s, %s, %s)", (sname, str(datetime.datetime.strptime(stime, "%H:%M").time()), str(datetime.datetime.strptime(etime, "%H:%M").time())))
+        cur.execute(
+            "INSERT INTO services (service_name, start_time, end_time, provider, cost) VALUES (%s, %s, %s, %s, %s)",
+            (sname, str(datetime.datetime.strptime(stime, "%H:%M").time()), str(datetime.datetime.strptime(etime, "%H:%M").time()), provider, cost)
+        )
         conn.commit()
         cur.close()
         conn.close()
@@ -184,5 +189,7 @@ def services():
                 "serviceName": service[1],
                 "startTime": str(service[2]),
                 "endTime": str(service[3]),
+                "provider": service[4],
+                "cost": str(service[5]),
             })
         return flask.jsonify(context), 200
