@@ -1,7 +1,8 @@
 import SwiftUI
 import GoogleSignInSwift
 struct SignInView: View {
-    @StateObject private var authViewModel = AuthViewModel()
+    @EnvironmentObject private var authViewModel: AuthViewModel
+
     @State private var navigateToServices = false
     
     var body: some View {
@@ -34,21 +35,14 @@ struct SignInView: View {
                     })
                         .frame(maxWidth: .infinity)
                         .padding(.horizontal, 40)
-                    NavigationLink(destination: RideServicesView(), isActive: $navigateToServices) {
-                        EmptyView()
-                    }
-                    
-                    NavigationLink(destination: RideServicesView(), isActive: $authViewModel.isAuthenticated) {
-                        EmptyView()
-                    }
-                    
                     Button(action: {
-                        navigateToServices = true
+                        authViewModel.isAuthenticated = true
                     }) {
                         Text("Continue as guest")
                             .font(.subheadline)
                             .foregroundColor(.yellow)
                     }
+
                     
                     Spacer()
                     
@@ -61,14 +55,8 @@ struct SignInView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("SAFE!")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(.yellow)
-                }
-            }
+            .navigationTitle("SAFE!")
+
         }
         .navigationViewStyle(StackNavigationViewStyle())
     }

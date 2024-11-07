@@ -23,84 +23,15 @@ struct RideServicesView: View {
     
     var body: some View {
         NavigationView {
-            ZStack {
-                Color(red: 0/255, green: 39/255, blue: 76/255)
-                    .ignoresSafeArea()
-                
-                VStack(spacing: 20) {
-                    ScrollView {
-                        VStack(spacing: 16) {
-                            ForEach(services) { service in
-                                NavigationLink(destination: RideShareView()) {
-                                    ServiceCardView(service: service)
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
-                    }
-                    
-                    Spacer()
-                    
-                    // Bottom Navigation Bar
-                    HStack(spacing: 40) {
-                        NavigationLink(destination: Text("Services")) {
-                            VStack {
-                                Image(systemName: "paperplane.fill")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 24, height: 24)
-                                Text("Services")
-                                    .font(.caption)
-                            }
-                            .foregroundColor(.yellow)
-                        }
-                        
-                        NavigationLink(destination: Text("Bookings")) {
-                            VStack {
-                                Image(systemName: "book.fill")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 24, height: 24)
-                                Text("Bookings")
-                                    .font(.caption)
-                            }
-                            .foregroundColor(.white)
-                        }
-                        
-                        NavigationLink(destination: Text("Account")) {
-                            VStack {
-                                Image(systemName: "person.fill")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 24, height: 24)
-                                Text("Account")
-                                    .font(.caption)
-                            }
-                            .foregroundColor(.white)
-                        }
-                    }
-                    .padding(.bottom, 20)
-                }
+            List(services) { service in
+                ServiceCardView(service: service)
+                    .padding(.vertical, 8)
             }
-            .navigationBarTitle("SAFE!", displayMode: .inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("SAFE!")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(.yellow)
-                }
-            }
+            .navigationTitle("Ride Services")
         }
-        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
-struct RideServicesView_Previews: PreviewProvider {
-    static var previews: some View {
-        RideServicesView()
-    }
-}
 
 
 struct ServiceCardView: View {

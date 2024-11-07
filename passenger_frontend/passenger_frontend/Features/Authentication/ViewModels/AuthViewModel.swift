@@ -38,7 +38,7 @@ class AuthViewModel: ObservableObject {
                 email: profile.email,
                 displayName: profile.name
             )
-            
+            print("Authenticated user: \(authenticatedUser)")
             DispatchQueue.main.async {
                 self?.user = authenticatedUser
                 self?.isAuthenticated = true
