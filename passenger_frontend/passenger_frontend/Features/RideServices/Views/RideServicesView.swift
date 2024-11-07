@@ -24,20 +24,16 @@ struct RideServicesView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                // Background Color (#00274C)
                 Color(red: 0/255, green: 39/255, blue: 76/255)
                     .ignoresSafeArea()
                 
                 VStack(spacing: 20) {
-                    Text("Services")
-                        .font(.system(size: 32, weight: .bold))
-                        .foregroundColor(.yellow)
-                        .padding(.top, 20)
-                    
                     ScrollView {
                         VStack(spacing: 16) {
                             ForEach(services) { service in
-                                ServiceCardView(service: service)
+                                NavigationLink(destination: RideShareView()) {
+                                    ServiceCardView(service: service)
+                                }
                             }
                         }
                         .padding(.horizontal)
