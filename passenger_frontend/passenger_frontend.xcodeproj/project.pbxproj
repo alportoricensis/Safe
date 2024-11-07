@@ -15,22 +15,9 @@
 		5F1CFAA82CD6D6F00080CBB3 /* passenger_frontend.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = passenger_frontend.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		5F9D79CA2CD8467F00B01537 /* Exceptions for "passenger_frontend" folder in "passenger_frontend" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"passenger-frontend-Info.plist",
-			);
-			target = 5F1CFAA72CD6D6F00080CBB3 /* passenger_frontend */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		5F1CFAAA2CD6D6F00080CBB3 /* passenger_frontend */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				5F9D79CA2CD8467F00B01537 /* Exceptions for "passenger_frontend" folder in "passenger_frontend" target */,
-			);
 			path = passenger_frontend;
 			sourceTree = "<group>";
 		};

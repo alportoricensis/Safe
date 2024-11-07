@@ -1,6 +1,7 @@
 import SwiftUI
-
+import GoogleSignInSwift
 struct SignInView: View {
+    @StateObject private var authViewModel = AuthViewModel()
     @State private var navigateToServices = false
     
     var body: some View {
@@ -27,26 +28,17 @@ struct SignInView: View {
                             .multilineTextAlignment(.leading)
                     }
                     .padding(.horizontal, 40)
-                    Button(action: {
-                    }) {
-                        HStack {
-                            Image("google_logo")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 24, height: 24)
-                            
-                            Text("Sign in with Google")
-                                .font(.headline)
-                                .foregroundColor(.black)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(10)
-                    }
-                    .padding(.horizontal, 40)
                     
+                    GoogleSignInButton(action: {
+                        authViewModel.signInWithGoogle()
+                    })
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, 40)
                     NavigationLink(destination: RideServicesView(), isActive: $navigateToServices) {
+                        EmptyView()
+                    }
+                    
+                    NavigationLink(destination: RideServicesView(), isActive: $authViewModel.isAuthenticated) {
                         EmptyView()
                     }
                     
