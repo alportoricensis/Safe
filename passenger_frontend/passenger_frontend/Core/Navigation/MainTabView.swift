@@ -22,6 +22,6 @@ struct MainTabView: View {
                     Text("Account")
                 }
         }
-        .accentColor(.yellow)
+        .accentColor(Color(red: 255/255, green: 203/255, blue: 5/255))
     }
 }

@@ -36,7 +36,7 @@ struct SignInView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.horizontal, 40)
                     Button(action: {
-                        authViewModel.isAuthenticated = true
+                        authViewModel.signInAsGuest()
                     }) {
                         Text("Continue as guest")
                             .font(.subheadline)

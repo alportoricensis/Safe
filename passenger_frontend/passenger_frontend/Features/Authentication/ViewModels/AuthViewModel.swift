@@ -45,6 +45,11 @@ class AuthViewModel: ObservableObject {
             }
         }
     }
+    func signInAsGuest() {
+        let guestId = UUID().uuidString
+        self.user = User(id: guestId, email: "", displayName: "Guest")
+        self.isAuthenticated = true
+    }
     
     func signOut() {
         GIDSignIn.sharedInstance.signOut()

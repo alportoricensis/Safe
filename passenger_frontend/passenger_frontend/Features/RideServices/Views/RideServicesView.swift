@@ -1,34 +1,24 @@
 import SwiftUI
 
 struct RideServicesView: View {
-    private let services: [Service] = [
-        Service(
-            provider: "RideHome",
-            serviceName: "FreeRides",
-            costUSD: 0.0,
-            startTime: DateComponents(hour: 20, minute: 0),
-            endTime: DateComponents(hour: 2, minute: 0),
-            daysAvailable: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday]
-        ),
-        Service(
-            provider: "GET!",
-            serviceName: "RideShare",
-            costUSD: 5.0,
-            startTime: DateComponents(hour: 0, minute: 0),
-            endTime: DateComponents(hour: 23, minute: 59),
-            daysAvailable: DaysOfWeek.allDays
-        )
-    ]
+    @StateObject private var viewModel = RideServicesViewModel()
     
     var body: some View {
         NavigationView {
-            List(services) { service in
-                ServiceCardView(service: service)
-                    .padding(.vertical, 8)
-                    .listRowBackground(Color(red: 0/255, green: 39/255, blue: 76/255))
+            Group {
+                if viewModel.isLoading {
+                    ProgressView()
+                } else {
+                    List(viewModel.services) { service in
+                        ServiceCardView(service: service)
+                            .padding(.vertical, 8)
+                            .listRowBackground(Color(red: 0/255, green: 39/255, blue: 76/255))
+                    }
+                    .background(Color(red: 0/255, green: 39/255, blue: 76/255))
+                    .scrollContentBackground(.hidden)
+                }
             }
-            .background(Color(red: 0/255, green: 39/255, blue: 76/255))
-            .scrollContentBackground(.hidden)
+       
         }
         .navigationViewStyle(.stack)
         .withSafeTopBar()
