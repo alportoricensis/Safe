@@ -10,15 +10,16 @@ struct RideServicesView: View {
                     ProgressView()
                 } else {
                     List(viewModel.services) { service in
-                        ServiceCardView(service: service)
-                            .padding(.vertical, 8)
-                            .listRowBackground(Color(red: 0/255, green: 39/255, blue: 76/255))
+                        NavigationLink(destination: RideRequestView(service: service)) {
+                            ServiceCardView(service: service)
+                                .padding(.vertical, 8)
+                        }
+                        .listRowBackground(Color(red: 0/255, green: 39/255, blue: 76/255))
                     }
                     .background(Color(red: 0/255, green: 39/255, blue: 76/255))
                     .scrollContentBackground(.hidden)
                 }
             }
-       
         }
         .navigationViewStyle(.stack)
         .withSafeTopBar()
