@@ -25,6 +25,7 @@ class RideRequests:
         self.pickuptime = 0
         self.dropofftime = 0
         self.eta = 0
+        self.isPickup = True
 
 
     # REQUIRES

@@ -20,7 +20,9 @@ cur.execute (
         service_id SERIAL PRIMARY KEY, \
         service_name TEXT NOT NULL, \
         start_time TIME NOT NULL, \
-        end_time TIME NOT NULL \
+        end_time TIME NOT NULL, \
+        provider TEXT NOT NULL, \
+        cost REAL NOT NULL \
     );"
 )
 

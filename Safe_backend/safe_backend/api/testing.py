@@ -1,5 +1,4 @@
 """REST API for ride requests."""
-import datetime
 import flask
 import random
 import safe_backend.api.config

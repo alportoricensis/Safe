@@ -1,0 +1,6 @@
+Flask
+datetime
+safe_backend
+psycopg2
+geopy
+google-maps-routeoptimization

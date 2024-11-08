@@ -31,11 +31,17 @@
                     Service Name
                     <input type="text" name="serviceName" required/>
                     <br></br>
+                    Provider
+                    <input type="text" name="provider" required/>
+                    <br></br>
                     Start Time
                     <input type="time" name="startTime" required/>
                     <br></br>
                     End Time
                     <input type="time" name="endTime" required/>
+                    <br></br>
+                    Cost
+                    <input type="number" name="cost" required/>
                     <br></br>
                     <input type="submit" name="submit" value="Create New Service"/>
                 </form>
@@ -49,6 +55,10 @@
                 Start time: {{service.start_time}}
                 <br>
                 End time: {{service.end_time}}
+                <br>
+                Provider: {{service.provider}}
+                <br>
+                Cost: {{service.cost}}
                 <br>
                 <form action="/api/v1/settings/services/?target=/settings/services" method="delete" enctype="multipart/form-data">
                     <input type="hidden" name="loc_name" value={{service.service_name}}>
