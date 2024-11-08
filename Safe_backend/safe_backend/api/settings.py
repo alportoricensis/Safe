@@ -176,9 +176,34 @@ def services():
         cur = conn.cursor() 
         cur.execute("SELECT * FROM services", ())
         services = cur.fetchall()
-        context = {
-            "services": []
-        }
+        # context = {
+        #     "services": []
+        # }
+        # for service in services:
+        #     context["services"].append(service[1])
+
+        context = {}
+
         for service in services:
-            context["services"].append(service[1])
+            context[service[1]] = {
+                'startTime': str(service[2]),
+                'endTime': str(service[3])
+            }
+
         return flask.jsonify(context), 200
+
+    elif flask.request.method == "DELETE":
+        conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                                port="5432")
+        cur = conn.cursor()
+        service_name = flask.request.form["serviceName"]
+        print(service_name)
+        cur.execute("SELECT * FROM services WHERE service_name = %s;", (service_name, ))
+        sel = cur.fetchall()
+        if sel is None:
+            flask.flash(f"Error: Service {service_name} does not exist!")
+            return
+        cur.execute("DELETE * FROM services WHERE service_name = %s;", (service_name, ))
+        cur.close()
+        conn.close()
+        return flask.redirect(flask.url_for("show_service_settings"))

@@ -9850,8 +9850,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _react_google_maps_api__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @react-google-maps/api */ "./node_modules/@react-google-maps/api/dist/esm.js");
+/* harmony import */ var _react_google_maps_api__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @react-google-maps/api */ "./node_modules/@react-google-maps/api/dist/esm.js");
+/* harmony import */ var _location__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./location */ "./safe_backend/js/location.jsx");
 "use client";
+
 
 
 
@@ -9876,12 +9878,16 @@ function CallInForm() {
     setAutocomplete = _useState6[1];
   var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(''),
     _useState8 = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__["default"])(_useState7, 2),
-    dropOff = _useState8[0],
-    setDropOff = _useState8[1];
-  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)({}),
+    dropOffName = _useState8[0],
+    setDropOffName = _useState8[1];
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(''),
     _useState10 = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__["default"])(_useState9, 2),
-    dropOffLocation = _useState10[0],
-    setDropOffLocation = _useState10[1];
+    dropOffLat = _useState10[0],
+    setDropOffLat = _useState10[1];
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(''),
+    _useState12 = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__["default"])(_useState11, 2),
+    dropOffLng = _useState12[0],
+    setDropOffLng = _useState12[1];
   var bounds = {
     north: 43,
     south: 42,
@@ -9982,11 +9988,9 @@ function CallInForm() {
   var handlePlaceChanged = function handlePlaceChanged() {
     if (autocomplete) {
       var place = autocomplete.getPlace();
-      setDropOff(place.name);
-      setDropOffLocation({
-        'lat': place.geometry.location.lat(),
-        'lng': place.geometry.location.lng()
-      });
+      setDropOffName(place.name);
+      setDropOffLat(place.geometry.location.lat());
+      setDropOffLng(place.geometry.location.lng());
     }
   };
 
@@ -10019,11 +10023,11 @@ function CallInForm() {
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("input", {
     type: "hidden",
     name: "dropoffLat",
-    value: dropOffLocation.lat
+    value: dropOffLat
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("input", {
     type: "hidden",
     name: "dropoffLong",
-    value: dropOffLocation.lng
+    value: dropOffLng
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("select", {
     name: "services",
     id: "services"
@@ -10060,10 +10064,10 @@ function CallInForm() {
       value: pickup.name,
       key: pickup.name
     }, pickup.name);
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_react_google_maps_api__WEBPACK_IMPORTED_MODULE_4__.LoadScript, {
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_react_google_maps_api__WEBPACK_IMPORTED_MODULE_5__.LoadScript, {
     googleMapsApiKey: "AIzaSyB93jLylKO64g8nNQoxcPhcYTB1HsNL64g",
     libraries: ['places']
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_react_google_maps_api__WEBPACK_IMPORTED_MODULE_4__.Autocomplete, {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_react_google_maps_api__WEBPACK_IMPORTED_MODULE_5__.Autocomplete, {
     onLoad: handleLoad,
     onPlaceChanged: handlePlaceChanged,
     bounds: bounds,
@@ -10072,13 +10076,17 @@ function CallInForm() {
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("input", {
     type: "text",
-    placeholder: "Dropoff Loation",
-    name: "dropoffLocation"
+    placeholder: "Dropoff Location",
+    name: "dropoffLocation",
+    value: dropOffName,
+    onChange: function onChange(e) {
+      return setDropOffName(e.target.value);
+    }
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("input", {
     type: "submit",
     name: "callin",
     value: "Add Passenger"
-  })))));
+  })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement(_location__WEBPACK_IMPORTED_MODULE_4__["default"], null));
 }
 
 /***/ }),
@@ -10178,6 +10186,113 @@ function Drivers() {
     className: "driverMenu"
   }, vehicles.map(function (vehicle) {
     return (0,_vehicles__WEBPACK_IMPORTED_MODULE_4__["default"])(vehicle);
+  }));
+}
+
+/***/ }),
+
+/***/ "./safe_backend/js/location.jsx":
+/*!**************************************!*\
+  !*** ./safe_backend/js/location.jsx ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ LocationForm)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/esm/slicedToArray.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _react_google_maps_api__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @react-google-maps/api */ "./node_modules/@react-google-maps/api/dist/esm.js");
+"use client";
+
+
+
+
+function LocationForm() {
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null),
+    _useState2 = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__["default"])(_useState, 2),
+    autocomplete = _useState2[0],
+    setAutocomplete = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(''),
+    _useState4 = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__["default"])(_useState3, 2),
+    locationName = _useState4[0],
+    setLocationName = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(''),
+    _useState6 = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__["default"])(_useState5, 2),
+    locationLat = _useState6[0],
+    setLocationLat = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(''),
+    _useState8 = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__["default"])(_useState7, 2),
+    locationLng = _useState8[0],
+    setLocationLng = _useState8[1];
+  var bounds = {
+    north: 43,
+    south: 42,
+    east: -83,
+    west: -84
+  };
+  var handleLoad = function handleLoad(autocomplete) {
+    setAutocomplete(autocomplete);
+  };
+  var handlePlaceChanged = function handlePlaceChanged() {
+    if (autocomplete) {
+      var place = autocomplete.getPlace();
+      setLocationName(place.name);
+      setLocationLat(place.geometry.location.lat());
+      setLocationLng(place.geometry.location.lng());
+    }
+  };
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("form", {
+    action: "/api/v1/settings/pickups/?target=/settings/locations",
+    method: "post",
+    encType: "multipart/form-data"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_react_google_maps_api__WEBPACK_IMPORTED_MODULE_2__.LoadScript, {
+    googleMapsApiKey: "AIzaSyB93jLylKO64g8nNQoxcPhcYTB1HsNL64g",
+    libraries: ['places']
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_react_google_maps_api__WEBPACK_IMPORTED_MODULE_2__.Autocomplete, {
+    onLoad: handleLoad,
+    onPlaceChanged: handlePlaceChanged,
+    bounds: bounds,
+    options: {
+      strictBounds: true
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("input", {
+    type: "text",
+    placeholder: "Location Name",
+    name: "locationName",
+    value: locationName,
+    onChange: function onChange(e) {
+      return setLocationName(e.target.value);
+    }
+  }))), "Latitude", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("input", {
+    type: "text",
+    name: "locationLatitude",
+    value: locationLat,
+    onChange: function onChange(e) {
+      return setLocationLat(e.target.value);
+    },
+    required: true
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("br", null), "Longitude", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("input", {
+    type: "text",
+    name: "locationLongitude",
+    value: locationLng,
+    onChange: function onChange(e) {
+      return setLocationLng(e.target.value);
+    },
+    required: true
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("br", null), "Accept pick-ups at this location?", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("input", {
+    type: "checkbox",
+    name: "isPickup"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("br", null), "Accept drop-offs at this location?", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("input", {
+    type: "checkbox",
+    name: "isDropoff"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("input", {
+    type: "submit",
+    name: "submit",
+    value: "Create Pick-up Location"
   }));
 }
 
