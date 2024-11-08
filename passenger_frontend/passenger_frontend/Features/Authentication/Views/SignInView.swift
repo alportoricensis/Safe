@@ -55,8 +55,7 @@ struct SignInView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("SAFE!")
-
+            .withSafeTopBar()
         }
         .navigationViewStyle(StackNavigationViewStyle())
     }

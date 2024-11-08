@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct RideServicesView: View {
-    // Sample services data
     private let services: [Service] = [
         Service(
             provider: "RideHome",
@@ -26,44 +25,42 @@ struct RideServicesView: View {
             List(services) { service in
                 ServiceCardView(service: service)
                     .padding(.vertical, 8)
+                    .listRowBackground(Color(red: 0/255, green: 39/255, blue: 76/255))
             }
-            .navigationTitle("Ride Services")
+            .background(Color(red: 0/255, green: 39/255, blue: 76/255))
+            .scrollContentBackground(.hidden)
         }
+        .navigationViewStyle(.stack)
+        .withSafeTopBar()
     }
 }
-
-
 
 struct ServiceCardView: View {
     let service: Service
     
-    private let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "h:mm a"
-        return formatter
-    }()
-    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("\(service.provider), \(service.serviceName)")
-                .font(.system(size: 24, weight: .bold))
+                .font(.headline)
+                .fontWeight(.bold)
             
             Text(service.costUSD == 0 ? "Free" : "$\(String(format: "%.0f", service.costUSD))")
-                .font(.system(size: 20))
+                .font(.subheadline)
             
             Text("\(service.startTime.hour ?? 0):\(String(format: "%02d", service.startTime.minute ?? 0)) - \(service.endTime.hour ?? 0):\(String(format: "%02d", service.endTime.minute ?? 0))")
-                .font(.system(size: 20))
+                .font(.subheadline)
             
             Text(service.daysAvailable.count == 7 ? "24/7" : "7D/W")
-                .font(.system(size: 20))
+                .font(.subheadline)
             
             Text("Available")
                 .foregroundColor(.green)
-                .font(.system(size: 20))
+                .font(.subheadline)
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.yellow)
+        .background(Color(red: 255/255, green: 203/255, blue: 5/255))
         .cornerRadius(8)
+        .shadow(radius: 2)
     }
 }
