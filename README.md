@@ -6,7 +6,7 @@ service. Safe!'s backend was written using Python & Flask, with an agency fronte
 passenger/driver applications written in Swift for iOS.
 
 ## Setting up Safe!
-### Running the Backend API
+#### Running the Backend API
 The following instructions borrow heavily from the [Flask tutorial from EECS 485](https://eecs485staff.github.io/p2-insta485-serverside/setup_flask.html). 
 First, clone the github repository containing the backend application using: \
 ```git clone https://github.com/alportoricensis/Safe.git``` \
@@ -27,6 +27,35 @@ You should see a message saying ```* Serving Flask app 'safe_backend'```, confir
 running. Note that this is **not a production server**, but rather a development server. To run Safe!
 in a proper production server for your agency, you can follow the instructions for [deploying a Flask app
 on AWS](https://eecs485staff.github.io/p2-insta485-serverside/setup_aws.html) from EECS 485. \
+
+#### Installing Postgres
+Safe! uses a database to store locations, vehicles, users, and ride requests. The following section provides
+instructions for configuring a local database using Postgres. Note that, depending on the size of your machine,
+this is likely not ideal. Rather than use a Postgres database, we recommend cloud stores such as the ones AWS,
+Oracle, or Azure provide.
+<details>
+<summary>Installing Postgres on MAC</summary>
+<br>
+  To install Postgres on a macOS environment, run the following command: <br>
+  ```brew install postgresql``` <br>
+  ```brew services start postgresql``` <br>
+  This will download postgres and start up a Postgres server locally.
+</details>
+<details>
+<summary>Installing Postgres on Linux</summary>
+<br>
+  To install Postgres on a Linux environment, run the following command: <br>
+  ```sudo apt install postgresql``` <br>
+</details>
+After you've installed and run Postgres, Safe! requires you do two things: 1) configure a user for the
+database, and 2) create a database which Safe! will populate with tables when it first runs. To do so: <br>
+  ```sudo -u postgres psql``` <br>
+  ```CREATE USER safe WITH PASSWORD '<YOUR_PASSWORD_HERE>;```  <br>
+  ```CREATE DATABASE safe_backend WITH PASSWORD;``` <br>
+The password types in <YOUR_PASSWORD_HERE> needs to be added to calls to psycopg2 within the backend. You
+may also leave the password field blank for no password.
+
+#### Google Cloud & Route Optimization
 One final detail needed to run the backend is that the backend uses [Google's Route Optimization API](https://console.cloud.google.com/apis/library/routeoptimization.googleapis.com?project=eecs-441-safe)
 to obtain optimal assignments for vehicles. **This is not free**, but Google provides $200 of credits per
 month, which is enough for most smaller agencies. Because of this, running the backend requires two more things.
