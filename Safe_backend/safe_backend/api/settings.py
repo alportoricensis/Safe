@@ -176,16 +176,11 @@ def services():
         cur = conn.cursor() 
         cur.execute("SELECT * FROM services", ())
         services = cur.fetchall()
-        # context = {
-        #     "services": []
-        # }
-        # for service in services:
-        #     context["services"].append(service[1])
-
         context = {}
 
         for service in services:
             context[service[1]] = {
+                'serviceName': service[1],
                 'startTime': str(service[2]),
                 'endTime': str(service[3])
             }

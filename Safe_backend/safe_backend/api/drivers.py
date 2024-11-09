@@ -5,6 +5,7 @@ import safe_backend
 import psycopg2
 import safe_backend.api.vehicles
 import safe_backend.api.config
+from safe_backend.api.utils import *
 
 
 # Routes
@@ -52,7 +53,7 @@ def login_vehicle():
 
     # Since vehicles are empty on logins, call the assign_rides() if there are active rides
     if len(safe_backend.api.config.RIDE_REQUESTS) != 0:
-        safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].assign_rides()
+        assign_rides()
 
     # Return success
     context = {
@@ -224,7 +225,7 @@ def load_unload():
 
         # If empty, get more rides assigned
         if safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].capacity == safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].maxcapacity:
-            safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].assign_rides()
+            assign_rides()
 
         # Return success
         context = {

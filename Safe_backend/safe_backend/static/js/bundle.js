@@ -9896,7 +9896,7 @@ function CallInForm() {
   };
   var getServices = /*#__PURE__*/function () {
     var _ref = (0,_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0__["default"])(/*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee() {
-      var resp, data, arr;
+      var resp, data, arr, names, i;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -9916,7 +9916,11 @@ function CallInForm() {
             data = _context.sent;
             if (data !== null) {
               arr = Object.values(data);
-              setServices(arr[0]);
+              names = [];
+              for (i = 0; i < arr.length; i++) {
+                names.push(arr[i]["serviceName"]);
+              }
+              setServices(names);
             } else {
               arr = [];
               setServices(arr);
@@ -10542,21 +10546,26 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _ridereq__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ridereq */ "./safe_backend/js/ridereq.jsx");
 "use client";
-
 
 
 function Vehicle(vehicle) {
   // TODO - This is redundant since queue also calls the API
   // Can have less data transfer by passing down data from queue
   var vehicleItinerary = vehicle.itinerary;
+  function ItineraryRide(req) {
+    var type = req.isPickup ? "Picking Up" : "Dropping Off";
+    var location = req.isPickup ? req.pickup : req.dropoff;
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "rideWidget"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("b", null, req.passenger), " ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), location, " ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), type);
+  }
 
   // Return vehicle widget
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "vehicleWidget"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), vehicle.vehicle_id, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), vehicle.lat, ", ", vehicle["long"], /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), vehicleItinerary.map(function (req) {
-    return (0,_ridereq__WEBPACK_IMPORTED_MODULE_1__["default"])(req);
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), vehicle.vehicle_id, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), vehicle.lat, ", ", vehicle["long"], /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", null), "Vehicle Itinerary:", vehicleItinerary.map(function (req) {
+    return ItineraryRide(req);
   }));
 }
 

@@ -1,12 +1,11 @@
 """REST API for ride requests."""
 import datetime
-import random
 import flask
 import psycopg2
 import safe_backend.config
 import safe_backend.api.config
 from safe_backend.api.requests import RideRequests
-from safe_backend.api.utils import check_pickup, check_time, check_dropoff
+from safe_backend.api.utils import *
 
 # Routes
 @safe_backend.app.route("/api/v1/rides/", methods=["GET", "OPTIONS"])
@@ -213,6 +212,13 @@ def post_ride():
     
     # If the ride came from a passenger app,
     elif rideOrigin == "passenger":
+        # Check the user has been logged in/exists
+        firstName = flask.request.form["passengerFirstName"]
+        lastName = flask.request.form["passengerLastName"]
+        phone = flask.request.form["passengerPhoneNumber"]
+        numPass = flask.request.form["numPassengers"]
+
+        # Grab the user's id from the database
 
 
         context = {
@@ -229,8 +235,7 @@ def post_ride():
 
     # If there is a vehicle with no active rides, call its assignment function
     for vehicle in safe_backend.api.config.VEHICLE_QUEUES:
-        if safe_backend.api.config.VEHICLE_QUEUES[vehicle].empty():
-            safe_backend.api.config.VEHICLE_QUEUES[vehicle].assign_rides()
+        assign_rides()
 
     # Return success
     context = {
