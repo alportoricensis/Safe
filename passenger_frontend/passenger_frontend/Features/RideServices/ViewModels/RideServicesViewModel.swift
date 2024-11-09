@@ -1,51 +1,42 @@
 import Foundation
+import Combine
 
-@MainActor
 class RideServicesViewModel: ObservableObject {
-    @Published private(set) var services: [Service] = []
-    @Published private(set) var isLoading = false
-    @Published private(set) var error: Error?
+    @Published var services: [Service] = []
+    @Published var isLoading = false
+    @Published var error: String?
+    
+    private let baseURL = "http://35.3.200.144:5000"
+    private var cancellables = Set<AnyCancellable>()
     
     init() {
-        // Initially load mock data
-        loadMockServices()
+        fetchServices()
     }
     
-    private func loadMockServices() {
-        services = [
-            Service(
-                provider: "RideHome",
-                serviceName: "FreeRides",
-                costUSD: 0.0,
-                startTime: DateComponents(hour: 20, minute: 0),
-                endTime: DateComponents(hour: 2, minute: 0),
-                daysAvailable: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday]
-            ),
-            Service(
-                provider: "GET!",
-                serviceName: "RideShare",
-                costUSD: 5.0,
-                startTime: DateComponents(hour: 0, minute: 0),
-                endTime: DateComponents(hour: 23, minute: 59),
-                daysAvailable: DaysOfWeek.allDays
-            )
-        ]
-    }
-    
-    func fetchServices() async {
+    func fetchServices() {
         isLoading = true
-        defer { isLoading = false }
+        error = nil
         
-        do {
-            // TODO: Replace with actual API call
-            // let services = try await apiClient.fetchServices()
-            // self.services = services
-            
-            // For now, just simulate API delay
-            try await Task.sleep(nanoseconds: 1_000_000_000)
-            loadMockServices()
-        } catch {
-            self.error = error
+        guard let url = URL(string: "\(baseURL)/api/v1/settings/services/") else {
+            error = "Invalid URL"
+            isLoading = false
+            return
         }
+        
+        URLSession.shared.dataTaskPublisher(for: url)
+            .map(\.data)
+            .decode(type: ServiceResponse.self, decoder: JSONDecoder())
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                self?.isLoading = false
+                if case .failure(let error) = completion {
+                    self?.error = error.localizedDescription
+                }
+            } receiveValue: { [weak self] response in
+                self?.services = response.services.map { $0.toDomainModel() }
+            }
+            .store(in: &cancellables)
     }
+    
+    
 }

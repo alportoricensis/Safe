@@ -15,5 +15,10 @@
 	</array>
 	<key>GIDClientID</key>
 	<string>209905584582-7s9bfgm3vich2n2uftpeu4am2qc0g94g.apps.googleusercontent.com</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

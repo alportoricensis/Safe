@@ -8,6 +8,14 @@ struct RideServicesView: View {
             Group {
                 if viewModel.isLoading {
                     ProgressView()
+                } else if let error = viewModel.error {
+                    VStack {
+                        Text(error)
+                            .foregroundColor(.red)
+                        Button("Retry") {
+                            viewModel.fetchServices()
+                        }
+                    }
                 } else {
                     List(viewModel.services) { service in
                         NavigationLink(destination: RideRequestView(service: service)) {
