@@ -33,6 +33,7 @@
 		901AC6002CE0073400FDA176 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		901AC6022CE0096500FDA176 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		901AC6042CE00D5200FDA176 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		901AC6062CE01DE200FDA176 /* driver-frontend-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "driver-frontend-Info.plist"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +66,7 @@
 		22A575F92CD596DB00D9A43E /* driver_frontend */ = {
 			isa = PBXGroup;
 			children = (
+				901AC6062CE01DE200FDA176 /* driver-frontend-Info.plist */,
 				901AC6042CE00D5200FDA176 /* AppState.swift */,
 				901AC6022CE0096500FDA176 /* AuthManager.swift */,
 				901AC6002CE0073400FDA176 /* LoginView.swift */,
@@ -302,6 +304,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"driver_frontend/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "driver-frontend-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -330,6 +333,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"driver_frontend/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "driver-frontend-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
