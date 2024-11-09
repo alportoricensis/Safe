@@ -45,7 +45,7 @@ cur.execute (
         long REAL NOT NULL, \
         isPickup BOOLEAN, \
         isDropoff BOOLEAN, \
-        service_id INTEGER REFERENCES services(service_id) \
+        service_name TEXT REFERENCES services(service_name) \
     );"
 )
 
@@ -81,7 +81,7 @@ cur.execute (
         pickup_long REAL NOT NULL, \
         dropoff_lat REAL, \
         dropoff_long REAL, \
-        user_id INTEGER REFERENCES users(user_id), \
+        user_id INTEGER REFERENCES users(uuid), \
         vehicle_id INTEGER REFERENCES vehicles(vehicle_id), \
         status TEXT, \
         pickup_time TIMESTAMP, \
