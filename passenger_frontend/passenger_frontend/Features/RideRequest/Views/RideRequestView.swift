@@ -61,6 +61,8 @@ struct RideRequestView: View {
                                 }
                             }
                             .pickerStyle(.menu)
+                            .accentColor(.black)
+                            .tint(.black)
                             .padding()
                             .frame(maxWidth: .infinity)
                             .background(Color.white)
