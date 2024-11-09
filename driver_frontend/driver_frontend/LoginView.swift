@@ -1,7 +1,10 @@
 import SwiftUI
+import CoreLocation
 
 struct LoginView: View {
     @EnvironmentObject var authManager: AuthManager
+    @StateObject private var locationManager = LocationManager()
+    
     @State private var username = ""
     @State private var password = ""
     @State private var vehicleID = ""
@@ -42,20 +45,38 @@ struct LoginView: View {
             }
         }
         .padding()
+        .onAppear {
+            locationManager.fetchLocation()
+        }
+        .onReceive(locationManager.$authorizationStatus) { status in
+            if status == .denied || status == .restricted {
+                self.errorMessage = "Location access is required to login."
+            }
+        }
     }
     
     func login() {
+        // Ensure location is available
+        guard let lat = locationManager.latitude, let long = locationManager.longitude else {
+            self.errorMessage = "Unable to retrieve location. Please ensure location services are enabled."
+            return
+        }
+        
         Task {
             do {
-                let vehicleIDResponse = try await loginVehicle(username: username, password: password, vehicleID: vehicleID)
+                let vehicleIDResponse = try await loginVehicle(username: username, password: password, vehicleID: vehicleID, latitude: lat, longitude: long)
                 DispatchQueue.main.async {
                     authManager.username = username
                     authManager.password = password
                     authManager.vehicleID = vehicleIDResponse
+                    authManager.latitude = lat
+                    authManager.longitude = long
                     authManager.isAuthenticated = true
                     RideStore.shared.username = username
                     RideStore.shared.password = password
                     RideStore.shared.vehicleID = vehicleIDResponse
+                    RideStore.shared.latitude = lat
+                    RideStore.shared.longitude = long
                 }
             } catch {
                 DispatchQueue.main.async {
@@ -65,7 +86,7 @@ struct LoginView: View {
         }
     }
     
-    func loginVehicle(username: String, password: String, vehicleID: String) async throws -> String {
+    func loginVehicle(username: String, password: String, vehicleID: String, latitude: Double, longitude: Double) async throws -> String {
         guard let url = URL(string: "http://35.3.200.144:5000/api/v1/vehicles/login/") else {
             throw URLError(.badURL)
         }
@@ -76,7 +97,9 @@ struct LoginView: View {
         let loginData: [String: Any] = [
             "username": username,
             "password": password,
-            "vehicle_id": vehicleID
+            "vehicle_id": vehicleID,
+            "latitude": latitude,
+            "longitude": longitude
         ]
         request.httpBody = try JSONSerialization.data(withJSONObject: loginData, options: [])
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

@@ -6,9 +6,15 @@
 //
 import Combine
 
+import Combine
+
 class AuthManager: ObservableObject {
     @Published var isAuthenticated = false
     @Published var vehicleID: String?
+    @Published var latitude: Double?
+    @Published var longitude: Double?
+    
     var username: String?
     var password: String?
 }
+
