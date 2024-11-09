@@ -4,7 +4,7 @@ struct RideServicesView: View {
     @StateObject private var viewModel = RideServicesViewModel()
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Group {
                 if viewModel.isLoading {
                     ProgressView()

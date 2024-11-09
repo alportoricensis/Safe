@@ -8,6 +8,7 @@ import CoreLocation
 // Main RideRequestView
 struct RideRequestView: View {
     let service: Service
+    @StateObject private var viewModel = RideRequestViewModel()
     @Environment(\.dismiss) private var dismiss
 
     @State private var isPickupMapPresented = false
@@ -18,118 +19,159 @@ struct RideRequestView: View {
     @State private var destinationLocation: CLLocationCoordinate2D?
     @State private var destinationLocationName: String = "Where to?"
 
+    @State private var navigateToWaiting = false
+
     var body: some View {
-        ZStack {
-            Color(red: 0/255, green: 39/255, blue: 76/255)
-                .ignoresSafeArea()
+        NavigationStack {
+            ZStack {
+                Color(red: 0/255, green: 39/255, blue: 76/255)
+                    .ignoresSafeArea()
 
-            VStack(spacing: 16) {
-                // Service name header
-                Text("\(service.provider) - \(service.serviceName)")
-                    .font(.title2)
-                    .foregroundColor(.yellow)
+                VStack(spacing: 16) {
+                    // Service name header
+                    Text("\(service.provider) - \(service.serviceName)")
+                        .font(.title2)
+                        .foregroundColor(.yellow)
 
-                // Pickup and destination section with line indicator
-                HStack(spacing: 12) {
-                    // Location line indicator
-                    VStack(spacing: 0) {
-                        Circle()
-                            .fill(.white)
-                            .frame(width: 12, height: 12)
+                    // Pickup and destination section with line indicator
+                    HStack(spacing: 12) {
+                        // Location line indicator
+                        VStack(spacing: 0) {
+                            Circle()
+                                .fill(.white)
+                                .frame(width: 12, height: 12)
 
-                        Rectangle()
-                            .fill(.white)
-                            .frame(width: 2, height: 40)
+                            Rectangle()
+                                .fill(.white)
+                                .frame(width: 2, height: 40)
 
-                        Circle()
-                            .fill(.white)
-                            .frame(width: 12, height: 12)
-                    }
-
-                    // Text fields changed to buttons
-                    VStack(spacing: 16) {
-                        Button(action: {
-                            isPickupMapPresented = true
-                        }) {
-                            HStack {
-                                Text(pickupLocationName)
-                                    .foregroundColor(.black)
-                                Spacer()
-                            }
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.white)
-                            .cornerRadius(8)
+                            Circle()
+                                .fill(.white)
+                                .frame(width: 12, height: 12)
                         }
-                        .sheet(isPresented: $isPickupMapPresented) {
-                            PickupMapView { location in
-                                self.pickupLocation = location
-                                getAddressFrom(coordinate: location) { address in
-                                    if let address = address {
-                                        self.pickupLocationName = address
-                                    } else {
-                                        self.pickupLocationName = "Selected location"
+
+                        // Text fields changed to buttons
+                        VStack(spacing: 16) {
+                            Button(action: {
+                                isPickupMapPresented = true
+                            }) {
+                                HStack {
+                                    Text(pickupLocationName)
+                                        .foregroundColor(.black)
+                                    Spacer()
+                                }
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.white)
+                                .cornerRadius(8)
+                            }
+                            .sheet(isPresented: $isPickupMapPresented) {
+                                PickupMapView { location in
+                                    self.pickupLocation = location
+                                    getAddressFrom(coordinate: location) { address in
+                                        if let address = address {
+                                            self.pickupLocationName = address
+                                        } else {
+                                            self.pickupLocationName = "Selected location"
+                                        }
+                                    }
+                                }
+                            }
+
+                            Button(action: {
+                                isDestinationMapPresented = true
+                            }) {
+                                HStack {
+                                    Text(destinationLocationName)
+                                        .foregroundColor(.black)
+                                    Spacer()
+                                }
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.white)
+                                .cornerRadius(8)
+                            }
+                            .sheet(isPresented: $isDestinationMapPresented) {
+                                PickupMapView { location in
+                                    self.destinationLocation = location
+                                    getAddressFrom(coordinate: location) { address in
+                                        if let address = address {
+                                            self.destinationLocationName = address
+                                        } else {
+                                            self.destinationLocationName = "Selected location"
+                                        }
                                     }
                                 }
                             }
                         }
+                    }
+                    .padding(.horizontal)
 
+                    // Saved places button
+                    Button(action: {}) {
+                        HStack {
+                            Image(systemName: "star.fill")
+                            Text("Saved Places")
+                        }
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.blue.opacity(0.3))
+                        .cornerRadius(8)
+                    }
+
+                    // Set location on map button
+                    Button(action: {}) {
+                        HStack {
+                            Image(systemName: "map.fill")
+                            Text("Set location on map")
+                        }
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.blue.opacity(0.3))
+                        .cornerRadius(8)
+                    }
+
+                    Spacer()
+
+                    // New Confirm Ride button
+                    if pickupLocation != nil && destinationLocation != nil {
                         Button(action: {
-                            isDestinationMapPresented = true
+                            viewModel.requestRide(
+                                service: service,
+                                pickupLocation: pickupLocation!,
+                                destinationLocation: destinationLocation!,
+                                pickupAddress: pickupLocationName,
+                                destinationAddress: destinationLocationName
+                            )
+                            navigateToWaiting = true
                         }) {
-                            HStack {
-                                Text(destinationLocationName)
-                                    .foregroundColor(.black)
-                                Spacer()
-                            }
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.white)
-                            .cornerRadius(8)
+                            Text("Confirm Destination")
+                                .font(.headline)
+                                .foregroundColor(.yellow)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color(red: 2/255, green: 28/255, blue: 52/255))
+                                .cornerRadius(8)
                         }
-                        .sheet(isPresented: $isDestinationMapPresented) {
-                            PickupMapView { location in
-                                self.destinationLocation = location
-                                getAddressFrom(coordinate: location) { address in
-                                    if let address = address {
-                                        self.destinationLocationName = address
-                                    } else {
-                                        self.destinationLocationName = "Selected location"
-                                    }
-                                }
-                            }
-                        }
+                        .padding(.horizontal)
                     }
                 }
-                .padding(.horizontal)
-
-                // Saved places button
-                Button(action: {}) {
-                    HStack {
-                        Image(systemName: "star.fill")
-                        Text("Saved Places")
-                    }
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(Color.blue.opacity(0.3))
-                    .cornerRadius(8)
-                }
-
-                // Set location on map button
-                Button(action: {}) {
-                    HStack {
-                        Image(systemName: "map.fill")
-                        Text("Set location on map")
-                    }
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(Color.blue.opacity(0.3))
-                    .cornerRadius(8)
-                }
-
-                Spacer()
+                .padding()
             }
-            .padding()
+            .navigationDestination(isPresented: $navigateToWaiting) {
+                WaitingView(viewModel: viewModel)
+            }
+            // Add alert for error handling
+            .alert("Error", isPresented: .init(
+                get: { if case .error(_) = viewModel.state { return true } else { return false } },
+                set: { _ in viewModel.state = .idle }
+            )) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                if case .error(let message) = viewModel.state {
+                    Text(message)
+                }
+            }
         }
     }
 
