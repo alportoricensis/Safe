@@ -17,7 +17,8 @@ cur = conn.cursor()
 # Refers to the different services used by this agency
 cur.execute (
     "CREATE TABLE IF NOT EXISTS services ( \
-        service_name TEXT PRIMARY KEY, \
+        service_id SERIAL PRIMARY KEY, \
+        service_name TEXT NOT NULL, \
         start_time TIME NOT NULL, \
         end_time TIME NOT NULL, \
         provider TEXT NOT NULL, \
@@ -57,16 +58,17 @@ cur.execute (
         radius_miles REAL NOT NULL, \
         isPickup BOOLEAN, \
         isDropoff BOOLEAN, \
-        service_name TEXT REFERENCES services(service_name) \
+        service_id INTEGER REFERENCES services(service_id) \
     );"
 )
 
 # Refers to the service ranges for this agency
 cur.execute (
     "CREATE TABLE IF NOT EXISTS users ( \
-        uuid TEXT PRIMARY KEY, \
-        display_name TEXT NOT NULL, \
-        phone_number TEXT, \
+        user_id SERIAL PRIMARY KEY, \
+        first_name TEXT NOT NULL, \
+        last_name TEXT NOT NULL, \
+        phone_number TEXT NOT NULL, \
         email TEXT NOT NULL \
     );"
 )
