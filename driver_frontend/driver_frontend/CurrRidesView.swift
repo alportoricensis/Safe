@@ -12,7 +12,10 @@ struct CurrRidesView: View {
             }
             .listStyle(.plain) 
             .onAppear {
-                store.getRides()
+                Task{
+                    await store.getRides()
+                }
+                
             }
         }
         .background(Color(red: 0.2, green: 0.2, blue: 0.5))

@@ -17,7 +17,7 @@ struct RideList: View {
                     .cornerRadius(10)
                 
                 VStack(alignment: .leading, spacing: 4) {
-                    if let pickupLoc = ride.pickcupLoc {
+                    if let pickupLoc = ride.pickupLoc {
                         Text("Pick-up: \(pickupLoc)")
                             .font(.headline)
                             .foregroundColor(.primary)
