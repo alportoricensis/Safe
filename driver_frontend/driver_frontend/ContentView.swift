@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var appState: AppState
     @State private var selectedTab: Tab = .current // Default selected tab
     var username: String
     var password: String
@@ -49,6 +50,10 @@ struct ContentView: View {
                 .background(Color(red: 0.2, green: 0.2, blue: 0.5))
             }
             .edgesIgnoringSafeArea(.all)
+        }
+        .onAppear {
+            print("Logged in with vehicle ID: \(appState.vehicleID)")
+            rideStore.vehicleID = appState.vehicleID
         }
     }
 }

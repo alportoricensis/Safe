@@ -17,6 +17,7 @@
 		22A5760F2CD5BB5300D9A43E /* CurrRidesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A5760E2CD5BB5300D9A43E /* CurrRidesView.swift */; };
 		901AC6012CE0073E00FDA176 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6002CE0073400FDA176 /* LoginView.swift */; };
 		901AC6032CE0096A00FDA176 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6022CE0096500FDA176 /* AuthViewModel.swift */; };
+		901AC6052CE00D5900FDA176 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6042CE00D5200FDA176 /* AppState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		22A5760E2CD5BB5300D9A43E /* CurrRidesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrRidesView.swift; sourceTree = "<group>"; };
 		901AC6002CE0073400FDA176 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		901AC6022CE0096500FDA176 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		901AC6042CE00D5200FDA176 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 		22A575F92CD596DB00D9A43E /* driver_frontend */ = {
 			isa = PBXGroup;
 			children = (
+				901AC6042CE00D5200FDA176 /* AppState.swift */,
 				901AC6022CE0096500FDA176 /* AuthViewModel.swift */,
 				901AC6002CE0073400FDA176 /* LoginView.swift */,
 				22A575FA2CD596DB00D9A43E /* driver_frontendApp.swift */,
@@ -158,6 +161,7 @@
 				901AC6012CE0073E00FDA176 /* LoginView.swift in Sources */,
 				22A5760F2CD5BB5300D9A43E /* CurrRidesView.swift in Sources */,
 				22A575FD2CD596DB00D9A43E /* ContentView.swift in Sources */,
+				901AC6052CE00D5900FDA176 /* AppState.swift in Sources */,
 				22A5760B2CD59FF500D9A43E /* RideList.swift in Sources */,
 				901AC6032CE0096A00FDA176 /* AuthViewModel.swift in Sources */,
 				22A576092CD5982A00D9A43E /* DriverRides.swift in Sources */,

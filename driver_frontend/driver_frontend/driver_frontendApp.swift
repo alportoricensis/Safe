@@ -9,16 +9,18 @@ import SwiftUI
 
 @main
 struct driver_frontendApp: App {
-    @StateObject var authViewModel = AuthViewModel()
+    @StateObject var appState = AppState()
+
     var body: some Scene {
         WindowGroup {
-            if authViewModel.isAuthenticated {
+            if appState.isLoggedIn {
                 ContentView()
-                    .environmentObject(authViewModel)
+                    .environmentObject(appState)
             } else {
                 LoginView()
-                    .environmentObject(authViewModel)
+                    .environmentObject(appState)
             }
         }
     }
 }
+
