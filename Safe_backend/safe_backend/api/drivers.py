@@ -57,7 +57,8 @@ def login_vehicle():
 
     # Return success
     context = {
-        "msg": "Successfully logged in vehicle: " + vehicle_id
+        "msg": f"Successfully logged in vehicle: {vehicle_id}",
+        "vehicle_id": vehicle_id  # Add vehicle_id to context
     }
 
     return flask.jsonify(**context), 200
