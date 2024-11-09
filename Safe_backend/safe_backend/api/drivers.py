@@ -223,10 +223,6 @@ def load_unload():
         safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].queue.pop(0)
         del safe_backend.api.config.RIDE_REQUESTS[ride_id]
 
-        # If empty, get more rides assigned
-        if safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].capacity == safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].maxcapacity:
-            assign_rides()
-
         # Return success
         context = {
             "msg": f"Sucessfully offboarded {ride_id} from {vehicle_id}!"
