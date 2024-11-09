@@ -14,6 +14,10 @@ struct RideRequestView: View {
     @State private var pickupLocation: CLLocationCoordinate2D?
     @State private var pickupLocationName: String = "Enter pickup point"
 
+    @State private var isDestinationMapPresented = false
+    @State private var destinationLocation: CLLocationCoordinate2D?
+    @State private var destinationLocationName: String = "Where to?"
+
     var body: some View {
         ZStack {
             Color(red: 0/255, green: 39/255, blue: 76/255)
@@ -71,10 +75,10 @@ struct RideRequestView: View {
                         }
 
                         Button(action: {
-                            // Add destination selection action here
+                            isDestinationMapPresented = true
                         }) {
                             HStack {
-                                Text("Where to?")
+                                Text(destinationLocationName)
                                     .foregroundColor(.black)
                                 Spacer()
                             }
@@ -82,6 +86,18 @@ struct RideRequestView: View {
                             .frame(maxWidth: .infinity)
                             .background(Color.white)
                             .cornerRadius(8)
+                        }
+                        .sheet(isPresented: $isDestinationMapPresented) {
+                            PickupMapView { location in
+                                self.destinationLocation = location
+                                getAddressFrom(coordinate: location) { address in
+                                    if let address = address {
+                                        self.destinationLocationName = address
+                                    } else {
+                                        self.destinationLocationName = "Selected location"
+                                    }
+                                }
+                            }
                         }
                     }
                 }
