@@ -130,7 +130,6 @@ export default function CallInForm() {
                     </form>
                 </div>
             </div>
-            <LocationForm />
         </div>
         
     )

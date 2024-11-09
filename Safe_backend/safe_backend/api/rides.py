@@ -169,6 +169,8 @@ def post_ride():
         context = {
             "msg": f"Service {serviceName} is not currently active."
         }
+        cur.close()
+        conn.close()
         return flask.jsonify(**context), 400
     
     # Check the pickup and dropoff validity
@@ -181,12 +183,16 @@ def post_ride():
         context = {
             "msg": f"Service {serviceName} does not service {location}."
         }
+        cur.close()
+        conn.close()
         return flask.jsonify(**context), 400
 
     if not check_dropoff(dropoffName, dropoffCoord):
         context = {
             "msg": f"Service {serviceName} does not service {dropoffName}."
         }
+        cur.close()
+        conn.close()
         return flask.jsonify(**context), 400
 
     if rideOrigin == "callIn":
@@ -224,17 +230,21 @@ def post_ride():
         context = {
             "msg": "Successfully created booking!"
         }
+        cur.close()
+        conn.close()
         return flask.jsonify(**context), 200
     else:
         context = {
             "msg": "Unrecognized rideOrigin"
         }
+        cur.close()
+        conn.close()
         return flask.jsonify(**context), 400
     # Add to mappings
     safe_backend.api.config.RIDE_REQUESTS[str(req_id[0])] = newRequest
 
     # If there is a vehicle with no active rides, call its assignment function
-    for vehicle in safe_backend.api.config.VEHICLE_QUEUES:
+    if not safe_backend.api.config.VEHICLE_QUEUES:
         assign_rides()
 
     # Return success
@@ -242,5 +252,7 @@ def post_ride():
         "msg": "Successfully created booking!"
     }
     flask.flash(f"Successfully booked passenger! {firstName} {lastName}")
+    cur.close()
+    conn.close()
     return flask.jsonify(**context), 200
         
