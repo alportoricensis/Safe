@@ -191,6 +191,7 @@ def services():
                 "provider": service[4],
                 "cost": str(service[5])
             }
+        conn.commit()
         cur.close()
         conn.close()
         return flask.jsonify(context), 200
@@ -199,14 +200,16 @@ def services():
         conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                                 port="5432")
         cur = conn.cursor()
-        service_name = flask.request.form["serviceName"]
+        service_name = flask.request.json["serviceName"]
         print(service_name)
         cur.execute("SELECT * FROM services WHERE service_name = %s;", (service_name, ))
         sel = cur.fetchall()
         if sel is None:
             flask.flash(f"Error: Service {service_name} does not exist!")
             return
-        cur.execute("DELETE * FROM services WHERE service_name = %s;", (service_name, ))
+        cur.execute("DELETE FROM services WHERE service_name = %s;", (service_name, ))
+        conn.commit()
         cur.close()
         conn.close()
-        return flask.redirect(flask.url_for("show_service_settings"))
+        context = {}
+        return flask.jsonify(context), 200
