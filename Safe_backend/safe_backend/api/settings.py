@@ -90,7 +90,7 @@ def locations():
         conn.close()
         return flask.jsonify(**context)
     
-    elif flask.request.method == "DELETE":
+    elif flask.request.method == "DELETE": 
         conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                                 port="5432")
         cur = conn.cursor()
