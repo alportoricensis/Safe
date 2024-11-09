@@ -1,108 +1,91 @@
 import SwiftUI
 
-class LoginViewModel: ObservableObject {
-    @Published var vehicleID: String = ""
-    @Published var latitude: String = ""
-    @Published var longitude: String = ""
-    @Published var isLoggedIn: Bool = false
-    @Published var errorMessage: String = ""
-}
-
 struct LoginView: View {
-    @StateObject private var viewModel = LoginViewModel()
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var authManager: AuthManager
+    @State private var username = ""
+    @State private var password = ""
+    @State private var errorMessage: String?
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("Vehicle Login")
+            Text("Driver Login")
                 .font(.largeTitle)
-            TextField("Vehicle ID", text: $viewModel.vehicleID)
+
+            TextField("Username", text: $username)
                 .padding()
-                .background(Color(.secondarySystemBackground))
-            TextField("Latitude", text: $viewModel.latitude)
+                .autocapitalization(.none)
+                .border(Color.gray)
+
+            SecureField("Password", text: $password)
                 .padding()
-                .background(Color(.secondarySystemBackground))
-            TextField("Longitude", text: $viewModel.longitude)
-                .padding()
-                .background(Color(.secondarySystemBackground))
-            if !viewModel.errorMessage.isEmpty {
-                Text(viewModel.errorMessage)
+                .border(Color.gray)
+
+            if let errorMessage = errorMessage {
+                Text(errorMessage)
                     .foregroundColor(.red)
             }
-            Button(action: {
-                Task {
-                    await loginVehicle()
-                }
-            }) {
+
+            Button(action: login) {
                 Text("Login")
-                    .frame(maxWidth: .infinity)
+                    .font(.headline)
                     .padding()
+                    .frame(maxWidth: .infinity)
                     .background(Color.blue)
                     .foregroundColor(.white)
-                    .cornerRadius(8)
+                    .cornerRadius(10)
             }
         }
         .padding()
-        .onChange(of: viewModel.isLoggedIn) { isLoggedIn in
-            if isLoggedIn {
-                appState.vehicleID = viewModel.vehicleID
-                appState.isLoggedIn = true
+    }
+
+    func login() {
+        Task {
+            do {
+                let vehicleID = try await loginVehicle(username: username, password: password)
+                DispatchQueue.main.async {
+                    authManager.username = username
+                    authManager.password = password
+                    authManager.vehicleID = vehicleID
+                    authManager.isAuthenticated = true
+                    RideStore.shared.username = username
+                    RideStore.shared.password = password
+                    RideStore.shared.vehicleID = vehicleID
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.errorMessage = error.localizedDescription
+                }
             }
         }
     }
 
-    func loginVehicle() async {
-        guard let url = URL(string: "https://35.3.200.144:5000/api/v1/vehicles/login/") else {
-            viewModel.errorMessage = "Invalid URL"
-            return
-        }
-
-        guard let latitude = Double(viewModel.latitude),
-              let longitude = Double(viewModel.longitude) else {
-            viewModel.errorMessage = "Please enter valid latitude and longitude."
-            return
-        }
+    func loginVehicle(username: String, password: String) async throws -> String {
+        let url = URL(string: "https://35.3.200.144:5000/api/v1/vehicles/login/")!
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
+
+        let loginData: [String: Any] = ["username": username, "password": password]
+        request.httpBody = try JSONSerialization.data(withJSONObject: loginData)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        let requestBody: [String: Any] = [
-            "vehicle_id": viewModel.vehicleID,
-            "latitude": latitude,
-            "longitude": longitude
-        ]
+        let (data, response) = try await URLSession.shared.data(for: request)
 
-        do {
-            let data = try JSONSerialization.data(withJSONObject: requestBody)
-            request.httpBody = data
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
+        }
 
-            let (responseData, response) = try await URLSession.shared.data(for: request)
+        guard httpResponse.statusCode == 200 else {
+            let errorResponse = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+            let message = errorResponse?["msg"] as? String ?? "Unknown error"
+            throw NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: message])
+        }
 
-            if let httpResponse = response as? HTTPURLResponse {
-                if httpResponse.statusCode == 200 {
-                    // Login successful
-                    DispatchQueue.main.async {
-                        viewModel.isLoggedIn = true
-                    }
-                } else {
-                    // Handle error messages from the backend
-                    if let json = try? JSONSerialization.jsonObject(with: responseData) as? [String: Any],
-                       let msg = json["msg"] as? String {
-                        DispatchQueue.main.async {
-                            viewModel.errorMessage = msg
-                        }
-                    } else {
-                        DispatchQueue.main.async {
-                            viewModel.errorMessage = "Login failed with status code: \(httpResponse.statusCode)"
-                        }
-                    }
-                }
-            }
-        } catch {
-            DispatchQueue.main.async {
-                viewModel.errorMessage = "Network error: \(error.localizedDescription)"
-            }
+        if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let vehicleID = json["vehicle_id"] as? String {
+            return vehicleID
+        } else {
+            throw URLError(.cannotParseResponse)
         }
     }
 }

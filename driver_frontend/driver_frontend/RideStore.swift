@@ -16,6 +16,7 @@ final class RideStore {
    
     var username = ""
     var password = ""
+    var vehicleID: String?
 
     private let serverUrl = "https://35.3.200.144:5000/api/v1/rides/drivers/"
     
