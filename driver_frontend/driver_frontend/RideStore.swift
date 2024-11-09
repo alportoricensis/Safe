@@ -12,18 +12,30 @@ final class RideStore {
     private(set) var rides = [Ride]()
     private let nFields = Mirror(reflecting: Ride()).children.count - 1
 
-    private let serverUrl = "https://35.3.200.144:5000/api/v1/rides/"
+
+   
     var username = ""
     var password = ""
 
+    private let serverUrl = "https://35.3.200.144:5000/api/v1/rides/drivers/"
+    
+    var vehicleId: String?
+
+
+    // Modify the function to use the vehicleId member variable
     func getRides() async {
+        guard let vehicleId = vehicleId else {
+            print("getRides: Vehicle ID is not set.")
+            return
+        }
+
         synchronized.sync {
             guard !self.isRetrieving else { return }
             self.isRetrieving = true
         }
         
-
-        guard let apiUrl = URL(string: serverUrl) else {
+        // Construct the URL with the vehicleId in the path
+        guard let apiUrl = URL(string: "\(serverUrl)\(vehicleId)/") else {
             print("getRides: Bad URL")
             return
         }
@@ -68,6 +80,4 @@ final class RideStore {
             print("getRides: NETWORK ERROR")
         }
     }
-
 }
-
