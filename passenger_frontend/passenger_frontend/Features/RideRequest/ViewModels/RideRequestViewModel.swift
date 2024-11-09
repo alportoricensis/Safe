@@ -35,35 +35,39 @@ class RideRequestViewModel: ObservableObject {
         let estimatedPrice: Double
         // Add other response fields as needed
     }
+        
+    // valid pickup locations
+    var validPickupLocations: [String] = ["Bob and Betty Biester", "LSA", "Duderstadt"]
     
     // Request model for the ride request
     struct RideRequestBody: Codable {
-        let serviceId: String
-        let pickupLatitude: Double
-        let pickupLongitude: Double
-        let destinationLatitude: Double
-        let destinationLongitude: Double
-        let pickupAddress: String
-        let destinationAddress: String
+        let uuid: String
+        let service: String
+        let pickupLocation: String
+        let dropoffLocation: String
+        let dropoffLat: Double
+        let dropoffLong: Double
+        let rideOrigin: String
+        let numPassengers: Int
     }
     
     func requestRide(
         service: Service,
-        pickupLocation: CLLocationCoordinate2D,
-        destinationLocation: CLLocationCoordinate2D,
-        pickupAddress: String,
-        destinationAddress: String
+        pickupLocation: String,
+        dropoffLocationName: String,
+        dropoffLocation: CLLocationCoordinate2D
     ) {
         state = .loading
         
         let requestBody = RideRequestBody(
-            serviceId: service.id.uuidString,
-            pickupLatitude: pickupLocation.latitude,
-            pickupLongitude: pickupLocation.longitude,
-            destinationLatitude: destinationLocation.latitude,
-            destinationLongitude: destinationLocation.longitude,
-            pickupAddress: pickupAddress,
-            destinationAddress: destinationAddress
+            uuid: UUID().uuidString,
+            service: service.serviceName,
+            pickupLocation: pickupLocation,
+            dropoffLocation: dropoffLocationName,
+            dropoffLat: dropoffLocation.latitude,
+            dropoffLong: dropoffLocation.longitude,
+            rideOrigin: "passenger",
+            numPassengers: 1
         )
         
         // TODO: Make actual API request here

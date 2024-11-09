@@ -11,8 +11,6 @@ struct RideRequestView: View {
     @StateObject private var viewModel = RideRequestViewModel()
     @Environment(\.dismiss) private var dismiss
 
-    @State private var isPickupMapPresented = false
-    @State private var pickupLocation: CLLocationCoordinate2D?
     @State private var pickupLocationName: String = "Enter pickup point"
 
     @State private var isDestinationMapPresented = false
@@ -52,31 +50,21 @@ struct RideRequestView: View {
 
                         // Text fields changed to buttons
                         VStack(spacing: 16) {
-                            Button(action: {
-                                isPickupMapPresented = true
-                            }) {
-                                HStack {
-                                    Text(pickupLocationName)
-                                        .foregroundColor(.black)
-                                    Spacer()
-                                }
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.white)
-                                .cornerRadius(8)
-                            }
-                            .sheet(isPresented: $isPickupMapPresented) {
-                                PickupMapView { location in
-                                    self.pickupLocation = location
-                                    getAddressFrom(coordinate: location) { address in
-                                        if let address = address {
-                                            self.pickupLocationName = address
-                                        } else {
-                                            self.pickupLocationName = "Selected location"
-                                        }
-                                    }
+                            // Replace Button with Picker for pickup location
+                            Picker("Select Pickup Location", selection: $pickupLocationName) {
+                                Text("Enter pickup point")
+                                    .foregroundColor(.gray)
+                                    .tag("Enter pickup point")
+                                ForEach(viewModel.validPickupLocations, id: \.self) { location in
+                                    Text(location)
+                                        .tag(location)
                                 }
                             }
+                            .pickerStyle(.menu)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.white)
+                            .cornerRadius(8)
 
                             Button(action: {
                                 isDestinationMapPresented = true
@@ -134,14 +122,13 @@ struct RideRequestView: View {
                     Spacer()
 
                     // New Confirm Ride button
-                    if pickupLocation != nil && destinationLocation != nil {
+                    if pickupLocationName != "Enter pickup point" && destinationLocation != nil {
                         Button(action: {
                             viewModel.requestRide(
                                 service: service,
-                                pickupLocation: pickupLocation!,
-                                destinationLocation: destinationLocation!,
-                                pickupAddress: pickupLocationName,
-                                destinationAddress: destinationLocationName
+                                pickupLocation: pickupLocationName,
+                                dropoffLocationName: destinationLocationName,
+                                dropoffLocation: destinationLocation!
                             )
                             navigateToWaiting = true
                         }) {
