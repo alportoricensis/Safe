@@ -13,6 +13,8 @@ final class RideStore {
     private let nFields = Mirror(reflecting: Ride()).children.count - 1
 
     private let serverUrl = "https://35.3.200.144:5000/api/v1/rides/"
+    var username = ""
+    var password = ""
 
     func getRides() async {
         synchronized.sync {

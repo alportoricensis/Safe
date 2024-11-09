@@ -2,7 +2,8 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var selectedTab: Tab = .current // Default selected tab
-    
+    var username: String
+    var password: String
     enum Tab {
         case current, completed
     }
