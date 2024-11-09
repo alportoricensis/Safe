@@ -3,80 +3,85 @@ import CoreLocation
 
 struct LoginView: View {
     @EnvironmentObject var authManager: AuthManager
-    @StateObject private var locationManager = LocationManager()
-    
     @State private var username = ""
     @State private var password = ""
     @State private var vehicleID = ""
     @State private var errorMessage: String?
     
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Driver Login")
-                .font(.largeTitle)
-            
-            TextField("Username", text: $username)
-                .padding()
-                .autocapitalization(.none)
-                .border(Color.gray)
-            
-            SecureField("Password", text: $password)
-                .padding()
-                .border(Color.gray)
-            
-            TextField("Vehicle ID", text: $vehicleID)
-                .padding()
-                .autocapitalization(.none)
-                .border(Color.gray)
-            
-            if let errorMessage = errorMessage {
-                Text(errorMessage)
-                    .foregroundColor(.red)
-            }
-            
-            Button(action: login) {
-                Text("Login")
-                    .font(.headline)
+        ScrollView {
+            VStack(spacing: 20) {
+                Spacer().frame(height: 40) // Top padding
+                
+                Text("Driver Login")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .padding(.bottom, 30)
+                
+                // Username Field
+                TextField("Username", text: $username)
                     .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(8)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                    .padding([.leading, .trailing], 24)
+                
+                // Password Field
+                SecureField("Password", text: $password)
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(8)
+                    .padding([.leading, .trailing], 24)
+                
+                // Vehicle ID Field
+                TextField("Vehicle ID", text: $vehicleID)
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(8)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                    .padding([.leading, .trailing], 24)
+                
+                // Error Message
+                if let errorMessage = errorMessage {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .padding([.leading, .trailing], 24)
+                }
+                
+                // Login Button
+                Button(action: login) {
+                    Text("Login")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                        .padding([.leading, .trailing], 24)
+                }
+                .padding(.top, 10)
+                
+                Spacer() // Bottom padding
             }
         }
-        .padding()
-        .onAppear {
-            locationManager.fetchLocation()
-        }
-        .onReceive(locationManager.$authorizationStatus) { status in
-            if status == .denied || status == .restricted {
-                self.errorMessage = "Location access is required to login."
-            }
-        }
+        .background(Color.white)
+        .ignoresSafeArea(edges: .bottom) // Ensure background extends under the keyboard
     }
     
     func login() {
-        // Ensure location is available
-        guard let lat = locationManager.latitude, let long = locationManager.longitude else {
-            self.errorMessage = "Unable to retrieve location. Please ensure location services are enabled."
-            return
-        }
-        
         Task {
             do {
-                let vehicleIDResponse = try await loginVehicle(username: username, password: password, vehicleID: vehicleID, latitude: lat, longitude: long)
+                let vehicleIDResponse = try await loginVehicle(username: username, password: password, vehicleID: vehicleID)
                 DispatchQueue.main.async {
                     authManager.username = username
                     authManager.password = password
                     authManager.vehicleID = vehicleIDResponse
-                    authManager.latitude = lat
-                    authManager.longitude = long
                     authManager.isAuthenticated = true
                     RideStore.shared.username = username
                     RideStore.shared.password = password
                     RideStore.shared.vehicleID = vehicleIDResponse
-                    RideStore.shared.latitude = lat
-                    RideStore.shared.longitude = long
                 }
             } catch {
                 DispatchQueue.main.async {
@@ -86,20 +91,29 @@ struct LoginView: View {
         }
     }
     
-    func loginVehicle(username: String, password: String, vehicleID: String, latitude: Double, longitude: Double) async throws -> String {
+    func loginVehicle(username: String, password: String, vehicleID: String) async throws -> String {
         guard let url = URL(string: "http://35.3.200.144:5000/api/v1/vehicles/login/") else {
             throw URLError(.badURL)
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
+        var locManager = CLLocationManager()
+        locManager.requestWhenInUseAuthorization()
+        var currentLocation: CLLocation!
+
         
+        currentLocation = locManager.location
+        
+        let latitude = currentLocation.coordinate.latitude
+        let longitude = currentLocation.coordinate.longitude
         let loginData: [String: Any] = [
             "username": username,
             "password": password,
             "vehicle_id": vehicleID,
-            "latitude": latitude,
-            "longitude": longitude
+            "latitude":latitude,
+            "longitude":longitude
+            
         ]
         request.httpBody = try JSONSerialization.data(withJSONObject: loginData, options: [])
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
