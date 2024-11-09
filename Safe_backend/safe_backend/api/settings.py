@@ -192,7 +192,7 @@ def range():
         return flask.jsonify(**{"msg": "Succesfully deleted range"}), 200
 
 
-@safe_backend.app.route("/api/v1/settings/services/", methods=["GET", "POST", "DELETE"])
+@safe_backend.app.route("/api/v1/settings/services/", methods=["GET", "POST", "DELETE", "PATCH"])
 # REQUIRES  - User is authenticated with agency-level permissions (for POST)
 #             User is authenticated with passenger-level permissions (for GET)
 # EFFECTS   - CREATE a new service provided by this agency
@@ -251,7 +251,6 @@ def services():
                                 port="5432")
         cur = conn.cursor()
         service_name = flask.request.json["serviceName"]
-        print(service_name)
         cur.execute("SELECT * FROM services WHERE service_name = %s;", (service_name, ))
         sel = cur.fetchall()
         if sel is None:
@@ -263,3 +262,15 @@ def services():
         conn.close()
         context = {}
         return flask.jsonify(context), 200
+    
+    elif flask.request.method == "PATCH":
+        conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                                port="5432")
+        cur = conn.cursor()
+        service_name = flask.request.json["serviceName"]
+        start_time = flask.request.json["startTime"]
+        end_time = flask.request.json["endTime"]
+        cur.execute("UPDATE services SET start_time = %s, end_time = %s WHERE service_name = %s;", (start_time, end_time, service_name,))
+        context = {}
+        return flask.jsonify(context), 200
+        
