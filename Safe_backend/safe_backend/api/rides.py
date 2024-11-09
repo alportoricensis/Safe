@@ -163,8 +163,9 @@ def post_ride():
 
     # If the current time is not in the service's time range, do not allow the booking
     currTime = datetime.datetime.now().time()
-    startTime = services[0][2]
-    endTime = services[0][3]
+    startTime = services[0][1]
+    endTime = services[0][2]
+    breakpoint()
     if not check_time(startTime, endTime, currTime):
         context = {
             "msg": f"Service {serviceName} is not currently active."
@@ -179,6 +180,7 @@ def post_ride():
     dropoffCoord = (flask.request.form["dropoffLat"], flask.request.form["dropoffLong"])
     cur.execute("SELECT * FROM locations WHERE loc_name = %s", (pickup, ))
     location = cur.fetchone()
+    req_id = -1
     if location is None:
         context = {
             "msg": f"Service {serviceName} does not service {location}."
@@ -218,21 +220,39 @@ def post_ride():
     
     # If the ride came from a passenger app,
     elif rideOrigin == "passenger":
+        user_uid = flask.request.form["uuid"]
+
         # Check the user has been logged in/exists
-        firstName = flask.request.form["passengerFirstName"]
-        lastName = flask.request.form["passengerLastName"]
-        phone = flask.request.form["passengerPhoneNumber"]
-        numPass = flask.request.form["numPassengers"]
+        cur.execute("SELECT * FROM users WHERE uuid = %s", (user_uid, ))
+        sel = cur.fetchone()
+        if len(sel) == 0:
+            return flask.jsonify(**{"msg": "Unknown uuid in database"}), 404
+        firstName = sel[1].split(" ")[0]
+        lastName = sel[1].split(" ")[1]
 
-        # Grab the user's id from the database
+        cur.execute(
+            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, service_id, user_id) VALUES \
+                (%s, %s, %s, %s, %s, %s) RETURNING ride_id", (location[2], location[3], dropoffCoord[0], dropoffCoord[1], "requested",
+                                            services[0][0], user_uid)
+        )
+        req_id = cur.fetchone()
 
+        newRequest = RideRequests(
+            rider_id = user_uid, 
+            status = "requested",
+            vehicle_id = "Pending Assignment",
+            pickupCoord=(location[2], location[3]),
+            dropoff=dropoffCoord,
+            phone=phone,
+            firstName=firstName,
+            lastName=lastName,
+            request_id=req_id[0],
+            numpass=numPass,
+            dropoffName=dropoffName
+        )
 
-        context = {
-            "msg": "Successfully created booking!"
-        }
         cur.close()
         conn.close()
-        return flask.jsonify(**context), 200
     else:
         context = {
             "msg": "Unrecognized rideOrigin"
@@ -249,9 +269,9 @@ def post_ride():
 
     # Return success
     context = {
-        "msg": "Successfully created booking!"
+        "msg": "Successfully created booking!",
+        "ride_id": req_id
     }
-    flask.flash(f"Successfully booked passenger! {firstName} {lastName}")
     cur.close()
     conn.close()
     return flask.jsonify(**context), 200
