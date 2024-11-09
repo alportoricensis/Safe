@@ -16,21 +16,46 @@ def vehicles():
     # TODO: Authentication
     
     # Get data from request
-    vehicle_name = flask.request.form["vehicleName"]
-    conn = psycopg2.connect(database="safe_backend", user="safe", password="",
-                            port="5432")
-    cur = conn.cursor() 
-    cur.execute("SELECT * FROM vehicles WHERE vehicle_name = %s", (vehicle_name, ))
-    sel = cur.fetchone()
-    if sel is not None:
-        flask.flash(f"Error: Vehicle {vehicle_name} already exists!")
-    vehicle_range = flask.request.form["vehicleRange"]
-    vehicle_capacity = flask.request.form["vehicleCapacity"]
-    cur.execute("INSERT INTO vehicles (vehicle_name, capacity, vrange) VALUES (%s, %s, %s)", (vehicle_name, vehicle_capacity, vehicle_range))
-    conn.commit()
-    cur.close()
-    conn.close()
-    return flask.redirect(flask.url_for("show_vehicle_settings"))
+    if flask.request.method == "POST":
+        vehicle_name = flask.request.form["vehicleName"]
+        conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                                port="5432")
+        cur = conn.cursor() 
+        cur.execute("SELECT * FROM vehicles WHERE vehicle_name = %s", (vehicle_name, ))
+        sel = cur.fetchone()
+        if sel is not None:
+            flask.flash(f"Error: Vehicle {vehicle_name} already exists!")
+        vehicle_range = flask.request.form["vehicleRange"]
+        vehicle_capacity = flask.request.form["vehicleCapacity"]
+        cur.execute("INSERT INTO vehicles (vehicle_name, capacity, vrange) VALUES (%s, %s, %s)", (vehicle_name, vehicle_capacity, vehicle_range))
+        conn.commit()
+        cur.close()
+        conn.close()
+        context = {
+            "msg": "Succesfully created vehicle!"
+        }
+        return flask.jsonify(context), 200
+    
+    elif flask.request.method == "GET":
+        conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                                port="5432")
+        cur = conn.cursor() 
+        cur.execute("SELECT * FROM vehicles")
+        sel = cur.fetchall()
+        if len(sel) != 0:
+            context = {
+                "vehicles": []
+            }
+            for vehicle in sel:
+                context["vehicles"].append({
+                    "vehicleID": vehicle[1]
+                })
+            return flask.jsonify(context), 200
+        else:
+            context = {
+                "msg": "No vehicles registered. Add new ones with the agency web app."
+            }
+            return flask.jsonify(context), 404
 
 
 @safe_backend.app.route("/api/v1/settings/pickups/", methods=["GET", "POST", "DELETE"])
@@ -138,6 +163,25 @@ def range():
         cur.close()
         conn.close()
         return flask.redirect(flask.url_for("show_range_settings"))
+    
+    elif flask.request.method == "GET":
+        breakpoint()
+        conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                                port="5432")
+        cur = conn.cursor() 
+        cur.execute("SELECT * FROM ranges")
+        sel = cur.fetchall()
+        context = {
+            "ranges": []
+        }
+        for range in sel:
+            context["ranges"].append(range)
+        cur.close()
+        conn.close()
+        return flask.jsonify(**context), 200
+
+    elif flask.request.method == "DELETE":
+        pass
 
 
 
@@ -181,16 +225,18 @@ def services():
         cur = conn.cursor() 
         cur.execute("SELECT * FROM services", ())
         services = cur.fetchall()
-        context = {}
+        context = {
+            "services": []
+        }
 
         for service in services:
-            context[service[1]] = {
+            context["services"].append({
                 'serviceName': service[1],
                 'startTime': str(service[2]),
                 'endTime': str(service[3]),
                 "provider": service[4],
                 "cost": str(service[5])
-            }
+            })
         conn.commit()
         cur.close()
         conn.close()
