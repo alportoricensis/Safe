@@ -64,13 +64,12 @@ final class RideStore {
                     let pickup = rideInfo["pickup"] as? String ?? "Unknown"
                     let dropoff = rideInfo["dropoff"] as? String ?? "Unknown"
                     let passenger = rideInfo["passenger"] as? String ?? "Unknown"
-                    let rideId = UUID(uuidString: rideID) ?? UUID()
                     
                     fetchedRides.append(Ride(
                         pickupLoc: pickup,
                         dropLoc: dropoff,
                         passenger: passenger,
-                        id: rideId
+                        id: rideID
                     ))
                 }
             }
@@ -83,4 +82,11 @@ final class RideStore {
             print("getRides: NETWORK ERROR")
         }
     }
+    
+    func updateRideStatus(rideId: String, status: String) {
+        if let index = rides.firstIndex(where: { $0.id == rideId }) {
+            rides[index].status = status
+        }
+    }
+
 }

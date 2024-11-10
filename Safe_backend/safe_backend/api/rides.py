@@ -171,6 +171,7 @@ def post_ride():
         context = {
             "msg": f"Service {serviceName} is not currently active."
         }
+        conn.commit()
         cur.close()
         conn.close()
         return flask.jsonify(**context), 400
@@ -186,6 +187,7 @@ def post_ride():
         context = {
             "msg": f"Service {serviceName} does not service {location}."
         }
+        conn.commit()
         cur.close()
         conn.close()
         return flask.jsonify(**context), 400
@@ -194,6 +196,7 @@ def post_ride():
         context = {
             "msg": f"Service {serviceName} does not service {dropoffName}."
         }
+        conn.commit()
         cur.close()
         conn.close()
         return flask.jsonify(**context), 400
@@ -215,7 +218,7 @@ def post_ride():
         # Create ride request object
         rider_id = -1
         newRequest = RideRequests(
-            rider_id=rider_id, status="requested", vehicle_id="Pending Assignment", pickupName=pickup, pickupCoord=(location[2], location[3]),
+            rider_id=rider_id, status="Requested", vehicle_id="Pending Assignment", pickupName=pickup, pickupCoord=(location[2], location[3]),
             dropoff=dropoffCoord, phone=phone, firstName=firstName, lastName=lastName, request_id=req_id[0], numpass=numPass, dropoffName=dropoffName
         )
     
@@ -242,7 +245,7 @@ def post_ride():
 
         newRequest = RideRequests(
             rider_id = user_uid, 
-            status = "requested",
+            status = "Requested",
             vehicle_id = "Pending Assignment",
             pickupName=pickup,
             pickupCoord=(location[2], location[3]),
@@ -254,13 +257,11 @@ def post_ride():
             numpass=numPass,
             dropoffName=dropoffName
         )
-
-        cur.close()
-        conn.close()
     else:
         context = {
             "msg": "Unrecognized rideOrigin"
         }
+        conn.commit()
         cur.close()
         conn.close()
         return flask.jsonify(**context), 400
@@ -272,11 +273,12 @@ def post_ride():
         assign_rides()
 
     # Return success
+    conn.commit()
+    cur.close()
+    conn.close()
     context = {
         "msg": "Successfully created booking!",
         "ride_id": req_id
     }
-    cur.close()
-    conn.close()
     return flask.jsonify(**context), 200
         
