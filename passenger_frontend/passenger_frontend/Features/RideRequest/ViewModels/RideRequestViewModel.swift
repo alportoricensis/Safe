@@ -37,12 +37,12 @@ class RideRequestViewModel: ObservableObject {
     }
         
     // valid pickup locations
-    var validPickupLocations: [String] = ["Bob and Betty Biester", "LSA", "Duderstadt"]
+    var validPickupLocations: [String] = ["Bob and Betty Biester", "LSA", "Duderstadt Center"]
     
     // Request model for the ride request
     struct RideRequestBody: Codable {
         let uuid: String
-        let service: String
+        let serviceName: String
         let pickupLocation: String
         let dropoffLocation: String
         let dropoffLat: Double
@@ -60,8 +60,8 @@ class RideRequestViewModel: ObservableObject {
         state = .loading
         
         let requestBody = RideRequestBody(
-            uuid: UUID().uuidString,
-            service: service.serviceName,
+            uuid: "102278719561247952889",
+            serviceName: service.serviceName,
             pickupLocation: pickupLocation,
             dropoffLocation: dropoffLocationName,
             dropoffLat: dropoffLocation.latitude,
@@ -70,23 +70,51 @@ class RideRequestViewModel: ObservableObject {
             numPassengers: 1
         )
         
-        // TODO: Make actual API request here
-        // Example structure:
-        /*
-        apiClient.post(
-            endpoint: "ride-requests",
-            body: requestBody
-        ) { [weak self] (result: Result<RideRequestResponse, Error>) in
+        guard let url = URL(string: "http://35.3.200.144:5000/api/v1/rides/") else {
+            state = .error("Invalid URL")
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            request.httpBody = try JSONEncoder().encode(requestBody)
+            print("📤 Sending request with body:", requestBody)
+        } catch {
+            state = .error("Failed to encode request body")
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             DispatchQueue.main.async {
-                switch result {
-                case .success(let response):
-                    self?.state = .success
-                    // Handle successful response
-                case .failure(let error):
+                if let error = error {
+                    print("❌ Network error:", error.localizedDescription)
                     self?.state = .error(error.localizedDescription)
+                    return
+                }
+                
+                guard let data = data else {
+                    print("❌ No data received from server")
+                    self?.state = .error("No data received")
+                    return
+                }
+                
+                // Print raw response data for debugging
+                if let rawResponse = String(data: data, encoding: .utf8) {
+                    print("📥 Raw server response:", rawResponse)
+                }
+                
+                do {
+                    let response = try JSONDecoder().decode(RideRequestResponse.self, from: data)
+                    print("✅ Request successful! Response:", response)
+                    self?.state = .success
+                } catch {
+                    print("❌ Decoding error:", error.localizedDescription)
+                    self?.state = .error("Failed to decode response: \(error.localizedDescription)")
                 }
             }
-        }
-        */
+        }.resume()
     }
 }
