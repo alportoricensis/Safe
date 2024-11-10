@@ -133,7 +133,7 @@ def bookings_to_model() -> routeoptimization_v1.ShipmentModel:
     # Iterate through all active ride requests, and create a shipment for each one
     # that hasn't been assigned a vehicle
     for req_id in safe_backend.api.config.RIDE_REQUESTS:
-        if safe_backend.api.config.RIDE_REQUESTS[req_id].status == "requested":
+        if safe_backend.api.config.RIDE_REQUESTS[req_id].status == "Requested":
             # Create Shipment object needed by the Route Optimization API
             shipment = routeoptimization_v1.Shipment()
 

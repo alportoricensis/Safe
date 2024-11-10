@@ -52,15 +52,15 @@ def get_bookings():
     context = {"requests": []}
     for request in requests:
         context["requests"].append({
-            "ride_id": requests[0],
+            "ride_id": request[0],
             "pickup_lat": request[1],
             "pickup_long": request[2],
             "dropoff_lat": request[3],
             "dropoff_long": request[4],
-            "status": request[5],
-            "pickup_time": request[6],
-            "dropoff_time": request[7],
-            "service_name": request[8]
+            "status": request[7],
+            "pickup_time": str(request[8]),
+            "dropoff_time": str(request[9]),
+            "service_name": request[10]
         })
     return flask.jsonify(**context), 200
 
