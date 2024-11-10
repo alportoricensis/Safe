@@ -16,13 +16,11 @@ final class RideStore {
    
     var username = ""
     var password = ""
-    var vehicleID: String?
+    var vehicleId: String?
     var latitude: Double?
     var longitude: Double?
 
     private let serverUrl = "http://35.3.200.144:5000/api/v1/rides/drivers/"
-    
-    var vehicleId: String?
 
 
     // Modify the function to use the vehicleId member variable

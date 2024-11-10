@@ -76,7 +76,7 @@ struct LoginView: View {
                     authManager.isAuthenticated = true
                     RideStore.shared.username = username
                     RideStore.shared.password = password
-                    RideStore.shared.vehicleID = vehicleIDResponse
+                    RideStore.shared.vehicleId = vehicleIDResponse
                 }
             } catch {
                 DispatchQueue.main.async {
