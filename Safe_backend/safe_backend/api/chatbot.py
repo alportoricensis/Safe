@@ -7,20 +7,6 @@ import safe_backend.api.config
 
 genai.configure(api_key = os.environ["GOOGLE_API_KEY"])
 
-model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
-    system_instruction="""You are a helpful support assistant for a ride-sharing service called Safe. 
-    You help users with booking rides, checking ride status, and general inquiries. 
-    Keep responses concise and friendly. If you cannot help with a specific request, 
-    direct users to contact customer support.""",
-    generation_config={
-        "temperature": 0.9,
-        "top_k": 1,
-        "top_p": 1,
-        "max_output_tokens": 2048,
-    },
-)
-
 def how_it_works():
     return (
         "SAFE Ride-Sharing App: FAQ\n\n"
@@ -83,6 +69,17 @@ def how_it_works():
         "For further questions or help, please visit our Help Center in the app or contact SAFE Support via email or chat."
     )
 
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash",
+    system_instruction=f"You are a helpful customer support chatbot for SAFE, a ride-sharing service. You have access to the following FAQ information:\n\n{how_it_works()}\n\nPlease use this information to help users with their questions about SAFE's services, policies, and features. Be concise. Respond in no more than 3 sentences. If you don't know the answer, politely say so and suggest contacting SAFE Support directly.",
+    generation_config={
+        "temperature": 0.9,
+        "top_k": 1,
+        "top_p": 1,
+        "max_output_tokens": 2048,
+    },
+)
+
 
 
 @safe_backend.app.route("/api/v1/chat/", methods=["POST"])
@@ -97,10 +94,6 @@ def chat():
 
     try:
         history = [
-            {
-                "role": "system", 
-                "parts": [f"You are a helpful customer support chatbot for SAFE, a ride-sharing service. You have access to the following FAQ information:\n\n{how_it_works()}\n\nPlease use this information to help users with their questions about SAFE's services, policies, and features. Be concise. Respond in no more than 3 sentences. If you don't know the answer, politely say so and suggest contacting SAFE Support directly."]
-            },
             {
                 "role": "model",
                 "parts": ["Hello! I'm SAFE's virtual assistant. How can I help you today? I can answer questions about booking rides, safety features, account management, and more."]
