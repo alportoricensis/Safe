@@ -52,7 +52,7 @@ def get_passenger_ride(ride_id):
 
     context = {}
     context[ride_id] = {
-        "passenger": safe_backend.api.config.RIDE_REQUESTS[ride_id].firstName + " " + safe_backend.api.config.RIDE_REQUESTS[ride_id].lastName,
+        "passenger": safe_backend.api.config.RIDE_REQUESTS[ride_id].firstName + " " + safe_backend.api.config.RIDE_REQwUESTS[ride_id].lastName,
         "driver": safe_backend.api.config.RIDE_REQUESTS[ride_id].driver,
         "pickup": safe_backend.api.config.RIDE_REQUESTS[ride_id].pickupName,
         "dropoff": safe_backend.api.config.RIDE_REQUESTS[ride_id].dropoff,
@@ -140,14 +140,14 @@ def delete_ride_request(ride_id):
 # MODIFIES - VEHICLE_QUEUES, RIDE_REQUESTS
 def post_ride():
     """Add a RideRequest to the ride-share service."""
-    rideOrigin = flask.request.form["rideOrigin"]
+    rideOrigin = flask.request.form["rideOrigin"] if "rideOrigin" in flask.request.form else flask.request.json["rideOrigin"]
 
     # Three options exist for booking a ride: through a call-in (dispatcher), through a walk-on (driver),
     # or through the passenger app. These follow slightly different paths.
 
     # TODO: Authentication - can be either flask.request.args.user_id or an agency-level account
     # Check the service the user is booking for, and the service times
-    serviceName = flask.request.form["services"]
+    serviceName = flask.request.json["serviceName"] if (rideOrigin != "callIn") else flask.request.form["serviceName"]
     conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                             port="5432")
     cur = conn.cursor()
@@ -165,7 +165,6 @@ def post_ride():
     currTime = datetime.datetime.now().time()
     startTime = services[0][1]
     endTime = services[0][2]
-    breakpoint()
     if not check_time(startTime, endTime, currTime):
         context = {
             "msg": f"Service {serviceName} is not currently active."
@@ -175,9 +174,9 @@ def post_ride():
         return flask.jsonify(**context), 400
     
     # Check the pickup and dropoff validity
-    pickup = flask.request.form["pickupLocation"]
-    dropoffName = flask.request.form["dropoffLocation"]
-    dropoffCoord = (flask.request.form["dropoffLat"], flask.request.form["dropoffLong"])
+    pickup = flask.request.json["pickupLocation"] if (rideOrigin != "callIn") else flask.request.form["pickupLocation"]
+    dropoffName = flask.request.json["dropoffLocation"] if (rideOrigin != "callIn") else flask.request.form["dropoffLocation"]
+    dropoffCoord = (flask.request.json["dropoffLat"], flask.request.json["dropoffLong"]) if (rideOrigin != "callIn") else (flask.request.form["dropoffLat"], flask.request.form["dropoffLong"])
     cur.execute("SELECT * FROM locations WHERE loc_name = %s", (pickup, ))
     location = cur.fetchone()
     req_id = -1
@@ -205,7 +204,7 @@ def post_ride():
         numPass = flask.request.form["numPassengers"]
 
         cur.execute(
-            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, service_id) VALUES \
+            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, service_name) VALUES \
                 (%s, %s, %s, %s, %s, %s) RETURNING ride_id", (location[2], location[3], dropoffCoord[0], dropoffCoord[1], "requested",
                                             services[0][0])
         )
@@ -220,19 +219,21 @@ def post_ride():
     
     # If the ride came from a passenger app,
     elif rideOrigin == "passenger":
-        user_uid = flask.request.form["uuid"]
+        user_uid = flask.request.json["uuid"]
+        numPass = flask.request.json["numPassengers"]
 
         # Check the user has been logged in/exists
         cur.execute("SELECT * FROM users WHERE uuid = %s", (user_uid, ))
         sel = cur.fetchone()
-        if len(sel) == 0:
+        if sel is None:
             return flask.jsonify(**{"msg": "Unknown uuid in database"}), 404
         firstName = sel[1].split(" ")[0]
         lastName = sel[1].split(" ")[1]
+        phone = sel[3]
 
         cur.execute(
-            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, service_id, user_id) VALUES \
-                (%s, %s, %s, %s, %s, %s) RETURNING ride_id", (location[2], location[3], dropoffCoord[0], dropoffCoord[1], "requested",
+            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, service_name, user_id) VALUES \
+                (%s, %s, %s, %s, %s, %s, %s) RETURNING ride_id", (location[2], location[3], dropoffCoord[0], dropoffCoord[1], "requested",
                                             services[0][0], user_uid)
         )
         req_id = cur.fetchone()
@@ -241,6 +242,7 @@ def post_ride():
             rider_id = user_uid, 
             status = "requested",
             vehicle_id = "Pending Assignment",
+            pickupName=pickup,
             pickupCoord=(location[2], location[3]),
             dropoff=dropoffCoord,
             phone=phone,
@@ -264,7 +266,7 @@ def post_ride():
     safe_backend.api.config.RIDE_REQUESTS[str(req_id[0])] = newRequest
 
     # If there is a vehicle with no active rides, call its assignment function
-    if not safe_backend.api.config.VEHICLE_QUEUES:
+    if safe_backend.api.config.VEHICLE_QUEUES:
         assign_rides()
 
     # Return success

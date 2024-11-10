@@ -110,6 +110,8 @@ def assign_rides():
 def bookings_to_model() -> routeoptimization_v1.ShipmentModel:
     """Create the model needed by the Route Optimization API."""
     ShipmentModel = routeoptimization_v1.ShipmentModel()
+    ShipmentModel.global_start_time = datetime.datetime.now().replace(microsecond = 0)
+    ShipmentModel.global_end_time = datetime.datetime.now().replace(microsecond = 0) + datetime.timedelta(hours = 23)
 
     # For all of the currently active vehicles, set up the vehicle needed by the API
     for vehicle in safe_backend.api.config.VEHICLE_QUEUES:
