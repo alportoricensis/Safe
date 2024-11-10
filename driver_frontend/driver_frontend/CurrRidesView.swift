@@ -10,7 +10,7 @@ struct CurrRidesView: View {
             List(store.rides) { ride in
                 RideList(ride: ride)
                     .listRowSeparator(.hidden)
-                    .listRowBackground(Color(red:0.2, green:0.2, blue:0.5))
+                    .listRowBackground(Color(red: 0/255, green: 39/255, blue: 76/255))
             }
             .listStyle(.plain)
             .onAppear {
