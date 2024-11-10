@@ -22,6 +22,8 @@ def get_rides():
             "driver": value.driver,
             "pickup": value.pickupName,
             "dropoff": value.dropoffName,
+            "phone": value.phone,
+            "status": value.status,
             "ETA": value.eta,
             "ETP": value.etp,
             "reqid": value.request_id

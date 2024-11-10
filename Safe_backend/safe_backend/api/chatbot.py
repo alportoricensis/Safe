@@ -1,10 +1,11 @@
 """REST API for support chatbot using Google Gemini."""
 from flask import Response, request
+import os
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
-import safe_backend
+import safe_backend.api.config
 
-genai.configure(api_key=safe_backend.app.config['GOOGLE_API_KEY'])
+genai.configure(api_key = os.environ["GOOGLE_API_KEY"])
 
 model = genai.GenerativeModel(
     model_name="gemini-1.5-flash",
