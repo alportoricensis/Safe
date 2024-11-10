@@ -28,7 +28,7 @@ struct BookingsView: View {
                     }
                 }
             }
-            .navigationBarTitle("My Bookings", displayMode: .inline)
+            .withSafeTopBar()
         }
         .onAppear {
             viewModel.fetchBookings()
