@@ -9896,7 +9896,7 @@ function CallInForm() {
   };
   var getServices = /*#__PURE__*/function () {
     var _ref = (0,_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0__["default"])(/*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee() {
-      var resp, data, arr, names, i;
+      var resp, data, names, i, arr;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -9915,10 +9915,9 @@ function CallInForm() {
           case 6:
             data = _context.sent;
             if (data !== null) {
-              arr = Object.values(data);
               names = [];
-              for (i = 0; i < arr.length; i++) {
-                names.push(arr[i]["serviceName"]);
+              for (i = 0; i < data["services"].length; i++) {
+                names.push(data["services"][i]["serviceName"]);
               }
               setServices(names);
             } else {
@@ -9945,7 +9944,7 @@ function CallInForm() {
   // Get pickup locations
   var getPickups = /*#__PURE__*/function () {
     var _ref2 = (0,_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0__["default"])(/*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().mark(function _callee2() {
-      var resp, data, arr;
+      var resp, data, location, arr;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
@@ -9964,7 +9963,10 @@ function CallInForm() {
           case 6:
             data = _context2.sent;
             if (data !== null) {
-              arr = Object.values(data["locations"]);
+              arr = [];
+              for (location in data["All Day"]) {
+                arr.push(data["All Day"][location]);
+              }
               setPickups(arr);
             } else {
               arr = [];
@@ -10033,8 +10035,8 @@ function CallInForm() {
     name: "dropoffLong",
     value: dropOffLng
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("select", {
-    name: "services",
-    id: "services"
+    name: "serviceName",
+    id: "serviceName"
   }, services.map(function (service) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_3___default().createElement("option", {
       value: service,

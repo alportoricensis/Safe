@@ -34,10 +34,9 @@ export default function CallInForm() {
             });
             const data = await resp.json();
             if (data !== null) {
-                var arr = Object.values(data);
                 var names = []
-                for (let i = 0; i < arr.length; i++) {
-                    names.push(arr[i]["serviceName"])
+                for (var i = 0; i < data["services"].length; i++) {
+                    names.push(data["services"][i]["serviceName"])
                 }
                 setServices(names);
             } else {
@@ -60,7 +59,10 @@ export default function CallInForm() {
             });
             const data = await resp.json();
             if (data !== null) {
-                var arr = Object.values(data["locations"]);
+                arr = []
+                for (const location in data["All Day"]) {
+                    arr.push(data["All Day"][location])
+                }
                 setPickups(arr);
             } else {
                 var arr = [];
@@ -104,7 +106,7 @@ export default function CallInForm() {
                         <input type="hidden" name="rideOrigin" value="callIn"/>
                         <input type="hidden" name="dropoffLat" value={dropOffLat}/>
                         <input type="hidden" name="dropoffLong" value={dropOffLng}/>
-                        <select name="services" id="services">
+                        <select name="serviceName" id="serviceName">
                             {services.map((service) => <option value={service} key={service}>{service}</option>)}
                         </select>
                         <br></br>
