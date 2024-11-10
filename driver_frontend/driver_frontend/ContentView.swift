@@ -2,6 +2,9 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var selectedTab: Tab = .current // Default selected tab
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    @State private var isLoggedOut = false
     
     enum Tab {
         case current, completed
@@ -11,13 +14,24 @@ struct ContentView: View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
                 VStack {
+                    Button(action: logoutVehicle) {
+                        Text("Logout Vehicle")
+                            .font(.headline)
+                            .padding()
+                            .background(Color.red)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                            .padding(.top, 10)
+                    }
+                    
                     Text("Assigned Rides")
                         .font(.largeTitle)
                         .foregroundColor(.white)
-                        .padding(.top, 60)
+                        .padding(.top, 40)
                     
                     Spacer()
                     
+                    // Tab buttons for 'Current' and 'Completed' rides
                     HStack(spacing: 0) {
                         TabButton(text: "Completed", isSelected: selectedTab == .completed) {
                             selectedTab = .completed
@@ -27,6 +41,12 @@ struct ContentView: View {
                         }
                     }
                     .background(Color(red: 2/255, green: 28/255, blue: 52/255))
+                    
+                    // Logout Button
+                    
+                    .alert(isPresented: $showAlert) {
+                        Alert(title: Text("Logout Status"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+                    }
                 }
                 .frame(width: geometry.size.width, height: geometry.size.height * 0.25)
                 .background(Color(red: 2/255, green: 28/255, blue: 52/255))
@@ -50,6 +70,53 @@ struct ContentView: View {
             .edgesIgnoringSafeArea(.all)
             .withSafeTopBar()
         }
+    }
+    
+    func logoutVehicle() {
+        if let vehicleId = RideStore.shared.vehicleId {
+            logoutAPI(vehicleId: vehicleId) { success, message in
+                DispatchQueue.main.async {
+                    alertMessage = message
+                    showAlert = true
+                    
+                    if success {
+                        isLoggedOut = true
+                    }
+                }
+            }
+        } else {
+            // Handle the case where vehicleId is nil
+            alertMessage = "No vehicle ID available."
+            showAlert = true
+        }
+    }
+
+    
+    func logoutAPI(vehicleId: String, completion: @escaping (Bool, String) -> Void) {
+        guard let url = URL(string: "http://35.2.2.224:5000/api/v1/vehicles/logout/\(vehicleId)/") else {
+            completion(false, "Invalid URL")
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
+
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(false, "Error: \(error.localizedDescription)")
+                return
+            }
+
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                completion(true, "Successfully logged out.")
+            } else {
+                completion(false, "Failed to log out. Vehicle may not be active.")
+            }
+        }
+
+        task.resume()
     }
 }
 
