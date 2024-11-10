@@ -47,7 +47,6 @@ class Vehicle:
                         dict_copy[visit.shipment_label].isPickup = False
                         dict_copy[visit.shipment_label].etp = False
                         self.itinerary.append(dict_copy[visit.shipment_label])
-        breakpoint()
 
 
     # REQUIRES
