@@ -30,7 +30,6 @@ class Vehicle:
         """Transform a response from the Route Optimization API to a queue of places to visit."""
         # For each visit in the returns routes response,
         dict_copy = copy.deepcopy(safe_backend.api.config.RIDE_REQUESTS)
-        isFirst = True
         for route in response.routes:
             if route.vehicle_label == self.vehicle_id:
                 for visit in route.visits:
@@ -38,9 +37,7 @@ class Vehicle:
                     if visit.is_pickup == True:
                         # Add to itinerary WITH isPickup = true - used to display order of assignment
                         self.itinerary.append(safe_backend.api.config.RIDE_REQUESTS[visit.shipment_label])
-                        if isFirst:
-                            safe_backend.api.config.RIDE_REQUESTS[visit.shipment_label].status = "In-Progress"
-                            isFirst = False
+                        safe_backend.api.config.RIDE_REQUESTS[visit.shipment_label].status = "In-Progress"
                         safe_backend.api.config.RIDE_REQUESTS[visit.shipment_label].driver = self.vehicle_id
                         safe_backend.api.config.RIDE_REQUESTS[visit.shipment_label].etp = visit.start_time
                     # Otherwise, this is a dropoff, so get the dropoff coordinates corresponding to shipment index

@@ -26,7 +26,8 @@ def get_rides():
             "status": value.status,
             "ETA": value.eta,
             "ETP": value.etp,
-            "reqid": value.request_id
+            "reqid": value.request_id,
+            "numPassengers": value.numpass
         }
     return flask.jsonify(**context), 200
 
@@ -62,6 +63,9 @@ def get_passenger_ride(ride_id):
         "ETP": safe_backend.api.config.RIDE_REQUESTS[ride_id].etp,
         "reqid": ride_id
     }
+    if safe_backend.api.config.RIDE_REQUESTS[ride_id].driver != "Pending Assignment":
+        context[ride_id]["driverLat"] = safe_backend.api.config.VEHICLE_QUEUES[safe_backend.api.config.RIDE_REQUESTS[ride_id].driver].lat
+        context[ride_id]["driverLong"] = safe_backend.api.config.VEHICLE_QUEUES[safe_backend.api.config.RIDE_REQUESTS[ride_id].driver].log
     return flask.jsonify(**context), 200
 
 
@@ -207,11 +211,12 @@ def post_ride():
         lastName = flask.request.form["passengerLastName"]
         phone = flask.request.form["passengerPhoneNumber"]
         numPass = flask.request.form["numPassengers"]
+        request_time = datetime.datetime.now()
 
         cur.execute(
-            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, service_name) VALUES \
-                (%s, %s, %s, %s, %s, %s) RETURNING ride_id", (location[2], location[3], dropoffCoord[0], dropoffCoord[1], "requested",
-                                            services[0][0])
+            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, request_time, service_name) VALUES \
+                (%s, %s, %s, %s, %s, %s, %s) RETURNING ride_id", (location[2], location[3], dropoffCoord[0], dropoffCoord[1], "requested",
+                                            request_time, services[0][0])
         )
         req_id = cur.fetchone()
 
@@ -219,13 +224,14 @@ def post_ride():
         rider_id = -1
         newRequest = RideRequests(
             rider_id=rider_id, status="Requested", vehicle_id="Pending Assignment", pickupName=pickup, pickupCoord=(location[2], location[3]),
-            dropoff=dropoffCoord, phone=phone, firstName=firstName, lastName=lastName, request_id=req_id[0], numpass=numPass, dropoffName=dropoffName
+            dropoff=dropoffCoord, request_time=str(request_time), phone=phone, firstName=firstName, lastName=lastName, request_id=req_id[0], numpass=numPass, dropoffName=dropoffName
         )
     
     # If the ride came from a passenger app,
     elif rideOrigin == "passenger":
         user_uid = flask.request.json["uuid"]
         numPass = flask.request.json["numPassengers"]
+        request_time = datetime.datetime.now()
 
         # Check the user has been logged in/exists
         cur.execute("SELECT * FROM users WHERE uuid = %s", (user_uid, ))
@@ -237,9 +243,9 @@ def post_ride():
         phone = sel[3]
 
         cur.execute(
-            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, service_name, user_id) VALUES \
-                (%s, %s, %s, %s, %s, %s, %s) RETURNING ride_id", (location[2], location[3], dropoffCoord[0], dropoffCoord[1], "requested",
-                                            services[0][0], user_uid)
+            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, request_time, service_name, user_id) VALUES \
+                (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING ride_id", (location[2], location[3], dropoffCoord[0], dropoffCoord[1], "requested",
+                                            request_time, services[0][0], user_uid)
         )
         req_id = cur.fetchone()
 
@@ -254,6 +260,7 @@ def post_ride():
             firstName=firstName,
             lastName=lastName,
             request_id=req_id[0],
+            request_time=str(request_time),
             numpass=numPass,
             dropoffName=dropoffName
         )

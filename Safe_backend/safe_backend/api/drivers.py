@@ -106,6 +106,9 @@ def logout_vehicle(vehicle_id):
         return flask.jsonify(**context), 404
         
     # Grab vehicle from mapping and remove it
+    for ride_request in safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].itinerary:
+        ride_request.status = "Requested"
+        ride_request.driver = "Pending Assignment"
     del safe_backend.api.config.VEHICLE_QUEUES[vehicle_id]
 
     # Return success
@@ -203,9 +206,17 @@ def load_unload():
         # Update ride_id's status
         safe_backend.api.config.RIDE_REQUESTS[ride_id].status = "In-Progress"
 
+        conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                            port="5432")
+        cur = conn.cursor()
+        cur.execute("UPDATE ride_requests SET pickup_time = %s WHERE ride_id = %s;", (datetime.datetime.now() ,safe_backend.api.config.RIDE_REQUESTS[ride_id].request_id, ))
+        conn.commit()
+        cur.close()
+        conn.close()
+
         # Update vehicle_id capacity and itinerary
         safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].capacity -= safe_backend.api.config.RIDE_REQUESTS[ride_id].numpass
-        safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].queue.pop(0)
+        safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].itinerary = [ride for ride in safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].itinerary if (ride.request_id != ride_id and not ride.isPickup)]
 
         # Return success
         context = {
@@ -221,14 +232,14 @@ def load_unload():
         conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                             port="5432")
         cur = conn.cursor()
-        cur.execute("UPDATE ride_requests SET status = %s WHERE ride_id = %s;", ("Complete", safe_backend.api.config.RIDE_REQUESTS[ride_id].request_id, ))
+        cur.execute("UPDATE ride_requests SET status = %s, dropoff_time = %s WHERE ride_id = %s;", ("Complete",datetime.datetime.now() ,safe_backend.api.config.RIDE_REQUESTS[ride_id].request_id, ))
         conn.commit()
         cur.close()
         conn.close()
 
         # Update vehicle_id capacity and itinerary
         safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].capacity += safe_backend.api.config.RIDE_REQUESTS[ride_id].numpass
-        safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].queue.pop(0)
+        safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].itinerary = [ride for ride in safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].itinerary if ride.request_id != ride_id]
         del safe_backend.api.config.RIDE_REQUESTS[ride_id]
 
         # Return success

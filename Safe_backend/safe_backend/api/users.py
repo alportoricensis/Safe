@@ -38,10 +38,10 @@ def delete_acct():
 def update_acct():
     pass
 
-@safe_backend.app.route("/api/v1/users/bookings/", methods=["GET"])
+@safe_backend.app.route("/api/v1/users/bookings", methods=["GET"])
 def get_bookings():
     # Get UUID from the request
-    pass_uuid = flask.request.json["uuid"]
+    pass_uuid = flask.request.args.get("uuid")
 
     # Get prior rides from the database
     conn = psycopg2.connect(database="safe_backend", user="safe", password="",
@@ -60,7 +60,8 @@ def get_bookings():
             "status": request[7],
             "pickup_time": str(request[8]),
             "dropoff_time": str(request[9]),
-            "service_name": request[10]
+            "request_time": str(request[10]),
+            "service_name": request[11]
         })
     return flask.jsonify(**context), 200
 
