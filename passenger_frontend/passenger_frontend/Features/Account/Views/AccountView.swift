@@ -67,13 +67,15 @@ struct AccountView: View {
                     }
                     
                     // Support Section
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Support")
-                            .foregroundColor(.white)
-                            .font(.headline)
-                        Text("Talk to a support chatbot to get help right away")
-                            .foregroundColor(.gray)
-                            .font(.subheadline)
+                    NavigationLink(destination: ChatbotView()) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Support")
+                                .foregroundColor(.white)
+                                .font(.headline)
+                            Text("Talk to a support chatbot to get help right away")
+                                .foregroundColor(.gray)
+                                .font(.subheadline)
+                        }
                     }
                     
                     // Sign Out Button

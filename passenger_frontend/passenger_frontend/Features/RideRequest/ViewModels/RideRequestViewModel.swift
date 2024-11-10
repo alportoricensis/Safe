@@ -28,13 +28,12 @@ enum RideRequestState: Equatable {
 class RideRequestViewModel: ObservableObject {
     @Published var state: RideRequestState = .idle
     @Published var authViewModel: AuthViewModel?
+    @Published var currentRideId: Int?
     
     // Response model for the ride request
     struct RideRequestResponse: Codable {
-        let requestId: String
-        let estimatedTime: Int
-        let estimatedPrice: Double
-        // Add other response fields as needed
+        let msg: String
+        let ride_id: [Int]
     }
         
     // valid pickup locations
@@ -115,6 +114,7 @@ class RideRequestViewModel: ObservableObject {
                 do {
                     let response = try JSONDecoder().decode(RideRequestResponse.self, from: data)
                     print("✅ Request successful! Response:", response)
+                    self?.currentRideId = response.ride_id.first
                     self?.state = .success
                 } catch {
                     print("❌ Decoding error:", error.localizedDescription)
