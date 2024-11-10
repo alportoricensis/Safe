@@ -11,7 +11,8 @@ struct Ride: Identifiable {
     var pickupLoc: String?
     var dropLoc: String?
     var passenger: String?
-    var id: UUID?
+    var id: String?
+    var status: String?
     
     static func ==(lhs: Ride, rhs: Ride) -> Bool {
         lhs.id == rhs.id

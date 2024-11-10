@@ -18,6 +18,9 @@
 		901AC6012CE0073E00FDA176 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6002CE0073400FDA176 /* LoginView.swift */; };
 		901AC6032CE0096A00FDA176 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6022CE0096500FDA176 /* AuthManager.swift */; };
 		901AC6052CE00D5900FDA176 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6042CE00D5200FDA176 /* AppState.swift */; };
+		901AC6082CE0252100FDA176 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6072CE0251B00FDA176 /* LocationManager.swift */; };
+		901AC60A2CE02C0100FDA176 /* LocManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6092CE02BFC00FDA176 /* LocManager.swift */; };
+		927EEB2C2CE147B200E300AC /* SafeTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 927EEB2B2CE147B200E300AC /* SafeTopBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +36,10 @@
 		901AC6002CE0073400FDA176 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		901AC6022CE0096500FDA176 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		901AC6042CE00D5200FDA176 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		901AC6062CE01DE200FDA176 /* driver-frontend-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "driver-frontend-Info.plist"; sourceTree = SOURCE_ROOT; };
+		901AC6072CE0251B00FDA176 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		901AC6092CE02BFC00FDA176 /* LocManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocManager.swift; sourceTree = "<group>"; };
+		927EEB2B2CE147B200E300AC /* SafeTopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeTopBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +72,10 @@
 		22A575F92CD596DB00D9A43E /* driver_frontend */ = {
 			isa = PBXGroup;
 			children = (
+				927EEB2B2CE147B200E300AC /* SafeTopBar.swift */,
+				901AC6092CE02BFC00FDA176 /* LocManager.swift */,
+				901AC6072CE0251B00FDA176 /* LocationManager.swift */,
+				901AC6062CE01DE200FDA176 /* driver-frontend-Info.plist */,
 				901AC6042CE00D5200FDA176 /* AppState.swift */,
 				901AC6022CE0096500FDA176 /* AuthManager.swift */,
 				901AC6002CE0073400FDA176 /* LoginView.swift */,
@@ -160,12 +171,15 @@
 			files = (
 				901AC6012CE0073E00FDA176 /* LoginView.swift in Sources */,
 				22A5760F2CD5BB5300D9A43E /* CurrRidesView.swift in Sources */,
+				927EEB2C2CE147B200E300AC /* SafeTopBar.swift in Sources */,
+				901AC6082CE0252100FDA176 /* LocationManager.swift in Sources */,
 				22A575FD2CD596DB00D9A43E /* ContentView.swift in Sources */,
 				901AC6052CE00D5900FDA176 /* AppState.swift in Sources */,
 				22A5760B2CD59FF500D9A43E /* RideList.swift in Sources */,
 				901AC6032CE0096A00FDA176 /* AuthManager.swift in Sources */,
 				22A576092CD5982A00D9A43E /* DriverRides.swift in Sources */,
 				22A575FB2CD596DB00D9A43E /* driver_frontendApp.swift in Sources */,
+				901AC60A2CE02C0100FDA176 /* LocManager.swift in Sources */,
 				22A5760D2CD5ACC000D9A43E /* RideStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -300,8 +314,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"driver_frontend/Preview Content\"";
+				DEVELOPMENT_TEAM = 82AWW7824G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "driver-frontend-Info.plist";
+				INFOPLIST_KEY_NSLocationUsageDescription = "allow access to your current location";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -328,8 +345,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"driver_frontend/Preview Content\"";
+				DEVELOPMENT_TEAM = 82AWW7824G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "driver-frontend-Info.plist";
+				INFOPLIST_KEY_NSLocationUsageDescription = "allow access to your current location";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

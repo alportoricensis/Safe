@@ -16,11 +16,11 @@ final class RideStore {
    
     var username = ""
     var password = ""
-    var vehicleID: String?
-
-    private let serverUrl = "https://35.3.200.144:5000/api/v1/rides/drivers/"
-    
     var vehicleId: String?
+    var latitude: Double?
+    var longitude: Double?
+
+    private let serverUrl = "http://35.2.2.224:5000/api/v1/rides/drivers/"
 
 
     // Modify the function to use the vehicleId member variable
@@ -63,12 +63,13 @@ final class RideStore {
                 if let rideInfo = rideData as? [String: Any] {
                     let pickup = rideInfo["pickup"] as? String ?? "Unknown"
                     let dropoff = rideInfo["dropoff"] as? String ?? "Unknown"
-                    let rideId = UUID(uuidString: rideID) ?? UUID()
+                    let passenger = rideInfo["passenger"] as? String ?? "Unknown"
                     
                     fetchedRides.append(Ride(
                         pickupLoc: pickup,
                         dropLoc: dropoff,
-                        id: rideId
+                        passenger: passenger,
+                        id: rideID
                     ))
                 }
             }
@@ -81,4 +82,11 @@ final class RideStore {
             print("getRides: NETWORK ERROR")
         }
     }
+    
+    func updateRideStatus(rideId: String, status: String) {
+        if let index = rides.firstIndex(where: { $0.id == rideId }) {
+            rides[index].status = status
+        }
+    }
+
 }
