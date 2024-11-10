@@ -3,7 +3,6 @@ import datetime
 import flask
 import safe_backend
 import psycopg2
-from collections import deque
 
 
 # Routes
@@ -41,7 +40,11 @@ def vehicles():
         sel = cur.fetchall()
         context = {"vehicles": []}
         for vehicle in sel:
-            context["vehicles"].append(vehicle[1])
+            context["vehicles"].append({
+                "vehicle_id": vehicle[1],
+                "capacity": vehicle[2],
+                "vrange": vehicle[3],
+            })
         return flask.jsonify(**context), 200
 
 
@@ -106,16 +109,18 @@ def locations():
         conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                                 port="5432")
         cur = conn.cursor()
-        location_name = flask.request.form["loc_name"]
-        cur.execute("SELECT * FROM locations WHERE loc_name = %s;", (location_name, ))
+        location_name = flask.request.json["locationName"]
+        service_name = flask.request.json["serviceName"]
+        cur.execute("SELECT * FROM locations WHERE loc_name = %s AND service_name = %s;", (location_name, service_name, ))
         sel = cur.fetchall()
         if sel is None:
             flask.flash(f"Error: Location {location_name} does not exist!")
             return
-        cur.execute("DELETE * FROM locations WHERE loc_name = %s;", (location_name, ))
+        cur.execute("DELETE FROM locations WHERE loc_name = %s AND service_name = %s;", (location_name, service_name, ))
+        conn.commit()
         cur.close()
         conn.close()
-        return flask.redirect(flask.url_for("show_location_settings"))
+        return flask.jsonify(**{"msg": "Successfully delete location."}), 200
 
 
 @safe_backend.app.route("/api/v1/settings/ranges/", methods=["GET", "POST", "DELETE"])
@@ -189,7 +194,7 @@ def range():
         conn.commit()
         cur.close()
         conn.close()
-        return flask.jsonify(**{"msg": "Succesfully deleted range"}), 200
+        return flask.jsonify(**{"msg": "Successfully deleted."}), 200
 
 
 @safe_backend.app.route("/api/v1/settings/services/", methods=["GET", "POST", "DELETE", "PATCH"])
@@ -238,7 +243,7 @@ def services():
                 'serviceName': service[0],
                 'startTime': str(service[1]),
                 'endTime': str(service[2]),
-                "provider": service[3],
+                "provider": str(service[3]),
                 "cost": str(service[4])
             })
         conn.commit()
@@ -272,5 +277,8 @@ def services():
         end_time = flask.request.json["endTime"]
         cur.execute("UPDATE services SET start_time = %s, end_time = %s WHERE service_name = %s;", (start_time, end_time, service_name,))
         context = {}
+        conn.commit()
+        cur.close()
+        conn.close()
         return flask.jsonify(context), 200
         
