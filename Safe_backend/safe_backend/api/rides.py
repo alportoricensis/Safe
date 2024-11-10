@@ -218,7 +218,7 @@ def post_ride():
         # Create ride request object
         rider_id = -1
         newRequest = RideRequests(
-            rider_id=rider_id, status="requested", vehicle_id="Pending Assignment", pickupName=pickup, pickupCoord=(location[2], location[3]),
+            rider_id=rider_id, status="Requested", vehicle_id="Pending Assignment", pickupName=pickup, pickupCoord=(location[2], location[3]),
             dropoff=dropoffCoord, phone=phone, firstName=firstName, lastName=lastName, request_id=req_id[0], numpass=numPass, dropoffName=dropoffName
         )
     
@@ -245,7 +245,7 @@ def post_ride():
 
         newRequest = RideRequests(
             rider_id = user_uid, 
-            status = "requested",
+            status = "Requested",
             vehicle_id = "Pending Assignment",
             pickupName=pickup,
             pickupCoord=(location[2], location[3]),
