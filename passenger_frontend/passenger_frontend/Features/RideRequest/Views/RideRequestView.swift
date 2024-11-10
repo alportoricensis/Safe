@@ -9,6 +9,8 @@ import CoreLocation
 struct RideRequestView: View {
     let service: Service
     @StateObject private var viewModel = RideRequestViewModel()
+    @EnvironmentObject var authViewModel: AuthViewModel
+
     @Environment(\.dismiss) private var dismiss
 
     @State private var pickupLocationName: String = "Enter pickup point"
@@ -161,6 +163,9 @@ struct RideRequestView: View {
                     Text(message)
                 }
             }
+        }
+        .onAppear {
+            viewModel.authViewModel = authViewModel
         }
     }
 

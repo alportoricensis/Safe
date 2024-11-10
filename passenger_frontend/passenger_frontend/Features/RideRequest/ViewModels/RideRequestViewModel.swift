@@ -27,6 +27,7 @@ enum RideRequestState: Equatable {
 
 class RideRequestViewModel: ObservableObject {
     @Published var state: RideRequestState = .idle
+    @Published var authViewModel: AuthViewModel?
     
     // Response model for the ride request
     struct RideRequestResponse: Codable {
@@ -59,8 +60,13 @@ class RideRequestViewModel: ObservableObject {
     ) {
         state = .loading
         
+        guard let userId = authViewModel?.user?.id else {
+            state = .error("User not authenticated")
+            return
+        }
+        
         let requestBody = RideRequestBody(
-            uuid: "102278719561247952889",
+            uuid: userId,
             serviceName: service.serviceName,
             pickupLocation: pickupLocation,
             dropoffLocation: dropoffLocationName,
@@ -70,7 +76,7 @@ class RideRequestViewModel: ObservableObject {
             numPassengers: 1
         )
         
-        guard let url = URL(string: "http://35.3.200.144:5000/api/v1/rides/") else {
+        guard let url = URL(string: "http://35.2.2.224:5000/api/v1/rides/") else {
             state = .error("Invalid URL")
             return
         }
