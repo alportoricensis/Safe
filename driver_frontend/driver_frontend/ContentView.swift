@@ -26,10 +26,10 @@ struct ContentView: View {
                             selectedTab = .current
                         }
                     }
-                    .background(Color(red: 0.1, green: 0.1, blue: 0.3))
+                    .background(Color(red: 2/255, green: 28/255, blue: 52/255))
                 }
                 .frame(width: geometry.size.width, height: geometry.size.height * 0.25)
-                .background(Color(red: 0.1, green: 0.1, blue: 0.3))
+                .background(Color(red: 2/255, green: 28/255, blue: 52/255))
                 
                 VStack {
                     if selectedTab == .current {
@@ -45,9 +45,10 @@ struct ContentView: View {
                     Spacer()
                 }
                 .frame(width: geometry.size.width, height: geometry.size.height)
-                .background(Color(red: 0.2, green: 0.2, blue: 0.5))
+                .background(Color(red: 0/255, green: 39/255, blue: 76/255))
             }
             .edgesIgnoringSafeArea(.all)
+            .withSafeTopBar()
         }
     }
 }

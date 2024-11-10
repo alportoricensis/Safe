@@ -39,10 +39,13 @@ class Vehicle:
                         self.itinerary.append(safe_backend.api.config.RIDE_REQUESTS[visit.shipment_label])
                         safe_backend.api.config.RIDE_REQUESTS[visit.shipment_label].status = "Assigned"
                         safe_backend.api.config.RIDE_REQUESTS[visit.shipment_label].driver = self.vehicle_id
+                        safe_backend.api.config.RIDE_REQUESTS[visit.shipment_label].etp = visit.start_time
                     # Otherwise, this is a dropoff, so get the dropoff coordinates corresponding to shipment index
                     else:
                         # Add to itinerary WITH isPickup = false - used to display order of assignment
+                        safe_backend.api.config.RIDE_REQUESTS[visit.shipment_label].eta = visit.start_time
                         dict_copy[visit.shipment_label].isPickup = False
+                        dict_copy[visit.shipment_label].etp = False
                         self.itinerary.append(dict_copy[visit.shipment_label])
 
 

@@ -57,7 +57,8 @@ def login_vehicle():
 
     # Return success
     context = {
-        "msg": "Successfully logged in vehicle: " + vehicle_id
+        "msg": f"Successfully logged in vehicle: {vehicle_id}",
+        "vehicle_id": vehicle_id  # Add vehicle_id to context
     }
 
     return flask.jsonify(**context), 200
@@ -89,16 +90,15 @@ def pause_vehicle(vehicle_id):
     return flask.jsonify(**context), 200
 
 
-@safe_backend.app.route("/api/v1/vehicles/logout/", methods=["POST"])
+@safe_backend.app.route("/api/v1/vehicles/logout/<vehicle_id>/", methods=["POST"])
 # REQUIRES  - User is authenticated with driver-level permissions
 # EFFECTS   - Marks <vehicle_id> as logged out
 # MODIFIES  - VEHICLE_QUEUES
-def logout_vehicle():
+def logout_vehicle(vehicle_id):
     """Marks <vehicle_id> as logged out."""
     # TODO: Authentication
 
     # If vehicle is not active, return a 404
-    vehicle_id = flask.request.json["vehicle_id"]
     if vehicle_id not in safe_backend.api.config.VEHICLE_QUEUES:
         context = {
             "msg": "Vehicle " + vehicle_id + " is not active."
@@ -222,10 +222,6 @@ def load_unload():
         safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].capacity += safe_backend.api.config.RIDE_REQUESTS[ride_id].numpass
         safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].queue.pop(0)
         del safe_backend.api.config.RIDE_REQUESTS[ride_id]
-
-        # If empty, get more rides assigned
-        if safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].capacity == safe_backend.api.config.VEHICLE_QUEUES[vehicle_id].maxcapacity:
-            assign_rides()
 
         # Return success
         context = {

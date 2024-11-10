@@ -131,11 +131,11 @@ def show_service_settings():
     if len(sel) != 0:
         for service in sel:
             context["services"].append({
-                "service_name": service[1],
-                "start_time": str(service[2]),
-                "end_time": str(service[3]),
-                "provider": service[4],
-                "cost": str(service[5])
+                "service_name": service[0],
+                "start_time": str(service[1]),
+                "end_time": str(service[2]),
+                "provider": service[3],
+                "cost": str(service[4])
             })
     cur.close()
     conn.close()

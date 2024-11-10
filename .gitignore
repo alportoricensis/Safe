@@ -13,6 +13,11 @@ tokens.py
 bundle.js
 bundle.js.map
 
+# Certificates
+*.pem
+*.pem
+*.crt
+
 # Distribution / packaging
 .Python
 build/

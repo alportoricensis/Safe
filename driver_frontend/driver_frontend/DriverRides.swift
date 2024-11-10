@@ -8,7 +8,7 @@
 import Foundation
 
 struct Ride: Identifiable {
-    var pickcupLoc: String?
+    var pickupLoc: String?
     var dropLoc: String?
     var passenger: String?
     var id: UUID?

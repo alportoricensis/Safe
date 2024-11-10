@@ -3,7 +3,6 @@ import datetime
 import flask
 import safe_backend
 import psycopg2
-from collections import deque
 
 
 # Routes
@@ -16,21 +15,37 @@ def vehicles():
     # TODO: Authentication
     
     # Get data from request
-    vehicle_name = flask.request.form["vehicleName"]
-    conn = psycopg2.connect(database="safe_backend", user="safe", password="",
-                            port="5432")
-    cur = conn.cursor() 
-    cur.execute("SELECT * FROM vehicles WHERE vehicle_name = %s", (vehicle_name, ))
-    sel = cur.fetchone()
-    if sel is not None:
-        flask.flash(f"Error: Vehicle {vehicle_name} already exists!")
-    vehicle_range = flask.request.form["vehicleRange"]
-    vehicle_capacity = flask.request.form["vehicleCapacity"]
-    cur.execute("INSERT INTO vehicles (vehicle_name, capacity, vrange) VALUES (%s, %s, %s)", (vehicle_name, vehicle_capacity, vehicle_range))
-    conn.commit()
-    cur.close()
-    conn.close()
-    return flask.redirect(flask.url_for("show_vehicle_settings"))
+    if flask.request.method == "POST":
+        vehicle_name = flask.request.form["vehicleName"]
+        conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                                port="5432")
+        cur = conn.cursor() 
+        cur.execute("SELECT * FROM vehicles WHERE vehicle_name = %s", (vehicle_name, ))
+        sel = cur.fetchone()
+        if sel is not None:
+            flask.flash(f"Error: Vehicle {vehicle_name} already exists!")
+        vehicle_range = flask.request.form["vehicleRange"]
+        vehicle_capacity = flask.request.form["vehicleCapacity"]
+        cur.execute("INSERT INTO vehicles (vehicle_name, capacity, vrange) VALUES (%s, %s, %s)", (vehicle_name, vehicle_capacity, vehicle_range))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return flask.redirect(flask.url_for("show_vehicle_settings"))
+
+    elif flask.request.method == "GET":
+        conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                                port="5432")
+        cur = conn.cursor() 
+        cur.execute("SELECT * FROM vehicles")
+        sel = cur.fetchall()
+        context = {"vehicles": []}
+        for vehicle in sel:
+            context["vehicles"].append({
+                "vehicle_id": vehicle[1],
+                "capacity": vehicle[2],
+                "vrange": vehicle[3],
+            })
+        return flask.jsonify(**context), 200
 
 
 @safe_backend.app.route("/api/v1/settings/pickups/", methods=["GET", "POST", "DELETE"])
@@ -55,13 +70,14 @@ def locations():
             flask.flash(f"Error: Location {location_name} already exists!")
         lat = flask.request.form["locationLatitude"]
         long = flask.request.form["locationLongitude"]
+        service_name = flask.request.form["serviceName"]
         isPickup = False
         if "isPickup" in flask.request.form:
             isPickup = flask.request.form["isPickup"]
         isDropoff = False
         if "isDropoff" in flask.request.form:
             isDropoff = flask.request.form["isDropoff"]
-        cur.execute("INSERT INTO locations (loc_name, lat, long, isPickup, isDropoff) VALUES (%s, %s, %s, %s, %s)", (location_name, lat, long, isPickup, isDropoff))
+        cur.execute("INSERT INTO locations (loc_name, lat, long, isPickup, isDropoff, service_name) VALUES (%s, %s, %s, %s, %s, %s)", (location_name, lat, long, isPickup, isDropoff, service_name))
         conn.commit()
         cur.close()
         conn.close()
@@ -71,14 +87,14 @@ def locations():
         conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                                 port="5432")
         cur = conn.cursor()
-        cur.execute("SELECT * FROM locations;")
+        cur.execute("SELECT * FROM locations ORDER BY service_name DESC;")
         sel = cur.fetchall()
-        context = {
-            "locations": []
-        }
+        context = {}
         if len(sel) != 0:
             for loc in sel:
-                context["locations"].append({
+                if loc[6] not in context:
+                    context[loc[6]] = []
+                context[loc[6]].append({
                     "name": loc[1],
                     "long": loc[2],
                     "lat": loc[3],
@@ -89,23 +105,25 @@ def locations():
         conn.close()
         return flask.jsonify(**context)
     
-    elif flask.request.method == "DELETE":
+    elif flask.request.method == "DELETE": 
         conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                                 port="5432")
         cur = conn.cursor()
-        location_name = flask.request.form["loc_name"]
-        cur.execute("SELECT * FROM locations WHERE loc_name = %s;", (location_name, ))
+        location_name = flask.request.json["locationName"]
+        service_name = flask.request.json["serviceName"]
+        cur.execute("SELECT * FROM locations WHERE loc_name = %s AND service_name = %s;", (location_name, service_name, ))
         sel = cur.fetchall()
         if sel is None:
             flask.flash(f"Error: Location {location_name} does not exist!")
             return
-        cur.execute("DELETE * FROM locations WHERE loc_name = %s;", (location_name, ))
+        cur.execute("DELETE FROM locations WHERE loc_name = %s AND service_name = %s;", (location_name, service_name, ))
+        conn.commit()
         cur.close()
         conn.close()
-        return flask.redirect(flask.url_for("show_location_settings"))
+        return flask.jsonify(**{"msg": "Successfully delete location."}), 200
 
 
-@safe_backend.app.route("/api/v1/settings/ranges/", methods=["GET", "POST"])
+@safe_backend.app.route("/api/v1/settings/ranges/", methods=["GET", "POST", "DELETE"])
 # REQUIRES  - User is authenticated with agency-level permissions (for POST)
 #             User is authenticated with passenger-level permissions (for GET)
 # EFFECTS   - CREATE new pickup/dropoff ranges
@@ -120,24 +138,63 @@ def range():
         lat = flask.request.form["rangeLatitude"]
         long = flask.request.form["rangeLongitude"]
         radius_miles = flask.request.form["rangeRadius"]
+        service_name = flask.request.form["serviceName"]
         conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                                 port="5432")
         cur = conn.cursor() 
-        cur.execute("SELECT * FROM locations WHERE lat = %s AND long = %s", (lat, long, ))
+        cur.execute("SELECT * FROM ranges WHERE lat = %s AND long = %s", (lat, long, ))
         sel = cur.fetchone()
         if sel is not None:
             flask.flash(f"Error: Range with center at (latitude, longitude) {lat, long} already exists!")
-        isPickup = False
+        isPickup = True
         if "isPickup" in flask.request.form:
             isPickup = flask.request.form["isPickup"]
-        isDropoff = False
+        isDropoff = True
         if "isDropoff" in flask.request.form:
             isDropoff = flask.request.form["isDropoff"]
-        cur.execute("INSERT INTO ranges (lat, long, radius_miles, isPickup, isDropoff) VALUES (%s, %s, %s, %s, %s)", (lat, long, radius_miles, isPickup, isDropoff))
+        cur.execute("INSERT INTO ranges (lat, long, radius_miles, isPickup, isDropoff, service_name) VALUES (%s, %s, %s, %s, %s, %s)", (lat, long, radius_miles, isPickup, isDropoff, service_name))
         conn.commit()
         cur.close()
         conn.close()
-        return flask.redirect(flask.url_for("show_range_settings"))
+        return flask.jsonify(**{"msg": "Successfully created range."}), 200
+    
+    elif flask.request.method == "GET":
+        conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                                port="5432")
+        cur = conn.cursor() 
+        cur.execute("SELECT * FROM ranges")
+        sel = cur.fetchall()
+        context = {
+            "ranges": []
+        }
+        for range in sel:
+            context["ranges"].append({
+                "lat": range[1],
+                "long": range[2],
+                "radius_miles": range[3],
+                "isPickup": range[4],
+                "isDropoff": range[5],
+                "service_name": range[6],
+            })
+        conn.commit()
+        cur.close()
+        conn.close()
+        return flask.jsonify(**context), 200
+
+    elif flask.request.method == "DELETE":
+        service_name = flask.request.json["serviceName"]
+        conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                                port="5432")
+        cur = conn.cursor() 
+        cur.execute("SELECT * FROM ranges")
+        sel = cur.fetchall()
+        if len(sel) == 0:
+            return flask.jsonify(**{"msg": "No ranges for this service!"}), 404
+        cur.execute("DELETE FROM ranges WHERE service_name = %s", (service_name, ))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return flask.jsonify(**{"msg": "Successfully deleted."}), 200
 
     elif flask.request.method == "GET":
         conn = psycopg2.connect(database="safe_backend", user="safe", password="",
@@ -162,9 +219,7 @@ def range():
         return flask.jsonify(context), 200
 
 
-
-
-@safe_backend.app.route("/api/v1/settings/services/", methods=["GET", "POST", "DELETE"])
+@safe_backend.app.route("/api/v1/settings/services/", methods=["GET", "POST", "DELETE", "PATCH"])
 # REQUIRES  - User is authenticated with agency-level permissions (for POST)
 #             User is authenticated with passenger-level permissions (for GET)
 # EFFECTS   - CREATE a new service provided by this agency
@@ -203,16 +258,16 @@ def services():
         cur = conn.cursor() 
         cur.execute("SELECT * FROM services", ())
         services = cur.fetchall()
-        context = {}
+        context = {"services": []}
 
         for service in services:
-            context[service[1]] = {
-                'serviceName': service[1],
-                'startTime': str(service[2]),
-                'endTime': str(service[3]),
-                "provider": service[4],
-                "cost": str(service[5])
-            }
+            context["services"].append({
+                'serviceName': service[0],
+                'startTime': str(service[1]),
+                'endTime': str(service[2]),
+                "provider": str(service[3]),
+                "cost": str(service[4])
+            })
         conn.commit()
         cur.close()
         conn.close()
@@ -223,7 +278,6 @@ def services():
                                 port="5432")
         cur = conn.cursor()
         service_name = flask.request.json["serviceName"]
-        print(service_name)
         cur.execute("SELECT * FROM services WHERE service_name = %s;", (service_name, ))
         sel = cur.fetchall()
         if sel is None:
@@ -235,3 +289,18 @@ def services():
         conn.close()
         context = {}
         return flask.jsonify(context), 200
+    
+    elif flask.request.method == "PATCH":
+        conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                                port="5432")
+        cur = conn.cursor()
+        service_name = flask.request.json["serviceName"]
+        start_time = flask.request.json["startTime"]
+        end_time = flask.request.json["endTime"]
+        cur.execute("UPDATE services SET start_time = %s, end_time = %s WHERE service_name = %s;", (start_time, end_time, service_name,))
+        context = {}
+        conn.commit()
+        cur.close()
+        conn.close()
+        return flask.jsonify(context), 200
+        
