@@ -17,8 +17,7 @@ cur = conn.cursor()
 # Refers to the different services used by this agency
 cur.execute (
     "CREATE TABLE IF NOT EXISTS services ( \
-        service_id SERIAL PRIMARY KEY, \
-        service_name TEXT NOT NULL, \
+        service_name TEXT PRIMARY KEY, \
         start_time TIME NOT NULL, \
         end_time TIME NOT NULL, \
         provider TEXT NOT NULL, \
@@ -81,12 +80,12 @@ cur.execute (
         pickup_long REAL NOT NULL, \
         dropoff_lat REAL, \
         dropoff_long REAL, \
-        user_id INTEGER REFERENCES users(uuid), \
+        user_id TEXT REFERENCES users(uuid), \
         vehicle_id INTEGER REFERENCES vehicles(vehicle_id), \
         status TEXT, \
         pickup_time TIMESTAMP, \
         dropoff_time TIMESTAMP, \
-        service_id INTEGER REFERENCES services(service_id) \
+        service_name TEXT REFERENCES services(service_name) \
     );"
 )
 conn.commit()
