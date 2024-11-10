@@ -139,6 +139,28 @@ def range():
         conn.close()
         return flask.redirect(flask.url_for("show_range_settings"))
 
+    elif flask.request.method == "GET":
+        conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                                port="5432")
+        cur = conn.cursor() 
+        cur.execute("SELECT * FROM ranges", ())
+        services = cur.fetchall()
+        context = {}
+
+        for (index, service) in enumerate(services):
+            context[index] = {
+                'rangeLatitude': service[1],
+                'rangeLongitude': service[2],
+                'rangeRadius': service[3],
+                "isPickup": service[4],
+                "isDropoff": service[5]
+            }
+
+        conn.commit()
+        cur.close()
+        conn.close()
+        return flask.jsonify(context), 200
+
 
 
 
