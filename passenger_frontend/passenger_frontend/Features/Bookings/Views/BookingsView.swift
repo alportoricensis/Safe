@@ -39,11 +39,13 @@ struct BookingsView: View {
 struct BookingCard: View {
     let booking: Booking
     let onDelete: () -> Void
+    @State private var pickupAddress: String = "Loading..."
+    @State private var dropoffAddress: String = "Loading..."
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("Ride #\(booking.id)")
+                Text(booking.serviceName)
                     .font(.headline)
                 Spacer()
                 Text(booking.status.capitalized)
@@ -55,8 +57,49 @@ struct BookingCard: View {
                     .cornerRadius(8)
             }
             
-            Text("Service: \(booking.serviceName)")
-                .font(.subheadline)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Pickup Location:")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                Text(pickupAddress)
+                    .font(.body)
+            }
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Dropoff Location:")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                Text(dropoffAddress)
+                    .font(.body)
+            }
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Requested:")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                Text(formatDateTime(booking.requestTime))
+                    .font(.body)
+            }
+            
+            if let pickupTime = booking.pickupTime {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Pickup Time:")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                    Text(formatDateTime(pickupTime))
+                        .font(.body)
+                }
+            }
+            
+            if let dropoffTime = booking.dropoffTime {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Dropoff Time:")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                    Text(formatDateTime(dropoffTime))
+                        .font(.body)
+                }
+            }
             
             HStack {
                 Spacer()
@@ -71,6 +114,23 @@ struct BookingCard: View {
         .background(Color.white)
         .cornerRadius(12)
         .shadow(radius: 2)
+        .onAppear {
+            // Convert coordinates to addresses
+            let viewModel = BookingsViewModel()
+            viewModel.getAddressFromCoordinates(
+                latitude: booking.pickupLat,
+                longitude: booking.pickupLong
+            ) { address in
+                pickupAddress = address
+            }
+            
+            viewModel.getAddressFromCoordinates(
+                latitude: booking.dropoffLat,
+                longitude: booking.dropoffLong
+            ) { address in
+                dropoffAddress = address
+            }
+        }
     }
     
     private var statusColor: Color {
@@ -80,5 +140,18 @@ struct BookingCard: View {
         case "completed": return .gray
         default: return .orange
         }
+    }
+    
+    private func formatDateTime(_ dateString: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSSSSZ"
+        
+        guard let date = formatter.date(from: dateString) else {
+            return dateString
+        }
+        
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
     }
 }

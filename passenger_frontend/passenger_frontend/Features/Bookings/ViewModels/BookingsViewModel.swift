@@ -1,4 +1,5 @@
 import Foundation
+import CoreLocation
 
 class BookingsViewModel: ObservableObject {
     @Published var bookings: [Booking] = []
@@ -64,5 +65,32 @@ class BookingsViewModel: ObservableObject {
         // Implement delete API call here
         // After successful deletion, remove from bookings array:
         bookings.removeAll { $0.id == booking.id }
+    }
+    
+    func getAddressFromCoordinates(latitude: Double, longitude: Double, completion: @escaping (String) -> Void) {
+        let location = CLLocation(latitude: latitude, longitude: longitude)
+        let geocoder = CLGeocoder()
+        
+        geocoder.reverseGeocodeLocation(location) { placemarks, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("Geocoding error: \(error)")
+                    completion("\(latitude), \(longitude)")
+                    return
+                }
+                
+                if let placemark = placemarks?.first {
+                    let address = [
+                        placemark.thoroughfare,
+                        placemark.locality,
+                        placemark.administrativeArea
+                    ].compactMap { $0 }.joined(separator: ", ")
+                    
+                    completion(address.isEmpty ? "\(latitude), \(longitude)" : address)
+                } else {
+                    completion("\(latitude), \(longitude)")
+                }
+            }
+        }
     }
 }
