@@ -65,11 +65,13 @@ final class RideStore {
                 if let rideInfo = rideData as? [String: Any] {
                     let pickup = rideInfo["pickup"] as? String ?? "Unknown"
                     let dropoff = rideInfo["dropoff"] as? String ?? "Unknown"
+                    let passenger = rideInfo["passenger"] as? String ?? "Unknown"
                     let rideId = UUID(uuidString: rideID) ?? UUID()
                     
                     fetchedRides.append(Ride(
                         pickupLoc: pickup,
                         dropLoc: dropoff,
+                        passenger: passenger,
                         id: rideId
                     ))
                 }
