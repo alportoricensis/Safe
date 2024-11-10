@@ -20,6 +20,7 @@
 		901AC6052CE00D5900FDA176 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6042CE00D5200FDA176 /* AppState.swift */; };
 		901AC6082CE0252100FDA176 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6072CE0251B00FDA176 /* LocationManager.swift */; };
 		901AC60A2CE02C0100FDA176 /* LocManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6092CE02BFC00FDA176 /* LocManager.swift */; };
+		927EEB2C2CE147B200E300AC /* SafeTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 927EEB2B2CE147B200E300AC /* SafeTopBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		901AC6062CE01DE200FDA176 /* driver-frontend-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "driver-frontend-Info.plist"; sourceTree = SOURCE_ROOT; };
 		901AC6072CE0251B00FDA176 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		901AC6092CE02BFC00FDA176 /* LocManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocManager.swift; sourceTree = "<group>"; };
+		927EEB2B2CE147B200E300AC /* SafeTopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeTopBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +72,7 @@
 		22A575F92CD596DB00D9A43E /* driver_frontend */ = {
 			isa = PBXGroup;
 			children = (
+				927EEB2B2CE147B200E300AC /* SafeTopBar.swift */,
 				901AC6092CE02BFC00FDA176 /* LocManager.swift */,
 				901AC6072CE0251B00FDA176 /* LocationManager.swift */,
 				901AC6062CE01DE200FDA176 /* driver-frontend-Info.plist */,
@@ -168,6 +171,7 @@
 			files = (
 				901AC6012CE0073E00FDA176 /* LoginView.swift in Sources */,
 				22A5760F2CD5BB5300D9A43E /* CurrRidesView.swift in Sources */,
+				927EEB2C2CE147B200E300AC /* SafeTopBar.swift in Sources */,
 				901AC6082CE0252100FDA176 /* LocationManager.swift in Sources */,
 				22A575FD2CD596DB00D9A43E /* ContentView.swift in Sources */,
 				901AC6052CE00D5900FDA176 /* AppState.swift in Sources */,
