@@ -11,24 +11,38 @@ const Dispatch = () => {
 
     const [services, setServices] = useState({});
     const [pickups, setPickups] = useState({});
+    const [ranges, setRanges] = useState({});
     const [rides, setRides] = useState({});
     const [vehicles, setVehicles] = useState({});
 
     const [serviceName, setServiceName] = useState(searchParams.get('service'));
     
     const [pickupName, setPickupName] = useState(null);
-    const [pickupLat, setPickupLat] = useState(null);
-    const [pickupLng, setPickupLng] = useState(null);
+    // const [pickupLat, setPickupLat] = useState(null);
+    // const [pickupLng, setPickupLng] = useState(null);
 
     const [autocomplete, setAutocomplete] = useState(null);
-    const [dropOffName, setDropOffName] = useState(null)
-    const [dropOffLat, setDropOffLat] = useState(null)
-    const [dropOffLng, setDropOffLng] = useState(null)
+    const [dropOffName, setDropOffName] = useState(null);
+    const [dropOffLat, setDropOffLat] = useState(null);
+    const [dropOffLng, setDropOffLng] = useState(null);
 
-    const [center, setCenter] = useState({
-        lat: 42.277058,
-        lng: -83.7382075
-    });
+    const carIcon = window.google ? {
+        url: 'https://images.vexels.com/media/users/3/154573/isolated/preview/bd08e000a449288c914d851cb9dae110-hatchback-car-top-view-silhouette-by-vexels.png',
+        scaledSize: new window.google.maps.Size(50, 50)
+    } : null
+
+    const handleRanges = (json) => {
+        const range = {};
+
+        json['ranges'].forEach((service) => (
+            range[service['service_name']] = {
+                'lat': service['lat'],
+                'lng': service['long']
+            }
+        ));
+        
+        setRanges(range);
+    };
 
     const handleServiceChange = (event) => {
         setServiceName(event.target.value);
@@ -39,10 +53,8 @@ const Dispatch = () => {
             const pickup = pickups[serviceName].filter((pickup) => pickup.name === event.target.value)[0]
 
             setPickupName(pickup.name)
-            setPickupLat(pickup.lat)
-            setPickupLng(pickup.long)
-
-            console.log(pickup)
+            // setPickupLat(pickup.lat)
+            // setPickupLng(pickup.long)
         }
 
         catch {
@@ -61,18 +73,7 @@ const Dispatch = () => {
             setDropOffName(place.name)
             setDropOffLat(place.geometry.location.lat())
             setDropOffLng(place.geometry.location.lng())
-
-            setCenter({
-                lat: place.geometry.location.lat(),
-                lng: place.geometry.location.lng()
-            })
         }
-    };
-
-    const handleMapClick = (event) => {
-        setDropOffName('Dropped Pin')
-        setDropOffLat(event.latLng.lat())
-        setDropOffLng(event.latLng.lng())
     };
 
     const handleCancelRide = async (event, ride) => {
@@ -91,6 +92,11 @@ const Dispatch = () => {
         fetch('http://35.2.2.224:5000/api/v1/settings/pickups/', {method: 'get', headers: {'Content-Type': 'application/json'}})
             .then(response => response.json())
             .then(json => setPickups(json))
+            .catch(error => console.log(error));
+
+        fetch('http://35.2.2.224:5000/api/v1/settings/ranges/', {method: 'get', headers: {'Content-Type': 'application/json'}})
+            .then(response => response.json())
+            .then(json => handleRanges(json))
             .catch(error => console.log(error));
 
         fetch('http://35.2.2.224:5000/api/v1/rides/', {method: 'get', headers: {'Content-Type': 'application/json'}})
@@ -119,8 +125,6 @@ const Dispatch = () => {
 
         return () => clearInterval(intervalId);
     }, []);
-
-    console.log(vehicles)
 
     return (
         <LoadScript googleMapsApiKey="AIzaSyB93jLylKO64g8nNQoxcPhcYTB1HsNL64g" libraries={['places']}>
@@ -183,6 +187,9 @@ const Dispatch = () => {
                                         Passenger: {ride[1]['passenger']}
                                     </Typography>
                                     <Typography fontSize={'1em'}>
+                                        Number of Passengers: {ride[1]['numPassengers']}
+                                    </Typography>
+                                    <Typography fontSize={'1em'}>
                                         Contact: {ride[1]['phone']}
                                     </Typography>
                                     <Typography fontSize={'1em'}>
@@ -215,10 +222,20 @@ const Dispatch = () => {
                     </Box>
                 </Box>
                 <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', backgroundColor: 'rgb(3, 38, 72)', width: '70vw', height: '100vh'}}>
-                    <GoogleMap mapContainerStyle={{width: '70vw', height: '70vh'}} center={center} zoom={dropOffLat ? 15 : 13} onClick={handleMapClick}>
-                        {pickupName && <Marker position={{lat: pickupLat, lng: pickupLng}} />}
-                        {dropOffName && <Marker position={{lat: dropOffLat, lng: dropOffLng}} />}
-                    </GoogleMap>
+                    {serviceName ?
+                        <GoogleMap mapContainerStyle={{width: '70vw', height: '70vh'}} center={ranges[serviceName]} zoom={13}>
+                            {vehicles ?
+                                Object.entries(vehicles).map((vehicle, index) => (
+                                    <Marker key={index} position={{lat: vehicle[1]['lat'], lng: vehicle[1]['long']}} icon={carIcon} />
+                                    
+                                ))
+                            :
+                                null
+                            }
+                        </GoogleMap>
+                    :
+                        null
+                    }
                     <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '20vw', height: '5vh'}} sx={{padding: '1vh'}}>
                         <Typography fontSize={'1.5em'} color={'white'}>
                             Active Vehicles
@@ -231,35 +248,31 @@ const Dispatch = () => {
                                     <Typography fontSize={'1.25em'} style={{alignSelf: 'center'}}>
                                         {vehicle[1]['vehicle_id']}
                                     </Typography>
+                                    <Typography fontSize={'1em'} style={{alignSelf: 'center'}}>
+                                        {vehicle[1]['itinerary'].length / 2} Assigned Ride{vehicle[1]['itinerary'].length === 1 ? 's' : null}
+                                    </Typography>
                                     {vehicle[1]['itinerary'].length > 0 ?    
                                         vehicle[1]['itinerary'].filter(item => item.isPickup).map((passenger, index) => (
-                                            <>
-                                                <Typography fontSize={'1em'} style={{alignSelf: 'center'}}>
-                                                    {vehicle[1]['itinerary'].length / 2} Assigned Rides
+                                            <Box key={index} style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'}}>
+                                                <Typography fontSize={'1em'}>
+                                                    Passenger: {passenger['passenger']}
                                                 </Typography>
-                                                <Box key={index} style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'}}>
-                                                    <Typography fontSize={'1em'}>
-                                                        Passenger: {passenger['passenger']}
-                                                    </Typography>
-                                                    <Typography fontSize={'1em'}>
-                                                        Pickup: {passenger['pickup']}
-                                                    </Typography>
-                                                    <Typography fontSize={'1em'}>
-                                                        Drop-off: {passenger['dropoff']}
-                                                    </Typography>
-                                                    <Typography fontSize={'1em'}>
-                                                        ETP: {passenger['ETP'] ? new Date(passenger['ETP']).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'Not Assigned'}
-                                                    </Typography>
-                                                    <Typography fontSize={'1em'}>
-                                                        ETA: {passenger['ETA'] ? new Date(passenger['ETA']).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'Not Assigned'}
-                                                    </Typography>
-                                                </Box>
-                                            </>
+                                                <Typography fontSize={'1em'}>
+                                                    Pickup: {passenger['pickup']}
+                                                </Typography>
+                                                <Typography fontSize={'1em'}>
+                                                    Drop-off: {passenger['dropoff']}
+                                                </Typography>
+                                                <Typography fontSize={'1em'}>
+                                                    ETP: {passenger['ETP'] ? new Date(passenger['ETP']).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'Not Assigned'}
+                                                </Typography>
+                                                <Typography fontSize={'1em'}>
+                                                    ETA: {passenger['ETA'] ? new Date(passenger['ETA']).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'Not Assigned'}
+                                                </Typography>
+                                            </Box>
                                         ))
                                     :
-                                        <Typography fontSize={'1em'} style={{alignSelf: 'center'}}>
-                                            No Assigned Rides
-                                        </Typography>
+                                        null
                                     }
                                 </Box>
                             ))
