@@ -1,77 +1,82 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedTab: Tab = .current // Default selected tab
+    @EnvironmentObject var authManager: AuthManager
+    @State private var selectedTab: Tab = .current
     @State private var showAlert = false
     @State private var alertMessage = ""
-    @State private var isLoggedOut = false
     
     enum Tab {
         case current, completed
     }
-    
+
     var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: 0) {
-                VStack {
-                    Button(action: logoutVehicle) {
-                        Text("Logout Vehicle")
-                            .font(.headline)
-                            .padding()
-                            .background(Color.red)
+        // If the user is logged out, navigate to LoginView
+        if !authManager.isAuthenticated {
+            return AnyView(LoginView()) // Navigate to LoginView if logged out
+        }
+
+        return AnyView(
+            GeometryReader { geometry in
+                VStack(spacing: 0) {
+                    VStack {
+                        Button(action: logoutVehicle) {
+                            Text("Logout")
+                                .font(.headline)
+                                .padding()
+                                .background(Color.yellow)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                        }
+                        .padding(.top, 20)
+                        .alert(isPresented: $showAlert) {
+                            Alert(title: Text("Logout Status"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+                        }
+                        
+                        Text("Assigned Rides")
+                            .font(.largeTitle)
                             .foregroundColor(.white)
-                            .cornerRadius(8)
-                            .padding(.top, 10)
-                    }
-                    
-                    Text("Assigned Rides")
-                        .font(.largeTitle)
-                        .foregroundColor(.white)
-                        .padding(.top, 40)
-                    
-                    Spacer()
-                    
-                    // Tab buttons for 'Current' and 'Completed' rides
-                    HStack(spacing: 0) {
-                        TabButton(text: "Completed", isSelected: selectedTab == .completed) {
-                            selectedTab = .completed
+                            .padding(.top, 30)
+                        
+                        Spacer()
+                        
+                        HStack(spacing: 0) {
+                            TabButton(text: "Completed", isSelected: selectedTab == .completed) {
+                                selectedTab = .completed
+                            }
+                            TabButton(text: "Current", isSelected: selectedTab == .current) {
+                                selectedTab = .current
+                            }
                         }
-                        TabButton(text: "Current", isSelected: selectedTab == .current) {
-                            selectedTab = .current
+                        .background(Color(red: 2/255, green: 28/255, blue: 52/255))
+                        
+                        .alert(isPresented: $showAlert) {
+                            Alert(title: Text("Logout Status"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                         }
                     }
+                    .frame(width: geometry.size.width, height: geometry.size.height * 0.25)
                     .background(Color(red: 2/255, green: 28/255, blue: 52/255))
                     
-                    // Logout Button
-                    
-                    .alert(isPresented: $showAlert) {
-                        Alert(title: Text("Logout Status"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+                    VStack {
+                        if selectedTab == .current {
+                            CurrRidesView()
+                        } else {
+                            Text("Completed Rides")
+                                .font(.title)
+                                .padding()
+                        }
+                        
+                        Spacer()
                     }
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .background(Color(red: 0/255, green: 39/255, blue: 76/255))
                 }
-                .frame(width: geometry.size.width, height: geometry.size.height * 0.25)
-                .background(Color(red: 2/255, green: 28/255, blue: 52/255))
-                
-                VStack {
-                    if selectedTab == .current {
-                        // Display current rides
-                        CurrRidesView()
-                    } else {
-                        // Display completed rides
-                        Text("Completed Rides")
-                            .font(.title)
-                            .padding()
-                    }
-                    
-                    Spacer()
-                }
-                .frame(width: geometry.size.width, height: geometry.size.height)
-                .background(Color(red: 0/255, green: 39/255, blue: 76/255))
+                .edgesIgnoringSafeArea(.all)
+                .withSafeTopBar()
             }
-            .edgesIgnoringSafeArea(.all)
-            .withSafeTopBar()
-        }
+        )
     }
-    
+
     func logoutVehicle() {
         if let vehicleId = RideStore.shared.vehicleId {
             logoutAPI(vehicleId: vehicleId) { success, message in
@@ -80,18 +85,14 @@ struct ContentView: View {
                     showAlert = true
                     
                     if success {
-                        isLoggedOut = true
+                        authManager.isAuthenticated = false
+                        RideStore.shared.vehicleId = nil
                     }
                 }
             }
-        } else {
-            // Handle the case where vehicleId is nil
-            alertMessage = "No vehicle ID available."
-            showAlert = true
         }
     }
 
-    
     func logoutAPI(vehicleId: String, completion: @escaping (Bool, String) -> Void) {
         guard let url = URL(string: "http://35.2.2.224:5000/api/v1/vehicles/logout/\(vehicleId)/") else {
             completion(false, "Invalid URL")
