@@ -140,14 +140,14 @@ def delete_ride_request(ride_id):
 # MODIFIES - VEHICLE_QUEUES, RIDE_REQUESTS
 def post_ride():
     """Add a RideRequest to the ride-share service."""
-    rideOrigin = flask.request.json["rideOrigin"]
+    rideOrigin = flask.request.form["rideOrigin"] if "rideOrigin" in flask.request.form else flask.request.json["rideOrigin"]
 
     # Three options exist for booking a ride: through a call-in (dispatcher), through a walk-on (driver),
     # or through the passenger app. These follow slightly different paths.
 
     # TODO: Authentication - can be either flask.request.args.user_id or an agency-level account
     # Check the service the user is booking for, and the service times
-    serviceName = flask.request.json["serviceName"]
+    serviceName = flask.request.json["serviceName"] if (rideOrigin != "callIn") else flask.request.form["serviceName"]
     conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                             port="5432")
     cur = conn.cursor()
@@ -174,9 +174,9 @@ def post_ride():
         return flask.jsonify(**context), 400
     
     # Check the pickup and dropoff validity
-    pickup = flask.request.json["pickupLocation"]
-    dropoffName = flask.request.json["dropoffLocation"]
-    dropoffCoord = (flask.request.json["dropoffLat"], flask.request.json["dropoffLong"])
+    pickup = flask.request.json["pickupLocation"] if (rideOrigin != "callIn") else flask.request.form["pickupLocation"]
+    dropoffName = flask.request.json["dropoffLocation"] if (rideOrigin != "callIn") else flask.request.form["dropoffLocation"]
+    dropoffCoord = (flask.request.json["dropoffLat"], flask.request.json["dropoffLong"]) if (rideOrigin != "callIn") else (flask.request.form["dropoffLat"], flask.request.form["dropoffLong"])
     cur.execute("SELECT * FROM locations WHERE loc_name = %s", (pickup, ))
     location = cur.fetchone()
     req_id = -1
@@ -266,7 +266,7 @@ def post_ride():
     safe_backend.api.config.RIDE_REQUESTS[str(req_id[0])] = newRequest
 
     # If there is a vehicle with no active rides, call its assignment function
-    if not safe_backend.api.config.VEHICLE_QUEUES:
+    if safe_backend.api.config.VEHICLE_QUEUES:
         assign_rides()
 
     # Return success
