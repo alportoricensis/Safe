@@ -29,7 +29,6 @@ struct CurrRidesView: View {
     }
 }
 
-
 #Preview {
     CurrRidesView()
 }
