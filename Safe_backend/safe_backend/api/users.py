@@ -13,7 +13,22 @@ def login_user():
     pass_uuid = flask.request.json["uuid"]
 
     # If this passenger hasn't been seen before, add them to the database
-    
+    conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                        port="5432")
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM ride_requests WHERE user_id = %s;", (pass_uuid, ))
+    user = cur.fetchone()
+    if user is not None:
+        display_name = flask.request.json["displayName"]
+        email = flask.request.json["email"]
+        firstName = display_name.split(" ")[0]
+        lastName = display_name.split(" ")[1]
+        cur.execute(
+            "INSERT INTO users (user_id, first_name, last_name, phone_number, email) VALUES (%s, %s, %s, %s, %s)",
+            (pass_uuid, firstName, lastName, "(000) 000-0000", email)
+        )
+    return flask.jsonify(**{"msg": "Succesfully logged {pass_uuid} in."}), 200
+
 
 @safe_backend.app.route("/api/v1/users/delete/", methods=["POST"])
 def delete_acct():

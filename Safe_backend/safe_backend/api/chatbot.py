@@ -102,16 +102,17 @@ def chat():
                 "parts": [f"You are a helpful customer support chatbot for SAFE, a ride-sharing service. You have access to the following FAQ information:\n\n{how_it_works()}\n\nPlease use this information to help users with their questions about SAFE's services, policies, and features. Be concise. Respond in no more than 3 sentences. If you don't know the answer, politely say so and suggest contacting SAFE Support directly."]
             },
             {
-                "role": "assistant",
+                "role": "model",
                 "parts": ["Hello! I'm SAFE's virtual assistant. How can I help you today? I can answer questions about booking rides, safety features, account management, and more."]
             }
         ]
         for message in messages:
             if message['role'] == 'user':
                 history.append({"role": "user", "parts": [message['content']]})
-            elif message['role'] == 'assistant':
+            elif message['role'] == 'model':
                 history.append({"role": "model", "parts": [message['content']]})
 
+        print(history)
         chat = model.start_chat(history=history)
         
         response = chat.send_message(input_text)
