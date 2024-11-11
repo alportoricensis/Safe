@@ -37,6 +37,7 @@ class RideStatusViewModel: ObservableObject {
     
     private func fetchRideStatus() {
         guard let url = URL(string: "http://35.2.2.224:5000/api/v1/rides/passengers/\(rideId)/") else {
+            print("⚠️ Invalid URL constructed for rideId: \(rideId)")
             return
         }
         
@@ -45,29 +46,42 @@ class RideStatusViewModel: ObservableObject {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            print("🔄 Fetching ride status for ride #\(self?.rideId ?? 0)")
+            
             DispatchQueue.main.async {
                 if let error = error {
+                    print("❌ Network error: \(error.localizedDescription)")
                     self?.error = error
                     return
                 }
                 
-                guard let data = data else { return }
+                guard let data = data else {
+                    print("❌ No data received from API")
+                    return
+                }
+                
+                print("📦 Received data: \(String(data: data, encoding: .utf8) ?? "Unable to stringify data")")
                 
                 do {
                     let decoder = JSONDecoder()
                     decoder.dateDecodingStrategy = .formatted(DateFormatter.iso8601Full)
                     var response = try decoder.decode([String: RideStatus].self, from: data)
+                    print("🎯 Decoded response: \(response)")
                     
-                    // Get the ride status
                     if var status = response[String(self?.rideId ?? 0)] {
-                        // Perform reverse geocoding
+                        print("📍 Starting reverse geocoding for coordinates: \(status.dropoff)")
                         self?.reverseGeocode(coordinates: status.dropoff) { address in
+                            print("📍 Received address: \(address)")
                             status.updateDropoffAddress(address)
                             response[String(self?.rideId ?? 0)] = status
                             self?.rideStatus = status
+                            print("✅ Updated ride status with address")
                         }
+                    } else {
+                        print("⚠️ No ride status found for ride #\(self?.rideId ?? 0)")
                     }
                 } catch {
+                    print("❌ Decoding error: \(error.localizedDescription)")
                     self?.error = error
                 }
             }

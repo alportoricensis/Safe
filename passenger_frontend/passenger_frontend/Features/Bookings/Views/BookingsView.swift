@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct BookingsView: View {
+    @EnvironmentObject var authViewModel: AuthViewModel
     @StateObject private var viewModel = BookingsViewModel()
     
     var body: some View {
@@ -31,7 +32,9 @@ struct BookingsView: View {
             .withSafeTopBar()
         }
         .onAppear {
-            viewModel.fetchBookings()
+            if let userId = authViewModel.user?.id {
+                viewModel.fetchBookings(userId: userId)
+            }
         }
     }
 }

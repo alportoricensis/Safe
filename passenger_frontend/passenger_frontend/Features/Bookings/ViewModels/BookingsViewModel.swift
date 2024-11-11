@@ -5,7 +5,7 @@ class BookingsViewModel: ObservableObject {
     @Published var bookings: [Booking] = []
     @Published var isLoading = false
     
-    func fetchBookings() {
+    func fetchBookings(userId: String) {
         isLoading = true
         guard let baseURL = URL(string: "http://35.2.2.224:5000/api/v1/users/bookings"),
               var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true) else {
@@ -13,7 +13,7 @@ class BookingsViewModel: ObservableObject {
         }
         
         components.queryItems = [
-            URLQueryItem(name: "uuid", value: "102278719561247952889")
+            URLQueryItem(name: "uuid", value: userId)
         ]
         
         guard let url = components.url else {
