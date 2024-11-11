@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import CoreLocation
 
 class RideStatusViewModel: ObservableObject {
     @Published var rideStatus: RideStatus?
@@ -7,6 +8,8 @@ class RideStatusViewModel: ObservableObject {
     
     private var timer: Timer?
     private let rideId: Int
+    
+    private let geocoder = CLGeocoder()
     
     init(rideId: Int) {
         self.rideId = rideId
@@ -53,18 +56,56 @@ class RideStatusViewModel: ObservableObject {
                 do {
                     let decoder = JSONDecoder()
                     decoder.dateDecodingStrategy = .formatted(DateFormatter.iso8601Full)
-                    let response = try decoder.decode([String: RideStatus].self, from: data)
-                    self?.rideStatus = response[String(self?.rideId ?? 0)]
+                    var response = try decoder.decode([String: RideStatus].self, from: data)
+                    
+                    // Get the ride status
+                    if var status = response[String(self?.rideId ?? 0)] {
+                        // Perform reverse geocoding
+                        self?.reverseGeocode(coordinates: status.dropoff) { address in
+                            status.updateDropoffAddress(address)
+                            response[String(self?.rideId ?? 0)] = status
+                            self?.rideStatus = status
+                        }
+                    }
                 } catch {
                     self?.error = error
                 }
             }
         }.resume()
     }
+    
+    private func reverseGeocode(coordinates: [Double], completion: @escaping (String) -> Void) {
+        let location = CLLocation(latitude: coordinates[0], longitude: coordinates[1])
+        
+        geocoder.reverseGeocodeLocation(location) { placemarks, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("Reverse geocoding error: \(error.localizedDescription)")
+                    completion("Address unavailable")
+                    return
+                }
+                
+                if let placemark = placemarks?.first {
+                    let address = [
+                        placemark.subThoroughfare,
+                        placemark.thoroughfare,
+                        placemark.locality,
+                        placemark.administrativeArea
+                    ]
+                        .compactMap { $0 }
+                        .joined(separator: " ")
+                    
+                    completion(address)
+                } else {
+                    completion("Address unavailable")
+                }
+            }
+        }
+    }
 }
 
 // Model to match the API response
-struct RideStatus: Codable {
+struct RideStatus: Codable, Identifiable {
     let ETA: Date
     let ETP: Date
     let driver: String
@@ -74,6 +115,20 @@ struct RideStatus: Codable {
     let passenger: String
     let pickup: String
     let reqid: String
+    
+    var id: String { reqid }
+    
+    var dropoffFormatted: String {
+        // This will be populated by the reverse geocoding
+        return _dropoffAddress ?? "Loading address..."
+    }
+    
+    // Private property to cache the geocoded address
+    private var _dropoffAddress: String?
+    
+    mutating func updateDropoffAddress(_ address: String) {
+        _dropoffAddress = address
+    }
 }
 
 // Date formatter extension
