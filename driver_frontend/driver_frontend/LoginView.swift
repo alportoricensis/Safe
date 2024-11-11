@@ -7,7 +7,7 @@ struct LoginView: View {
     @State private var password = ""
     @State private var vehicleID = ""
     @State private var errorMessage: String?
-    @StateObject var locationManager = LocationManager()
+    @EnvironmentObject var locationManager: LocationManager
 
     var body: some View {
         VStack(spacing: 20) {

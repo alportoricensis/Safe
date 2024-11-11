@@ -10,6 +10,8 @@ import SwiftUI
 @main
 struct driver_frontendApp: App {
     @StateObject private var authManager = AuthManager()
+    @StateObject private var locationManager = LocationManager()
+
     
     init(){
         configureNavigationBarAppearance()
@@ -20,9 +22,11 @@ struct driver_frontendApp: App {
             if authManager.isAuthenticated {
                 ContentView()
                     .environmentObject(authManager)
+                    .environmentObject(locationManager)
             } else {
                 LoginView()
                     .environmentObject(authManager)
+                    .environmentObject(locationManager)
             }
         }
     }

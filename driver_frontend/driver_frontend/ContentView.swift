@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject var locationManager: LocationManager
     @State private var selectedTab: Tab = .current
     @State private var showAlert = false
     @State private var alertMessage = ""
