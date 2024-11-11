@@ -38,7 +38,7 @@ def delete_acct():
 def update_acct():
     pass
 
-@safe_backend.app.route("/api/v1/users/bookings", methods=["GET"])
+@safe_backend.app.route("/api/v1/users/bookings/", methods=["GET"])
 def get_bookings():
     # Get UUID from the request
     pass_uuid = flask.request.args.get("uuid")
@@ -47,7 +47,7 @@ def get_bookings():
     conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                         port="5432")
     cur = conn.cursor()
-    cur.execute("SELECT * FROM ride_requests WHERE user_id = %s;", (pass_uuid, ))
+    cur.execute("SELECT * FROM ride_requests WHERE user_id = %s ORDER BY ride_id DESC;", (pass_uuid, ))
     requests = cur.fetchall()
     context = {"requests": []}
     for request in requests:
