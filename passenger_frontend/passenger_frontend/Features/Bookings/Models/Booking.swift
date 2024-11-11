@@ -6,6 +6,7 @@ struct Booking: Identifiable, Codable {
     let pickupLong: Double
     let dropoffLat: Double
     let dropoffLong: Double
+    let requestTime: String
     let pickupTime: String?
     let dropoffTime: String?
     let serviceName: String
@@ -20,7 +21,28 @@ struct Booking: Identifiable, Codable {
         case pickupTime = "pickup_time"
         case dropoffTime = "dropoff_time"
         case serviceName = "service_name"
+        case requestTime = "request_time"
         case status
+    }
+    
+    // Add custom decoding for handling "None" strings
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(Int.self, forKey: .id)
+        pickupLat = try container.decode(Double.self, forKey: .pickupLat)
+        pickupLong = try container.decode(Double.self, forKey: .pickupLong)
+        dropoffLat = try container.decode(Double.self, forKey: .dropoffLat)
+        dropoffLong = try container.decode(Double.self, forKey: .dropoffLong)
+        requestTime = try container.decode(String.self, forKey: .requestTime)
+        serviceName = try container.decode(String.self, forKey: .serviceName)
+        status = try container.decode(String.self, forKey: .status)
+        
+        // Handle "None" strings for optional times
+        let pickupTimeString = try container.decode(String.self, forKey: .pickupTime)
+        pickupTime = pickupTimeString == "None" ? nil : pickupTimeString
+        
+        let dropoffTimeString = try container.decode(String.self, forKey: .dropoffTime)
+        dropoffTime = dropoffTimeString == "None" ? nil : dropoffTimeString
     }
 }
 
