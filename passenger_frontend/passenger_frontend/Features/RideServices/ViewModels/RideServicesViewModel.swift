@@ -6,7 +6,7 @@ class RideServicesViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var error: String?
     
-    private let baseURL = "http://35.2.2.224:5000"
+    private let baseURL = "http://35.3.200.144:5000"
     private var cancellables = Set<AnyCancellable>()
     
     init() {

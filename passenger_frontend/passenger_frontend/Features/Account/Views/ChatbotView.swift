@@ -5,10 +5,8 @@ struct ChatbotView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Chat header
             ChatHeader()
             
-            // Messages list
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(spacing: 12) {
@@ -25,7 +23,6 @@ struct ChatbotView: View {
                 }
             }
             
-            // Input area
             ChatInputView(
                 message: $viewModel.inputMessage,
                 isLoading: viewModel.isLoading,

@@ -25,7 +25,6 @@ struct Booking: Identifiable, Codable {
         case status
     }
     
-    // Add custom decoding for handling "None" strings
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(Int.self, forKey: .id)
@@ -37,7 +36,6 @@ struct Booking: Identifiable, Codable {
         serviceName = try container.decode(String.self, forKey: .serviceName)
         status = try container.decode(String.self, forKey: .status)
         
-        // Handle "None" strings for optional times
         let pickupTimeString = try container.decode(String.self, forKey: .pickupTime)
         pickupTime = pickupTimeString == "None" ? nil : pickupTimeString
         

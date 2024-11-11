@@ -52,14 +52,14 @@ struct RideRequestView: View {
 
                         // Text fields changed to buttons
                         VStack(spacing: 16) {
-                            // Replace Button with Picker for pickup location
+                            // Updated Picker for pickup locations
                             Picker("Select Pickup Location", selection: $pickupLocationName) {
                                 Text("Enter pickup point")
                                     .foregroundColor(.gray)
                                     .tag("Enter pickup point")
-                                ForEach(viewModel.validPickupLocations, id: \.self) { location in
-                                    Text(location)
-                                        .tag(location)
+                                ForEach(viewModel.validPickupLocations) { location in
+                                    Text(location.name)
+                                        .tag(location.name)
                                 }
                             }
                             .pickerStyle(.menu)
@@ -166,6 +166,7 @@ struct RideRequestView: View {
         }
         .onAppear {
             viewModel.authViewModel = authViewModel
+            viewModel.fetchPickupLocations() // Fetch locations when view appears
         }
     }
 

@@ -10,7 +10,6 @@ struct AccountView: View {
                     .ignoresSafeArea()
                 
                 VStack(alignment: .leading, spacing: 24) {
-                    // Profile Section
                     HStack(spacing: 16) {
                         Image(systemName: "person.circle.fill")
                             .resizable()
@@ -26,7 +25,6 @@ struct AccountView: View {
                         }
                     }
                     
-                    // Favorites Section
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Favorites")
                             .foregroundColor(.white)
@@ -51,12 +49,10 @@ struct AccountView: View {
                         }
                     }
                     
-                    // More Saved Places
                     Text("More Saved Places")
                         .foregroundColor(.white)
                         .font(.headline)
                     
-                    // Privacy Section
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Privacy")
                             .foregroundColor(.white)
@@ -66,7 +62,6 @@ struct AccountView: View {
                             .font(.subheadline)
                     }
                     
-                    // Support Section
                     NavigationLink(destination: ChatbotView()) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Support")
@@ -78,7 +73,6 @@ struct AccountView: View {
                         }
                     }
                     
-                    // Sign Out Button
                     Button(action: {
                         Task {
                             await authViewModel.signOut()
