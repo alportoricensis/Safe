@@ -53,9 +53,44 @@ class BookingsViewModel: ObservableObject {
     }
     
     func deleteBooking(_ booking: Booking) {
-        // Implement delete API call here
-        // After successful deletion, remove from bookings array:
-        bookings.removeAll { $0.id == booking.id }
+        guard let baseURL = URL(string: "http://35.2.2.224:5000/api/v1/rides/passengers/\(booking.id)/"),
+              var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true) else {
+            return
+        }
+        
+        guard let url = components.url else {
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("Error deleting booking: \(error)")
+                    return
+                }
+                
+                guard let httpResponse = response as? HTTPURLResponse else { return }
+                
+                if httpResponse.statusCode == 200 {
+                    // Success - remove from local array
+                    self?.bookings.removeAll { $0.id == booking.id }
+                } else if httpResponse.statusCode == 404 {
+                    print("Ride not found in active queues")
+                } else {
+                    print("Unexpected status code: \(httpResponse.statusCode)")
+                }
+                
+                if let data = data,
+                   let responseString = String(data: data, encoding: .utf8) {
+                    print("Server response: \(responseString)")
+                }
+            }
+        }.resume()
     }
     
     func getAddressFromCoordinates(latitude: Double, longitude: Double, completion: @escaping (String) -> Void) {
