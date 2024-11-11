@@ -1,7 +1,6 @@
 import SwiftUI
 import MapKit
 
-// Add this class before the PickupMapView struct
 class SearchCompleterObservable: NSObject, ObservableObject, MKLocalSearchCompleterDelegate {
     @Published var searchResults: [MKLocalSearchCompletion] = []
     private var completer: MKLocalSearchCompleter
@@ -28,7 +27,6 @@ struct PickupMapView: View {
     @State private var searchText = ""
     @State private var isSearching = false
     
-    // Add search completer
     @StateObject private var searchCompleter = SearchCompleterObservable()
     
     var onLocationSelected: (CLLocationCoordinate2D) -> Void
@@ -48,7 +46,6 @@ struct PickupMapView: View {
                 showsUserLocation: true)
                 .edgesIgnoringSafeArea(.all)
             
-            // Custom pin
             VStack(spacing: 0) {
                 Image(systemName: "mappin.circle.fill")
                     .font(.system(size: 40))
@@ -62,11 +59,9 @@ struct PickupMapView: View {
             .shadow(radius: 5)
             
             VStack(spacing: 0) {
-                // Search bar
                 SearchBar(text: $searchText, isSearching: $isSearching)
                     .padding()
                 
-                // Search results
                 if isSearching && !searchCompleter.searchResults.isEmpty {
                     ScrollView {
                         VStack(alignment: .leading) {
@@ -164,7 +159,6 @@ struct PickupMapView: View {
     }
 }
 
-// Search bar component
 struct SearchBar: View {
     @Binding var text: String
     @Binding var isSearching: Bool

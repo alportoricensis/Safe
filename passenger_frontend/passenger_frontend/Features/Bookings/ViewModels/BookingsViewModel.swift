@@ -7,7 +7,7 @@ class BookingsViewModel: ObservableObject {
     
     func fetchBookings(userId: String) {
         isLoading = true
-        guard let baseURL = URL(string: "http://35.2.2.224:5000/api/v1/users/bookings"),
+        guard let baseURL = URL(string: "http://35.3.200.144:5000/api/v1/users/bookings"),
               var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true) else {
             return
         }
