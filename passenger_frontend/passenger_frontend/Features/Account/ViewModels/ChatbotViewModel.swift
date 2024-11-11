@@ -39,7 +39,7 @@ class ChatbotViewModel: ObservableObject {
             "message": userMessage
         ]
         
-        guard let url = URL(string: "http://35.2.2.224:5000/api/v1/chat/"),
+        guard let url = URL(string: "http://35.3.200.144:5000/api/v1/chat/"),
               let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
             handleError("Failed to prepare request")
             return
