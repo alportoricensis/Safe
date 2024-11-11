@@ -1,25 +1,22 @@
 import Foundation
+import CoreLocation
 
 class BookingsViewModel: ObservableObject {
     @Published var bookings: [Booking] = []
     @Published var isLoading = false
     
-    func fetchBookings() {
+    func fetchBookings(userId: String) {
         isLoading = true
-        print("📱 Starting fetchBookings()")
-        
         guard let baseURL = URL(string: "http://35.2.2.224:5000/api/v1/users/bookings"),
               var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true) else {
-            print("❌ Invalid URL")
-            return 
+            return
         }
         
         components.queryItems = [
-            URLQueryItem(name: "uuid", value: "102278719561247952889")
+            URLQueryItem(name: "uuid", value: userId)
         ]
         
         guard let url = components.url else {
-            print("❌ Failed to construct URL with query parameters")
             return
         }
         
@@ -30,39 +27,96 @@ class BookingsViewModel: ObservableObject {
         
         URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             if let error = error {
-                print("❌ Network error: \(error.localizedDescription)")
                 return
             }
             
             if let httpResponse = response as? HTTPURLResponse {
-                print("📥 Response status code: \(httpResponse.statusCode)")
             }
             
             DispatchQueue.main.async {
                 self?.isLoading = false
                 
                 guard let data = data else {
-                    print("❌ No data received")
-                    return 
+                    return
                 }
                 
                 print("📦 Received data: \(String(data: data, encoding: .utf8) ?? "Unable to convert to string")")
                 
                 do {
                     let response = try JSONDecoder().decode(BookingsResponse.self, from: data)
-                    print("✅ Successfully decoded \(response.requests.count) bookings")
                     self?.bookings = response.requests
                 } catch {
-                    print("❌ Decoding error: \(error)")
-                    print("❌ Debug description: \(error.localizedDescription)")
+                    print("Decoding error: \(error)")
                 }
             }
         }.resume()
     }
     
     func deleteBooking(_ booking: Booking) {
-        // Implement delete API call here
-        // After successful deletion, remove from bookings array:
-        bookings.removeAll { $0.id == booking.id }
+        guard let baseURL = URL(string: "http://35.2.2.224:5000/api/v1/rides/passengers/\(booking.id)/"),
+              var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true) else {
+            return
+        }
+        
+        guard let url = components.url else {
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("Error deleting booking: \(error)")
+                    return
+                }
+                
+                guard let httpResponse = response as? HTTPURLResponse else { return }
+                
+                if httpResponse.statusCode == 200 {
+                    // Success - remove from local array
+                    self?.bookings.removeAll { $0.id == booking.id }
+                } else if httpResponse.statusCode == 404 {
+                    print("Ride not found in active queues")
+                } else {
+                    print("Unexpected status code: \(httpResponse.statusCode)")
+                }
+                
+                if let data = data,
+                   let responseString = String(data: data, encoding: .utf8) {
+                    print("Server response: \(responseString)")
+                }
+            }
+        }.resume()
+    }
+    
+    func getAddressFromCoordinates(latitude: Double, longitude: Double, completion: @escaping (String) -> Void) {
+        let location = CLLocation(latitude: latitude, longitude: longitude)
+        let geocoder = CLGeocoder()
+        
+        geocoder.reverseGeocodeLocation(location) { placemarks, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("Geocoding error: \(error)")
+                    completion("\(latitude), \(longitude)")
+                    return
+                }
+                
+                if let placemark = placemarks?.first {
+                    let address = [
+                        placemark.thoroughfare,
+                        placemark.locality,
+                        placemark.administrativeArea
+                    ].compactMap { $0 }.joined(separator: ", ")
+                    
+                    completion(address.isEmpty ? "\(latitude), \(longitude)" : address)
+                } else {
+                    completion("\(latitude), \(longitude)")
+                }
+            }
+        }
     }
 }
