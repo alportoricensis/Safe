@@ -17,6 +17,7 @@ bundle.js.map
 *.pem
 *.pem
 *.crt
+*.xcodeproj
 
 # Distribution / packaging
 .Python
