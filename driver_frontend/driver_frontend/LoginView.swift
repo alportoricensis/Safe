@@ -7,7 +7,7 @@ struct LoginView: View {
     @State private var password = ""
     @State private var vehicleID = ""
     @State private var errorMessage: String?
-    @StateObject private var locationManager = LocationManager()
+    @StateObject var locationManager = LocationManager()
 
     var body: some View {
         VStack(spacing: 20) {
@@ -77,6 +77,7 @@ struct LoginView: View {
                     RideStore.shared.username = username
                     RideStore.shared.password = password
                     RideStore.shared.vehicleId = vehicleIDResponse
+                    locationManager.setVehicleId(vehicleIDResponse)
                 }
             } catch {
                 DispatchQueue.main.async {
