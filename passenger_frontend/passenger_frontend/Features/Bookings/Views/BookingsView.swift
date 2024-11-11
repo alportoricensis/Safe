@@ -43,10 +43,23 @@ struct BookingCard: View {
     @State private var dropoffAddress: String = "Loading..."
     
     var body: some View {
+        Group {
+            if booking.status.lowercased() == "requested" {
+                NavigationLink(destination: RideStatusView(rideId: booking.id)) {
+                    bookingContent
+                }
+            } else {
+                bookingContent
+            }
+        }
+    }
+    
+    private var bookingContent: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(booking.serviceName)
                     .font(.headline)
+                    .foregroundColor(.black)
                 Spacer()
                 Text(booking.status.capitalized)
                     .font(.subheadline)
@@ -60,34 +73,38 @@ struct BookingCard: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Pickup Location:")
                     .font(.subheadline)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.black)
                 Text(pickupAddress)
                     .font(.body)
+                    .foregroundColor(.black)
             }
             
             VStack(alignment: .leading, spacing: 4) {
                 Text("Dropoff Location:")
                     .font(.subheadline)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.black)
                 Text(dropoffAddress)
                     .font(.body)
+                    .foregroundColor(.black)
             }
             
             VStack(alignment: .leading, spacing: 4) {
                 Text("Requested:")
                     .font(.subheadline)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.black)
                 Text(formatDateTime(booking.requestTime))
                     .font(.body)
+                    .foregroundColor(.black)
             }
             
             if let pickupTime = booking.pickupTime {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Pickup Time:")
                         .font(.subheadline)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.black)
                     Text(formatDateTime(pickupTime))
                         .font(.body)
+                        .foregroundColor(.black)
                 }
             }
             
@@ -95,9 +112,10 @@ struct BookingCard: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Dropoff Time:")
                         .font(.subheadline)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.black)
                     Text(formatDateTime(dropoffTime))
                         .font(.body)
+                        .foregroundColor(.black)
                 }
             }
             
@@ -111,7 +129,7 @@ struct BookingCard: View {
             }
         }
         .padding()
-        .background(Color.white)
+        .background(Color.yellow)
         .cornerRadius(12)
         .shadow(radius: 2)
         .onAppear {

@@ -7,12 +7,9 @@ class BookingsViewModel: ObservableObject {
     
     func fetchBookings() {
         isLoading = true
-        print("📱 Starting fetchBookings()")
-        
         guard let baseURL = URL(string: "http://35.2.2.224:5000/api/v1/users/bookings"),
               var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true) else {
-            print("❌ Invalid URL")
-            return 
+            return
         }
         
         components.queryItems = [
@@ -20,7 +17,6 @@ class BookingsViewModel: ObservableObject {
         ]
         
         guard let url = components.url else {
-            print("❌ Failed to construct URL with query parameters")
             return
         }
         
@@ -31,31 +27,26 @@ class BookingsViewModel: ObservableObject {
         
         URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             if let error = error {
-                print("❌ Network error: \(error.localizedDescription)")
                 return
             }
             
             if let httpResponse = response as? HTTPURLResponse {
-                print("📥 Response status code: \(httpResponse.statusCode)")
             }
             
             DispatchQueue.main.async {
                 self?.isLoading = false
                 
                 guard let data = data else {
-                    print("❌ No data received")
-                    return 
+                    return
                 }
                 
                 print("📦 Received data: \(String(data: data, encoding: .utf8) ?? "Unable to convert to string")")
                 
                 do {
                     let response = try JSONDecoder().decode(BookingsResponse.self, from: data)
-                    print("✅ Successfully decoded \(response.requests.count) bookings")
                     self?.bookings = response.requests
                 } catch {
-                    print("❌ Decoding error: \(error)")
-                    print("❌ Debug description: \(error.localizedDescription)")
+                    print("Decoding error: \(error)")
                 }
             }
         }.resume()
