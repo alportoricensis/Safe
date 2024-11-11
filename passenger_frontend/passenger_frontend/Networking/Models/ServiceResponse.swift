@@ -11,7 +11,6 @@ struct APIService: Codable {
     let serviceName: String
     let startTime: String
     
-    // Convert to our domain model
     func toDomainModel() -> Service {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm:ss"
@@ -25,7 +24,7 @@ struct APIService: Codable {
             costUSD: Double(cost) ?? 0.0,
             startTime: startComponents ?? DateComponents(),
             endTime: endComponents ?? DateComponents(),
-            daysAvailable: DaysOfWeek.allDays  // Default to all days since API doesn't provide this
+            daysAvailable: DaysOfWeek.allDays
         )
     }
 }
@@ -34,4 +33,4 @@ private extension Date {
     var dateComponents: DateComponents {
         Calendar.current.dateComponents([.hour, .minute], from: self)
     }
-} 
+}
