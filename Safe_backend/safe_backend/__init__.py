@@ -83,8 +83,9 @@ cur.execute (
         user_id TEXT REFERENCES users(uuid), \
         vehicle_id INTEGER REFERENCES vehicles(vehicle_id), \
         status TEXT, \
-        pickup_time TIMESTAMP, \
-        dropoff_time TIMESTAMP, \
+        pickup_time TIMESTAMPTZ, \
+        dropoff_time TIMESTAMPTZ, \
+        request_time TIMESTAMPTZ, \
         service_name TEXT REFERENCES services(service_name) \
     );"
 )

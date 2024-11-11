@@ -26,7 +26,8 @@ def get_rides():
             "status": value.status,
             "ETA": value.eta,
             "ETP": value.etp,
-            "reqid": value.request_id
+            "reqid": value.request_id,
+            "numPassengers": value.numpass
         }
     return flask.jsonify(**context), 200
 
@@ -54,7 +55,7 @@ def get_passenger_ride(ride_id):
 
     context = {}
     context[ride_id] = {
-        "passenger": safe_backend.api.config.RIDE_REQUESTS[ride_id].firstName + " " + safe_backend.api.config.RIDE_REQwUESTS[ride_id].lastName,
+        "passenger": safe_backend.api.config.RIDE_REQUESTS[ride_id].firstName + " " + safe_backend.api.config.RIDE_REQUESTS[ride_id].lastName,
         "driver": safe_backend.api.config.RIDE_REQUESTS[ride_id].driver,
         "pickup": safe_backend.api.config.RIDE_REQUESTS[ride_id].pickupName,
         "dropoff": safe_backend.api.config.RIDE_REQUESTS[ride_id].dropoff,
@@ -62,6 +63,9 @@ def get_passenger_ride(ride_id):
         "ETP": safe_backend.api.config.RIDE_REQUESTS[ride_id].etp,
         "reqid": ride_id
     }
+    if safe_backend.api.config.RIDE_REQUESTS[ride_id].driver != "Pending Assignment":
+        context[ride_id]["driverLat"] = safe_backend.api.config.VEHICLE_QUEUES[safe_backend.api.config.RIDE_REQUESTS[ride_id].driver].lat
+        context[ride_id]["driverLong"] = safe_backend.api.config.VEHICLE_QUEUES[safe_backend.api.config.RIDE_REQUESTS[ride_id].driver].log
     return flask.jsonify(**context), 200
 
 
@@ -118,15 +122,22 @@ def delete_ride_request(ride_id):
     
     # If the ride is active, check what driver it has been assigned to, and remove it
     # from that drivers queue
-    driver_id = str(safe_backend.api.config.RIDE_REQUESTS[ride_id].driver)
+    driver_id = safe_backend.api.config.RIDE_REQUESTS[ride_id].driver
     if driver_id != "Pending Assignment":
         # Find the specific driver, and remove this passenger request from the driver's list
-        safe_backend.api.config.VEHICLE_QUEUES[driver_id].itinerary.remove(safe_backend.api.config.RIDE_REQUESTS[ride_id])
+        safe_backend.api.config.VEHICLE_QUEUES[driver_id].itinerary = [ride for ride in safe_backend.api.config.VEHICLE_QUEUES[driver_id].itinerary if ride.request_id != ride_id]
 
     # Remove from the passenger requests
     del safe_backend.api.config.RIDE_REQUESTS[ride_id]
 
     # TODO: Mark as incomplete on database
+    conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                        port="5432")
+    cur = conn.cursor()
+    cur.execute("UPDATE ride_requests SET status = %s WHERE ride_id = %s;", ("Cancelled", ride_id, ))
+    conn.commit()
+    cur.close()
+    conn.close()
 
     context = {
         "msg": "Successfully deleted ride_id: " + ride_id
@@ -207,11 +218,12 @@ def post_ride():
         lastName = flask.request.form["passengerLastName"]
         phone = flask.request.form["passengerPhoneNumber"]
         numPass = flask.request.form["numPassengers"]
+        request_time = datetime.datetime.now()
 
         cur.execute(
-            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, service_name) VALUES \
-                (%s, %s, %s, %s, %s, %s) RETURNING ride_id", (location[2], location[3], dropoffCoord[0], dropoffCoord[1], "requested",
-                                            services[0][0])
+            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, request_time, service_name) VALUES \
+                (%s, %s, %s, %s, %s, %s, %s) RETURNING ride_id", (location[2], location[3], dropoffCoord[0], dropoffCoord[1], "requested",
+                                            request_time, services[0][0])
         )
         req_id = cur.fetchone()
 
@@ -219,13 +231,14 @@ def post_ride():
         rider_id = -1
         newRequest = RideRequests(
             rider_id=rider_id, status="Requested", vehicle_id="Pending Assignment", pickupName=pickup, pickupCoord=(location[2], location[3]),
-            dropoff=dropoffCoord, phone=phone, firstName=firstName, lastName=lastName, request_id=req_id[0], numpass=numPass, dropoffName=dropoffName
+            dropoff=dropoffCoord, request_time=str(request_time), phone=phone, firstName=firstName, lastName=lastName, request_id=str(req_id[0]), numpass=numPass, dropoffName=dropoffName
         )
     
     # If the ride came from a passenger app,
     elif rideOrigin == "passenger":
         user_uid = flask.request.json["uuid"]
         numPass = flask.request.json["numPassengers"]
+        request_time = datetime.datetime.now()
 
         # Check the user has been logged in/exists
         cur.execute("SELECT * FROM users WHERE uuid = %s", (user_uid, ))
@@ -237,9 +250,9 @@ def post_ride():
         phone = sel[3]
 
         cur.execute(
-            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, service_name, user_id) VALUES \
-                (%s, %s, %s, %s, %s, %s, %s) RETURNING ride_id", (location[2], location[3], dropoffCoord[0], dropoffCoord[1], "requested",
-                                            services[0][0], user_uid)
+            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, request_time, service_name, user_id) VALUES \
+                (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING ride_id", (location[2], location[3], dropoffCoord[0], dropoffCoord[1], "requested",
+                                            request_time, services[0][0], user_uid)
         )
         req_id = cur.fetchone()
 
@@ -253,7 +266,8 @@ def post_ride():
             phone=phone,
             firstName=firstName,
             lastName=lastName,
-            request_id=req_id[0],
+            request_id=str(req_id[0]),
+            request_time=str(request_time),
             numpass=numPass,
             dropoffName=dropoffName
         )
