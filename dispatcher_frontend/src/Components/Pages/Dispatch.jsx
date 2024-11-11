@@ -150,12 +150,17 @@ const Dispatch = () => {
                                 <Input name='passengerPhoneNumber' type='text' startAdornment={<InputAdornment>Phone Number:&nbsp;</InputAdornment>} required />
                                 <Input name='numPassengers' type='number' startAdornment={<InputAdornment>Number of Passengers:&nbsp;</InputAdornment>} required />
                                 <Select name='pickupLocation' type='text' startAdornment={<InputAdornment>Pickup:&nbsp;</InputAdornment>} value={pickupName} onChange={handlePickupChange}>
-                                    {serviceName && Object.keys(pickups).length > 0 ?
-                                        pickups[serviceName].map((pickup, index) => (
-                                            <MenuItem key={index} value={pickup.name}>
-                                                {pickup.name}
-                                            </MenuItem>
-                                        ))
+                                    {serviceName ?
+                                        pickups[serviceName] ?
+                                            pickups[serviceName].map((pickup, index) => (
+                                                <MenuItem key={index} value={pickup.name}>
+                                                    {pickup.name}
+                                                </MenuItem>
+                                            ))
+                                        :
+                                            <Typography align='center'>
+                                                No Locations Registered
+                                            </Typography>
                                     :
                                         <Typography align='center'>
                                             Please Select a Service
