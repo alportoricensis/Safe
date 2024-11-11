@@ -35,7 +35,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         DispatchQueue.main.async {
             self.location = location
             self.authorizationStatus = manager.authorizationStatus
-            print("Location updated: \(location.coordinate.latitude), \(location.coordinate.longitude)")
+            //print("Location updated: \(location.coordinate.latitude), \(location.coordinate.longitude)")
         }
     }
     
@@ -93,7 +93,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: locationData, options: [])
-            print("Sending location data: \(locationData)")
+            
             
             URLSession.shared.dataTask(with: request) { data, response, error in
                 if let error = error {
