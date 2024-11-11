@@ -2,10 +2,6 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
-// View for selecting pickup location on the map
-
-
-// Main RideRequestView
 struct RideRequestView: View {
     let service: Service
     @StateObject private var viewModel = RideRequestViewModel()
@@ -14,11 +10,9 @@ struct RideRequestView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var pickupLocationName: String = "Enter pickup point"
-
     @State private var isDestinationMapPresented = false
     @State private var destinationLocation: CLLocationCoordinate2D?
     @State private var destinationLocationName: String = "Where to?"
-
     @State private var navigateToWaiting = false
 
     var body: some View {
@@ -28,14 +22,11 @@ struct RideRequestView: View {
                     .ignoresSafeArea()
 
                 VStack(spacing: 16) {
-                    // Service name header
                     Text("\(service.provider) - \(service.serviceName)")
                         .font(.title2)
                         .foregroundColor(.yellow)
 
-                    // Pickup and destination section with line indicator
                     HStack(spacing: 12) {
-                        // Location line indicator
                         VStack(spacing: 0) {
                             Circle()
                                 .fill(.white)
@@ -50,16 +41,14 @@ struct RideRequestView: View {
                                 .frame(width: 12, height: 12)
                         }
 
-                        // Text fields changed to buttons
                         VStack(spacing: 16) {
-                            // Replace Button with Picker for pickup location
                             Picker("Select Pickup Location", selection: $pickupLocationName) {
                                 Text("Enter pickup point")
                                     .foregroundColor(.gray)
                                     .tag("Enter pickup point")
-                                ForEach(viewModel.validPickupLocations, id: \.self) { location in
-                                    Text(location)
-                                        .tag(location)
+                                ForEach(viewModel.validPickupLocations) { location in
+                                    Text(location.name)
+                                        .tag(location.name)
                                 }
                             }
                             .pickerStyle(.menu)
@@ -99,7 +88,6 @@ struct RideRequestView: View {
                     }
                     .padding(.horizontal)
 
-                    // Saved places button
                     Button(action: {}) {
                         HStack {
                             Image(systemName: "star.fill")
@@ -111,7 +99,6 @@ struct RideRequestView: View {
                         .cornerRadius(8)
                     }
 
-                    // Set location on map button
                     Button(action: {}) {
                         HStack {
                             Image(systemName: "map.fill")
@@ -125,7 +112,6 @@ struct RideRequestView: View {
 
                     Spacer()
 
-                    // New Confirm Ride button
                     if pickupLocationName != "Enter pickup point" && destinationLocation != nil {
                         Button(action: {
                             viewModel.requestRide(
@@ -152,7 +138,6 @@ struct RideRequestView: View {
             .navigationDestination(isPresented: $navigateToWaiting) {
                 WaitingView(viewModel: viewModel)
             }
-            // Add alert for error handling
             .alert("Error", isPresented: .init(
                 get: { if case .error(_) = viewModel.state { return true } else { return false } },
                 set: { _ in viewModel.state = .idle }
@@ -166,10 +151,10 @@ struct RideRequestView: View {
         }
         .onAppear {
             viewModel.authViewModel = authViewModel
+            viewModel.fetchPickupLocations()
         }
     }
 
-    // Function to reverse geocode coordinates to address
     func getAddressFrom(coordinate: CLLocationCoordinate2D, completion: @escaping (String?) -> Void) {
         let geocoder = CLGeocoder()
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)

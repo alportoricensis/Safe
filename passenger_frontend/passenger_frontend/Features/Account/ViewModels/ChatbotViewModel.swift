@@ -16,7 +16,6 @@ class ChatbotViewModel: ObservableObject {
     private let welcomeMessage = "Hello! I'm SAFE's virtual assistant. How can I help you today? I can answer questions about booking rides, safety features, account management, and more."
     
     init() {
-        // Add welcome message
         messages.append(ChatMessage(content: welcomeMessage, isUser: false, timestamp: Date()))
     }
     
@@ -28,7 +27,6 @@ class ChatbotViewModel: ObservableObject {
         inputMessage = ""
         isLoading = true
         
-        // Prepare chat history
         let messageHistory = messages.map { message in
             [
                 "role": message.isUser ? "user" : "model",
@@ -36,18 +34,13 @@ class ChatbotViewModel: ObservableObject {
             ]
         }
         
-        // Prepare request body
         let requestBody: [String: Any] = [
             "messages": messageHistory,
             "message": userMessage
         ]
         
-        // Print request body
-        print("📤 Sending request with body:", requestBody)
-        
-        guard let url = URL(string: "http://35.2.2.224:5000/api/v1/chat/"),
+        guard let url = URL(string: "http://35.3.200.144:5000/api/v1/chat/"),
               let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
-            print("❌ Failed to create URL or serialize JSON")
             handleError("Failed to prepare request")
             return
         }
@@ -62,28 +55,21 @@ class ChatbotViewModel: ObservableObject {
                 self?.isLoading = false
                 
                 if let error = error {
-                    print("❌ Network error:", error.localizedDescription)
                     self?.handleError(error.localizedDescription)
                     return
                 }
                 
-                // Print response status code
                 if let httpResponse = response as? HTTPURLResponse {
                     print("📥 Response status code:", httpResponse.statusCode)
                 }
                 
                 guard let data = data else {
-                    print("❌ No data received from server")
                     self?.handleError("No data received")
                     return
                 }
                 
-                // Print raw response data
-                print("📥 Raw response:", String(data: data, encoding: .utf8) ?? "Unable to convert data to string")
-                
                 do {
                     let response = try JSONDecoder().decode(ChatResponse.self, from: data)
-                    print("📥 Decoded response:", response)
                     if response.success {
                         self?.messages.append(ChatMessage(content: response.response, isUser: false, timestamp: Date()))
                     } else {
