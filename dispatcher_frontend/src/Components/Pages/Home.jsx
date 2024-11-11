@@ -15,8 +15,6 @@ const Home = () => {
             .catch(error => console.log(error));
     }, []);
 
-    console.log(services)
-
     return (
         <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '90vw'}}>
             <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', width: '80vw', minHeight: '80vh'}}>
@@ -28,19 +26,25 @@ const Home = () => {
                         Services
                     </Typography>
                     <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', width: '80vw'}}>
-                        {Object.entries(services).map((service, index) => (
-                            <Box key={index} href={`/dispatch?service=${service[1]['serviceName']}`} component={Link} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '25vw', textDecoration: 'none', color: 'black'}} sx={{padding: '1vw', margin: '1vw', border: 1, borderRadius: 10}}>
-                                <Typography fontSize={'2em'}>
-                                    {service[1]['serviceName']}
-                                </Typography>
-                                <Typography fontSize={'1em'}>
-                                    Start Time: {service[1]['startTime']}
-                                </Typography>
-                                <Typography fontSize={'1em'}>
-                                    End Time: {service[1]['endTime']}
-                                </Typography>
-                            </Box>
-                        ))}
+                        {Object.entries(services).length > 0 ?
+                            Object.entries(services).map((service, index) => (
+                                <Box key={index} href={`/dispatch?service=${service[1]['serviceName']}`} component={Link} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '25vw', textDecoration: 'none', color: 'black'}} sx={{padding: '1vw', margin: '1vw', border: 1, borderRadius: 10}}>
+                                    <Typography fontSize={'2em'}>
+                                        {service[1]['serviceName']}
+                                    </Typography>
+                                    <Typography fontSize={'1em'}>
+                                        Start Time: {service[1]['startTime']}
+                                    </Typography>
+                                    <Typography fontSize={'1em'}>
+                                        End Time: {service[1]['endTime']}
+                                    </Typography>
+                                </Box>
+                            ))
+                        :
+                            <Typography fontSize={'1.25em'}>
+                                No Services Registered
+                            </Typography>
+                        }
                     </Box>
                 </Box>
             </Box>
