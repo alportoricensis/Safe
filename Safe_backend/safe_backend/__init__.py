@@ -95,5 +95,4 @@ conn.commit()
 cur.close()
 conn.close()
 
-import safe_backend.api
-import safe_backend.views 
+import safe_backend.api #pylint: disable=wrong-import-position

@@ -80,32 +80,32 @@ const Dispatch = () => {
     const handleCancelRide = async (event, ride) => {
         event.preventDefault();
 
-         await fetch(`http://18.191.14.26/api/v1/rides/passengers/${ride['reqid']}/`, {method: 'delete', headers: {'Content-Type': 'application/json'}})
+         await fetch(`http://10.0.0.161:5000/api/v1/rides/passengers/${ride['reqid']}/`, {method: 'delete', headers: {'Content-Type': 'application/json'}})
             .catch(error => console.log(error));
     };
 
     useEffect(() => {
-        fetch('http://18.191.14.26/api/v1/settings/services/', {method: 'get', headers: {'Content-Type': 'application/json'}})
+        fetch('http://10.0.0.161:5000/api/v1/settings/services/', {method: 'get', headers: {'Content-Type': 'application/json'}})
             .then(response => response.json())
             .then(json => setServices(json['services']))
             .catch(error => console.log(error));
 
-        fetch('http://18.191.14.26/api/v1/settings/pickups/', {method: 'get', headers: {'Content-Type': 'application/json'}})
+        fetch('http://10.0.0.161:5000/api/v1/settings/pickups/', {method: 'get', headers: {'Content-Type': 'application/json'}})
             .then(response => response.json())
             .then(json => setPickups(json))
             .catch(error => console.log(error));
 
-        fetch('http://18.191.14.26/api/v1/settings/ranges/', {method: 'get', headers: {'Content-Type': 'application/json'}})
+        fetch('http://10.0.0.161:5000/api/v1/settings/ranges/', {method: 'get', headers: {'Content-Type': 'application/json'}})
             .then(response => response.json())
             .then(json => handleRanges(json))
             .catch(error => console.log(error));
 
-        fetch('http://18.191.14.26/api/v1/rides/', {method: 'get', headers: {'Content-Type': 'application/json'}})
+        fetch('http://10.0.0.161:5000/api/v1/rides/', {method: 'get', headers: {'Content-Type': 'application/json'}})
                 .then(response => response.json())
                 .then(json => setRides(json))
                 .catch(error => console.log(error));
 
-        fetch('http://18.191.14.26/api/v1/vehicles/', {method: 'get', headers: {'Content-Type': 'application/json'}})
+        fetch('http://10.0.0.161:5000/api/v1/vehicles/', {method: 'get', headers: {'Content-Type': 'application/json'}})
                 .then(response => response.json())
                 .then(json => setVehicles(json))
                 .catch(error => console.log(error));
@@ -113,12 +113,12 @@ const Dispatch = () => {
 
     useEffect(() => {
         const intervalId = setInterval(() => {
-            fetch('http://18.191.14.26/api/v1/rides/', {method: 'get', headers: {'Content-Type': 'application/json'}})
+            fetch('http://10.0.0.161:5000/api/v1/rides/', {method: 'get', headers: {'Content-Type': 'application/json'}})
                 .then(response => response.json())
                 .then(json => setRides(json))
                 .catch(error => console.log(error));
 
-            fetch('http://18.191.14.26/api/v1/vehicles/', {method: 'get', headers: {'Content-Type': 'application/json'}})
+            fetch('http://10.0.0.161:5000/api/v1/vehicles/', {method: 'get', headers: {'Content-Type': 'application/json'}})
                 .then(response => response.json())
                 .then(json => setVehicles(json))
                 .catch(error => console.log(error));
@@ -137,7 +137,7 @@ const Dispatch = () => {
                         </Typography>
                     </Box>
                     <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', backgroundColor: 'white', width: '18vw'}} sx={{paddingLeft: '1vw', paddingRight: '1vw', paddingTop: '1vh', borderRadius: 5}}>
-                        <form action='http://18.191.14.26/api/v1/rides/' method='post' encType='multipart/form-data'>
+                        <form action='http://10.0.0.161:5000/api/v1/rides/' method='post' encType='multipart/form-data'>
                             <FormControl variant='standard' style={{width: '18vw'}}>
                                 <Select name='serviceName' startAdornment={<InputAdornment>Service:&nbsp;</InputAdornment>} value={serviceName} onChange={handleServiceChange}>
                                     {Object.entries(services).map((service, index) => (

@@ -1,14 +1,12 @@
 """REST API for users."""
-import datetime
 import flask
 import psycopg2
 import safe_backend.api.config
-from safe_backend.api.requests import RideRequests
-from safe_backend.api.utils import *
 
 # Routes
 @safe_backend.app.route("/api/v1/users/login/", methods=["POST"])
 def login_user():
+    """Log in a user with the uuid from the request."""
     # Get uuid from request
     pass_uuid = flask.request.json["uuid"]
 
@@ -21,25 +19,29 @@ def login_user():
     if user is not None:
         display_name = flask.request.json["displayName"]
         email = flask.request.json["email"]
-        firstName = display_name.split(" ")[0]
-        lastName = display_name.split(" ")[1]
+        first_name = display_name.split(" ")[0]
+        last_name = display_name.split(" ")[1]
         cur.execute(
-            "INSERT INTO users (user_id, first_name, last_name, phone_number, email) VALUES (%s, %s, %s, %s, %s)",
-            (pass_uuid, firstName, lastName, "(000) 000-0000", email)
+            "INSERT INTO users (user_id, first_name, last_name, phone_number, email) \
+            VALUES (%s, %s, %s, %s, %s)",
+            (pass_uuid, first_name, last_name, "(000) 000-0000", email)
         )
     return flask.jsonify(**{"msg": "Succesfully logged {pass_uuid} in."}), 200
 
 
 @safe_backend.app.route("/api/v1/users/delete/", methods=["POST"])
 def delete_acct():
+    #"""Delete a user with the uuid from the request."""
     pass
 
 @safe_backend.app.route("/api/v1/users/update/", methods=["POST"])
 def update_acct():
+    #"""Update a user with the uuid from the request."""
     pass
 
 @safe_backend.app.route("/api/v1/users/bookings/", methods=["GET"])
 def get_bookings():
+    """Return bookings this user has made."""
     # Get UUID from the request
     pass_uuid = flask.request.args.get("uuid")
 
@@ -47,7 +49,10 @@ def get_bookings():
     conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                         port="5432")
     cur = conn.cursor()
-    cur.execute("SELECT * FROM ride_requests WHERE user_id = %s ORDER BY ride_id DESC;", (pass_uuid, ))
+    cur.execute(
+        "SELECT * FROM ride_requests WHERE user_id = %s ORDER BY ride_id DESC;",
+        (pass_uuid, )
+    )
     requests = cur.fetchall()
     context = {"requests": []}
     for request in requests:
@@ -64,5 +69,3 @@ def get_bookings():
             "service_name": request[11]
         })
     return flask.jsonify(**context), 200
-
-

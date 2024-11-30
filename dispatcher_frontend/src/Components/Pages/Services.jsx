@@ -9,12 +9,12 @@ const Services = () => {
     const handleClick = async (event, serviceName) => {
         event.preventDefault();
 
-        await fetch('http://18.191.14.26/api/v1/settings/services/', {method: 'delete', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({'serviceName': serviceName})})
+        await fetch('http://10.0.0.161:5000/api/v1/settings/services/', {method: 'delete', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({'serviceName': serviceName})})
             .catch(error => console.log(error));
     };
 
     useEffect(() => {
-        fetch('http://18.191.14.26/api/v1/settings/services/', {method: 'get', headers: {'Content-Type': 'application/json'}})
+        fetch('http://10.0.0.161:5000/api/v1/settings/services/', {method: 'get', headers: {'Content-Type': 'application/json'}})
             .then(response => response.json())
             .then(json => setServices(json['services']))
             .catch(error => console.log(error));
@@ -54,7 +54,7 @@ const Services = () => {
                     <Typography fontSize={'1em'}>
                         Add a Service
                     </Typography>
-                    <form action='http://18.191.14.26/api/v1/settings/services/?target=/settings/services' method='post' encType='multipart/form-data'>
+                    <form action='http://10.0.0.161:5000/api/v1/settings/services/?target=/settings/services' method='post' encType='multipart/form-data'>
                         <FormControl variant='standard' style={{backgroundColor: 'white', width: '20vw'}}>
                             <Input name='serviceName' type='text' startAdornment={<InputAdornment>Service Name:&nbsp;</InputAdornment>} required />
                             <Input name='provider' type='text' startAdornment={<InputAdornment>Provider:&nbsp;</InputAdornment>} required />

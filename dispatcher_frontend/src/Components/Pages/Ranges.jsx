@@ -12,7 +12,7 @@ const Ranges = () => {
     const handleClick = async (event, serviceName) => {
         event.preventDefault();
 
-        await fetch('http://18.191.14.26/api/v1/settings/ranges/', {method: 'delete', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({'serviceName': serviceName})})
+        await fetch('http://10.0.0.161:5000/api/v1/settings/ranges/', {method: 'delete', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({'serviceName': serviceName})})
             .catch(error => console.log(error));
     };
 
@@ -21,12 +21,12 @@ const Ranges = () => {
     };
     
     useEffect(() => {
-        fetch('http://18.191.14.26/api/v1/settings/ranges/', {method: 'get', headers: {'Content-Type': 'application/json'}})
+        fetch('http://10.0.0.161:5000/api/v1/settings/ranges/', {method: 'get', headers: {'Content-Type': 'application/json'}})
             .then(response => response.json())
             .then(json => setRanges(json['ranges']))
             .catch(error => console.log(error));
 
-        fetch('http://18.191.14.26/api/v1/settings/services/', {method: 'get', headers: {"Content-Type": "application/json"}})
+        fetch('http://10.0.0.161:5000/api/v1/settings/services/', {method: 'get', headers: {"Content-Type": "application/json"}})
             .then(response => response.json())
             .then(json => setServices(json['services']))
             .catch(error => console.log(error));
@@ -63,7 +63,7 @@ const Ranges = () => {
                     <Typography fontSize={'1em'}>
                         Add a Service Range
                     </Typography>
-                    <form action='http://18.191.14.26/api/v1/settings/ranges/?target=/settings/ranges' method='post' encType='multipart/form-data'>
+                    <form action='http://10.0.0.161:5000/api/v1/settings/ranges/?target=/settings/ranges' method='post' encType='multipart/form-data'>
                         <FormControl variant='standard' style={{backgroundColor: 'white', width: '20vw'}}>
                             <Select name='serviceName' startAdornment={<InputAdornment>Service:&nbsp;</InputAdornment>} value={service} onChange={handleServiceChange}>
                                 {Object.entries(services).map((service, index) => (
