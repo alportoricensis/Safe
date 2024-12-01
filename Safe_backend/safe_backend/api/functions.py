@@ -1,3 +1,5 @@
+import os
+import requests
 def geocode_address_api(address):
     """Function to call the Google Geocoding API to convert an address or spot name into coordinates."""
     try:
