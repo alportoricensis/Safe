@@ -104,7 +104,7 @@ struct RideList: View {
             return false
         }
         
-        guard let url = URL(string: "http://35.2.2.224:5000/api/v1/vehicles/load_unload/") else {
+        guard let url = URL(string: "http://18.191.14.26/api/v1/vehicles/load_unload/") else {
             return false
         }
         

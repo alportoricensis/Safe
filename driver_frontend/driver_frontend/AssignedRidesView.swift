@@ -91,7 +91,7 @@ struct AssignedRidesView: View {
     }
 
     func logoutAPI(vehicleId: String, completion: @escaping (Bool, String) -> Void) {
-        guard let url = URL(string: "http://35.2.2.224:5000/api/v1/vehicles/logout/\(vehicleId)/") else {
+        guard let url = URL(string: "http://18.191.14.26/api/v1/vehicles/logout/\(vehicleId)/") else {
             completion(false, "Invalid URL")
             return
         }

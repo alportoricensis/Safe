@@ -36,7 +36,7 @@ class RideStatusViewModel: ObservableObject {
     }
     
     private func fetchRideStatus() {
-        guard let url = URL(string: "http://35.3.200.144:5000/api/v1/rides/passengers/\(rideId)/") else {
+        guard let url = URL(string: "http://18.191.14.26/api/v1/rides/passengers/\(rideId)/") else {
             print("⚠️ Invalid URL constructed for rideId: \(rideId)")
             return
         }

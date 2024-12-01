@@ -80,7 +80,7 @@ class RideRequestViewModel: ObservableObject {
     }
     
     func fetchPickupLocations() {
-        guard let url = URL(string: "http://35.3.200.144:5000/api/v1/settings/pickups/") else {
+        guard let url = URL(string: "http://18.191.14.26/api/v1/settings/pickups/") else {
             print("Invalid URL for pickup locations")
             state = .error("Invalid URL")
             return
@@ -141,7 +141,7 @@ class RideRequestViewModel: ObservableObject {
             numPassengers: 1
         )
         
-        guard let url = URL(string: "http://35.3.200.144:5000/api/v1/rides/") else {
+        guard let url = URL(string: "http://18.191.14.26/api/v1/rides/") else {
             state = .error("Invalid URL")
             return
         }

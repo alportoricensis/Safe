@@ -60,7 +60,7 @@ class ChatbotViewModel: ObservableObject {
             "lon": longitude
         ]
         
-        guard let url = URL(string: "http://35.3.200.144:5000/api/v1/chat/"),
+        guard let url = URL(string: "http://18.191.14.26/api/v1/chat/"),
               let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
             handleError("Failed to prepare request")
             isLoading = false
