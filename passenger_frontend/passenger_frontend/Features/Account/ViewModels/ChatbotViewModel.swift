@@ -13,7 +13,7 @@ class ChatbotViewModel: ObservableObject {
     @Published var inputMessage: String = ""
     @Published var isLoading: Bool = false
     
-    private let welcomeMessage = "Hello! I'm SAFE's virtual assistant. How can I help you today? I can answer questions about booking rides, safety features, account management, and more."
+    private let welcomeMessage = "Hello! I'm SAFE's virtual assistant. How can I help you today? I can answer questions about booking rides, safety features, account management, as well as making/cancelling your bookings!"
     
     init() {
         messages.append(ChatMessage(content: welcomeMessage, isUser: false, timestamp: Date()))

@@ -9,6 +9,11 @@ CONVERT_SPOT_TO_COORDINATES = (
     "I can help convert the spot or building name you've provided into latitude and longitude coordinates. "
     "Please provide the full address or the name of the building."
 )
+ASK_RIDE_ID = "Could you please provide the ride ID you wish to cancel?"
+
+CANCELLATION_SUCCESS = "Your ride has been successfully canceled."
+
+CANCELLATION_FAILURE = "I'm sorry, I couldn't cancel your ride. Please ensure the ride ID is correct or contact support."
 
 
 
@@ -27,6 +32,24 @@ GEOCODE_ADDRESS_FUNCTION_DESCRIPTION = {
         "required": ["address"]
     }
 }
+
+
+CANCEL_RIDE_FUNCTION_DESCRIPTION = {
+    "name": "cancel_ride",
+    "description": "Cancel an existing ride using the ride ID.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "ride_id": {
+                "type": "string",
+                "description": "The unique identifier of the ride to cancel."
+            }
+            
+        },
+        "required": ["ride_id"]
+    }
+}
+
 
 # System instruction for Gemini model
 SYSTEM_INSTRUCTION = (

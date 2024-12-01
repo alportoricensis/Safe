@@ -29,6 +29,7 @@ model = genai.GenerativeModel(
 # Define available functions for the model to call
 FUNCTIONS = [
     GEOCODE_ADDRESS_FUNCTION_DESCRIPTION,
+    CANCEL_RIDE_FUNCTION_DESCRIPTION,
 ]
 
 @app.route("/api/v1/chat/", methods=["POST"])
@@ -37,9 +38,11 @@ def chat():
     data = request.get_json()
     messages = data.get('messages', [])
     input_text = data.get('message')
-    pickup_lat = data.get('lat',37.7749)
-    pickup_lon = data.get('long',-122.4194)
+
+    pickup_lat = data.get('lat')
+    pickup_lon = data.get('long')
     user_id = data.get('user')
+    
     if not input_text:
         return jsonify({"error": "Message is required"}), 400
 
@@ -65,42 +68,70 @@ def chat():
         if response.function_call:
             function_name = response.function_call["name"]
             function_args = response.function_call["arguments"]
-            print(f"Function called: {function_name} with args: {function_args}")
 
-            args = json.loads(function_args)
-            address = args.get("address")
-            geocode_response = geocode_address_api(address)
+            if function_name == "geocode_address":
+                args = json.loads(function_args)
+                address = args.get("address")
+                geocode_response = geocode_address_api(address)
 
-            if geocode_response["success"]:
-                dropoff_lat = geocode_response["latitude"]
-                dropoff_long = geocode_response["longitude"]
-                
-                
-                booking_response = book_ride_api(
-                    pickup_lat=pickup_lat,  
-                    pickup_long=pickup_lon,  
-                    dropoff_lat=dropoff_lat,
-                    dropoff_long=dropoff_long,
-                    user_id= user_id
+                if geocode_response["success"]:
+                    dropoff_lat = geocode_response["latitude"]
+                    dropoff_long = geocode_response["longitude"]
+                    
+                    
+                    booking_response = book_ride_api(
+                        pickup_lat=pickup_lat,
+                        pickup_long=pickup_lon,
+                        dropoff_lat=dropoff_lat,
+                        dropoff_long=dropoff_long,
+                        user_id= user_id,  
+                        service_name= 'passenger'
+                    )
+
+                    if booking_response["success"]:
+                        return jsonify({
+                            "response": f"Your ride has been booked successfully! Your ride ID is {booking_response['ride_id']}.",
+                            "success": True
+                        }), 200
+                    else:
+                        return jsonify({
+                            "response": f"Sorry, there was an issue booking your ride: {booking_response['error']}",
+                            "success": False
+                        }), 500
+                else:
+                    return jsonify({
+                        "response": f"Sorry, I couldn't find the location you provided: {geocode_response['error']}",
+                        "success": False
+                    }), 400
+
+            
+
+            elif function_name == "cancel_ride":
+                args = json.loads(function_args)
+                ride_id = args.get("ride_id")
+
+                if not ride_id:
+                    
+                    return jsonify({
+                        "response": ASK_RIDE_ID,
+                        "success": True
+                    }), 200
+
+                cancellation_response = cancel_ride_api(
+                    ride_id=ride_id,
+                    user_id=user_id
                 )
 
-                if booking_response["success"]:
+                if cancellation_response["success"]:
                     return jsonify({
-                        "response": f"Your ride has been booked successfully! Your ride ID is {booking_response['ride_id']}.",
+                        "response": CANCELLATION_SUCCESS,
                         "success": True
                     }), 200
                 else:
                     return jsonify({
-                        "response": f"Sorry, there was an issue booking your ride: {booking_response['error']}",
+                        "response": f"{CANCELLATION_FAILURE} {cancellation_response['error']}",
                         "success": False
                     }), 500
-            else:
-                return jsonify({
-                    "response": f"Sorry, I couldn't find the location you provided: {geocode_response['error']}",
-                    "success": False
-                }), 400
-
-            
 
         return jsonify({
             "response": response.text,
@@ -112,6 +143,7 @@ def chat():
             "error": f"Error processing message: {str(e)}",
             "success": False
         }), 500
+            
 
 
 if __name__ == "__main__":
