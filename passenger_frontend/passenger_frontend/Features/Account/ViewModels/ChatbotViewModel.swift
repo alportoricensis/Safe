@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import CoreLocation
 
 struct ChatMessage: Identifiable, Equatable {
     let id = UUID()
@@ -15,8 +16,19 @@ class ChatbotViewModel: ObservableObject {
     
     private let welcomeMessage = "Hello! I'm SAFE's virtual assistant. How can I help you today? I can answer questions about booking rides, safety features, account management, as well as making/cancelling your bookings!"
     
+    private let locationManager = LocationManager()
+    private var cancellables = Set<AnyCancellable>()
+    
+    @Published private var currentLocation: CLLocationCoordinate2D?
+    
     init() {
         messages.append(ChatMessage(content: welcomeMessage, isUser: false, timestamp: Date()))
+        
+        locationManager.$location
+            .sink { [weak self] location in
+                self?.currentLocation = location
+            }
+            .store(in: &cancellables)
     }
     
     func sendMessage() {
@@ -34,14 +46,24 @@ class ChatbotViewModel: ObservableObject {
             ]
         }
         
+        guard let latitude = currentLocation?.latitude,
+              let longitude = currentLocation?.longitude else {
+            handleError("Location not available")
+            isLoading = false
+            return
+        }
+        
         let requestBody: [String: Any] = [
             "messages": messageHistory,
-            "message": userMessage
+            "message": userMessage,
+            "lat": latitude,
+            "lon": longitude
         ]
         
         guard let url = URL(string: "http://35.3.200.144:5000/api/v1/chat/"),
               let jsonData = try? JSONSerialization.data(withJSONObject: requestBody) else {
             handleError("Failed to prepare request")
+            isLoading = false
             return
         }
         
@@ -88,6 +110,7 @@ class ChatbotViewModel: ObservableObject {
             isUser: false,
             timestamp: Date()
         ))
+        print("Error: \(message)")
     }
 }
 
