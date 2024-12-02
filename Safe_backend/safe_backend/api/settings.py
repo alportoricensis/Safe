@@ -325,3 +325,62 @@ def services():
         conn.close()
         return flask.jsonify(**{"msg": "Succesfully updated service"}), 200
     return flask.jsonify(**{"msg": "Unsupported method."}), 500
+
+
+@safe_backend.app.route("/api/v1/settings/faq/", methods=["GET", "OPTIONS", "POST", "DELETE"])
+# REQUIRES  - User is authenticated with agency-level permissions
+# EFFECTS   - Create, Update, or Delete frequently asked questions
+# MODIFIES  - database
+def handle_faqs():
+    """Update frequently asked questions for a service."""
+    # TODO: Authentication
+
+    # Check service validity
+    service_name = flask.request.json["serviceName"]
+    conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                            port="5432")
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM services WHERE service_name = %s", (service_name, ))
+    sel = cur.fetchone()
+    if len(sel) == 0:
+        cur.close()
+        conn.close()
+        return flask.jsonify(**{"msg": f"Service {service_name} does not exist."}), 404
+
+    if flask.request.method == "GET" or flask.request.method == "OPTIONS":
+        context = {"faqs": []}
+        cur.execute("SELECT * FROM faqs WHERE service_name = %s", (service_name, ))
+        sel = cur.fetchall()
+        for faq in sel:
+            context["faqs"].append({
+                "qid": faq[0],
+                "question": faq[2],
+                "answer": faq[3]
+            })
+        cur.close()
+        conn.close()
+        return flask.jsonify(**(context)), 200
+
+    if flask.request.method == "POST":
+        question = flask.request.json["question"]
+        answer = flask.request.json["answer"]
+        cur.execute(
+            "INSERT INTO faqs (service_name, question, answer) VALUES (%s, %s, %s)",
+            (service_name, question, answer)
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+        return flask.jsonify(**{"msg": "Succesfully added Q&A."}), 200
+
+    if flask.request.method == "DELETE":
+        qid = flask.request.json["questionID"]
+        cur.execute(
+            "DELETE FROM faqs WHERE question_id = %s",
+            (qid, )
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+        return flask.jsonify(**{"msg": f"Succesfully deleted Q&A with {qid}."}), 200
+    return flask.jsonify(**{"msg": "Unsupported method."}), 400
