@@ -342,7 +342,7 @@ def handle_faqs():
 
     if flask.request.method == "GET" or flask.request.method == "OPTIONS":
         context = {"faqs": []}
-        cur.execute("SELECT * FROM faqs WHERE service_name = %s", (service_name, ))
+        cur.execute("SELECT * FROM faqs")
         sel = cur.fetchall()
         for faq in sel:
             context["faqs"].append({
