@@ -297,7 +297,7 @@ def get_statistics():
     cur = conn.cursor()
     cur.execute(
         "SELECT * FROM ride_requests \
-        WHERE vehicle_id = %s AND pickup_time > %s AND dropoff_time < %s",
+        WHERE vehicle_name = %s AND pickup_time > %s AND dropoff_time < %s",
         (vehicle_id, start_time, end_time,)
     )
     cur.close()
