@@ -102,7 +102,7 @@ def assign_rides():
     )
 
     # Transform the response into a queue, and update self's itinerary
-    for vehicle in global_vars.VEHICLES.items():
+    for vehicle in global_vars.VEHICLES:
         global_vars.VEHICLES[vehicle].response_to_queue(response)
 
 
@@ -118,7 +118,7 @@ def bookings_to_model() -> routeoptimization_v1.ShipmentModel:
     shipment_model.global_end_time = end_time
 
     # For all of the currently active vehicles, set up the vehicle needed by the API
-    for vehicle in global_vars.VEHICLES.items():
+    for vehicle in global_vars.VEHICLES:
         model_vehicle = routeoptimization_v1.Vehicle()
         model_vehicle.label = vehicle
         model_vehicle.start_location = {
@@ -138,7 +138,7 @@ def bookings_to_model() -> routeoptimization_v1.ShipmentModel:
 
     # Iterate through all active ride requests, and create a shipment for each one
     # that hasn't been assigned a vehicle
-    for req_id in global_vars.REQUESTS.items():
+    for req_id in global_vars.REQUESTS:
         if global_vars.REQUESTS[req_id].status == "Requested":
             # Create Shipment object needed by the Route Optimization API
             shipment = routeoptimization_v1.Shipment()
@@ -155,12 +155,12 @@ def bookings_to_model() -> routeoptimization_v1.ShipmentModel:
             delivery_req = shipment.VisitRequest()
 
             pickup_req.arrival_location = {
-                "latitude": global_vars.REQUESTS[req_id].pickupCoord[0],
-                "longitude": global_vars.REQUESTS[req_id].pickupCoord[1]
+                "latitude": global_vars.REQUESTS[req_id].pickup_coord[0],
+                "longitude": global_vars.REQUESTS[req_id].pickup_coord[1]
             }
             delivery_req.arrival_location = {
-                "latitude": float(global_vars.REQUESTS[req_id].dropoff[0]),
-                "longitude": float(global_vars.REQUESTS[req_id].dropoff[1])
+                "latitude": float(global_vars.REQUESTS[req_id].dropoff_coord[0]),
+                "longitude": float(global_vars.REQUESTS[req_id].dropoff_coord[1])
             }
             pickup_req.duration = "60s"
             delivery_req.duration = "60s"
