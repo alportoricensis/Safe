@@ -155,12 +155,12 @@ def bookings_to_model() -> routeoptimization_v1.ShipmentModel:
             delivery_req = shipment.VisitRequest()
 
             pickup_req.arrival_location = {
-                "latitude": global_vars.REQUESTS[req_id].pickupCoord[0],
-                "longitude": global_vars.REQUESTS[req_id].pickupCoord[1]
+                "latitude": global_vars.REQUESTS[req_id].pickup_coord[0],
+                "longitude": global_vars.REQUESTS[req_id].pickup_coord[1]
             }
             delivery_req.arrival_location = {
-                "latitude": float(global_vars.REQUESTS[req_id].dropoff[0]),
-                "longitude": float(global_vars.REQUESTS[req_id].dropoff[1])
+                "latitude": float(global_vars.REQUESTS[req_id].dropoff_coord[0]),
+                "longitude": float(global_vars.REQUESTS[req_id].dropoff_coord[1])
             }
             pickup_req.duration = "60s"
             delivery_req.duration = "60s"
