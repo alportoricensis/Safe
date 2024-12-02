@@ -5,7 +5,7 @@ import psycopg2
 import safe_backend.config
 import safe_backend.api.config as global_vars
 from safe_backend.api.requests import RideRequests
-from safe_backend.api.utils import check_time, check_dropoff, assign_rides
+from safe_backend.api.utils import check_time, check_dropoff, assign_rides, book_passenger
 
 # Routes
 @safe_backend.app.route("/api/v1/rides/", methods=["GET", "OPTIONS"])
@@ -240,7 +240,7 @@ def post_ride():
         request_time = datetime.datetime.now()
 
         cur.execute(
-            "INSERT INTO REQUESTS (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, \
+            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, \
             request_time, service_name) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING ride_id",
             (location[2], location[3], dropoff_coord[0], dropoff_coord[1], "requested",
              request_time, services[0][0])
@@ -266,18 +266,18 @@ def post_ride():
         # Check the user has been logged in/exists
         cur.execute("SELECT * FROM users WHERE uuid = %s", (user_uid, ))
         sel = cur.fetchone()
-        if sel is None:
-            return flask.jsonify(**{"msg": "Unknown uuid in database"}), 404
+        if len(sel) == 0:
+            return flask.json(**{"msg":"Unknown UUID"}), 404
         first_name = sel[1].split(" ")[0]
         last_name = sel[1].split(" ")[1]
         phone = sel[3]
 
         cur.execute(
-            "INSERT INTO REQUESTS (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, \
+            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, \
             request_time, service_name, user_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) \
             RETURNING ride_id",
             (location[2], location[3], dropoff_coord[0], dropoff_coord[1], "requested",
-             request_time, services[0][0], user_uid)
+                request_time, services[0][0], user_uid)
         )
         req_id = cur.fetchone()
 
@@ -296,6 +296,48 @@ def post_ride():
             numpass=num_passengers,
             dropoff_name=dropoff_name
         )
+    elif ride_origin == "future":
+        user_uid = flask.request.json["uuid"]
+        num_passengers = flask.request.json["numPassengers"]
+        req_time = datetime.datetime.fromtimestamp(flask.request.json["requestedTime"])
+        minute = req_time.minute
+        hour = req_time.hour
+        day = req_time.day
+        month = req_time.month
+        cur.execute("SELECT * FROM users WHERE uuid = %s", (user_uid, ))
+        sel = cur.fetchone()
+        if len(sel) == 0:
+            return flask.jsonify(**{"msg": "Unknown UUID."}), 404
+        first_name = sel[1].split(" ")[0]
+        last_name = sel[1].split(" ")[1]
+        request_time = datetime.datetime.now()
+        phone = sel[3]
+        cur.execute(
+            "INSERT INTO ride_requests (pickup_lat, pickup_long, dropoff_lat, dropoff_long, status, \
+            request_time, service_name, user_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) \
+            RETURNING ride_id",
+            (location[2], location[3], dropoff_coord[0], dropoff_coord[1], "scheduled",
+                request_time, services[0][0], user_uid)
+        )
+        req_id = cur.fetchone()
+        global_vars.scheduler.add_job(
+            book_passenger,
+            'cron',
+            minute=minute,
+            hour=hour,
+            day=day,
+            month=month,
+            args=[first_name, last_name, phone, user_uid, pickup, location, req_id,
+                  num_passengers, dropoff_coord, dropoff_name],
+            id=f"ride_{req_id}"
+        )
+        context = {
+            "msg": "Successfully scheduled ride."
+        }
+        conn.commit()
+        cur.close()
+        conn.close()
+        return flask.jsonify(**context), 200
     else:
         context = {
             "msg": "Unrecognized rideOrigin"
@@ -304,6 +346,7 @@ def post_ride():
         cur.close()
         conn.close()
         return flask.jsonify(**context), 400
+
     # Add to mappings
     global_vars.REQUESTS[str(req_id[0])] = new_request
 

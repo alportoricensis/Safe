@@ -1,9 +1,11 @@
 """Helper functions for REST API for ride requests."""
 import datetime
 import psycopg2
+import flask
 from geopy import distance as dist
 from google.maps import routeoptimization_v1
 import safe_backend.api.config as global_vars
+from safe_backend.api.requests import RideRequests
 
 
 # REQUIRES  -
@@ -169,3 +171,35 @@ def bookings_to_model() -> routeoptimization_v1.ShipmentModel:
 
             shipment_model.shipments.append(value=shipment)
     return shipment_model
+
+
+# REQUIRES
+# EFFECTS
+# MODIFIES
+def book_passenger(first_name, last_name, contact, user_uid, pickup, location, req_id,
+                   num_passengers, dropoff_coord, dropoff_name) -> RideRequests:
+    """Book a ride coming from a passenger app."""
+    request_time = datetime.datetime.now()
+    # Check the user has been logged in/exists
+    new_request = RideRequests(
+        rider_id = user_uid,
+        status = "Requested",
+        vehicle_id = "Pending Assignment",
+        pickup_name=pickup,
+        pickup_coord=(location[2], location[3]),
+        dropoff_coord=dropoff_coord,
+        phone=contact,
+        first_name=first_name,
+        last_name=last_name,
+        request_id=str(req_id[0]),
+        request_time=str(request_time),
+        numpass=num_passengers,
+        dropoff_name=dropoff_name
+    )
+
+    # Add to mappings
+    global_vars.REQUESTS[str(req_id[0])] = new_request
+
+    # If there is a vehicle with no active rides, call its assignment function
+    if global_vars.VEHICLES:
+        assign_rides()

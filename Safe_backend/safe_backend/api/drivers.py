@@ -3,6 +3,7 @@ import datetime
 import flask
 import psycopg2
 import safe_backend
+from safe_backend.api.utils import calc_distance
 import safe_backend.api.vehicles
 import safe_backend.api.config as global_vars
 from safe_backend.api.utils import assign_rides
@@ -169,8 +170,11 @@ def post_loc():
         }
         return flask.jsonify(**context), 404
 
-    global_vars.VEHICLES[vehicle_id].lat = flask.request.json["latitude"]
-    global_vars.VEHICLES[vehicle_id].log = flask.request.json["longitude"]
+    old_loc = (global_vars.VEHICLES[vehicle_id].lat, global_vars.VEHICLES[vehicle_id].log)
+    new_loc = (flask.request.json["latitude"], flask.request.json["longitude"])
+    global_vars.VEHICLES[vehicle_id].lat = new_loc[0]
+    global_vars.VEHICLES[vehicle_id].log = new_loc[1]
+    global_vars.VEHICLES[vehicle_id].miles_travelled += calc_distance(old_loc, new_loc)
 
     context = {
         "msg": "Success"
@@ -266,3 +270,51 @@ def load_unload():
         "msg": "Command not recognized!"
     }
     return flask.jsonify(**context), 400
+
+
+@safe_backend.app.route("/api/v1/vehicles/statistics/", methods=["GET"])
+# REQUIRES  - User is authenticated with driver-level permissions
+# EFFECTS   - Get the usage statistics for this vehicle 
+# MODIFIES  - Nothing
+def get_statistics():
+    """Return usage statistics for a vehicle."""
+    # TODO: Authentication
+
+    # Get vehicle_id from the request
+    vehicle_id = flask.request.json["vehicle_id"]
+
+    # Get the start time and end time for the usage statistics
+    start_time = flask.request.json["start_time"]
+    end_time = flask.request.json["end_time"]
+
+    # Check that the vehicle has been logged in
+    if vehicle_id not in global_vars.VEHICLES:
+        return flask.jsonify(**{"msg": f"Vehicle {vehicle_id} not logged in."}), 404
+
+    # Query the database for all rides completed in this timeframe
+    conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                        port="5432")
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT * FROM ride_requests \
+        WHERE vehicle_id = %s AND pickup_time > %s AND dropoff_time < %s",
+        (vehicle_id, start_time, end_time,)
+    )
+    cur.close()
+    conn.close()
+    context = {"rides": []}
+    num_passengers = 0
+    for ride in cur.fetchall():
+        context["rides"].append({
+            "pickupLat": ride[1],
+            "pickupLong": ride[2],
+            "dropoffLat": ride[3],
+            "dropoffLong": ride[4],
+            "pickupTime": ride[8],
+            "dropoffTime": ride[9],
+            "serviceName": ride[10],
+        })
+        num_passengers += 1
+    context["numPassengers"] = num_passengers
+    context["milesTravelled"] = global_vars.VEHICLES[vehicle_id].miles_travelled
+    return flask.jsonify(**context), 200

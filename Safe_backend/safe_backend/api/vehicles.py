@@ -18,6 +18,7 @@ class Vehicle:
         self.status = status
         self.lat = latin
         self.log = longin
+        self.miles_travelled = 0
 
 
     # REQUIRES
