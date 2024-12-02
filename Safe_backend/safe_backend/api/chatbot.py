@@ -1,97 +1,23 @@
 """REST API for support chatbot using Google Gemini."""
+from flask import Flask, Response, request, jsonify
 import os
-from flask import request
 import google.generativeai as genai
+from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import safe_backend.api.config
+import requests  
+from chatbot_config  import *
+from functions import *
+import json
 
-genai.configure(api_key = os.environ["GOOGLE_API_KEY"])
+app = Flask(__name__)
 
-def how_it_works():
-    """Return how the ride-share app works for the chatbot."""
-    return (
-        "SAFE Ride-Sharing App: How It Works\n\n"
+genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
-        "1. Getting Started\n"
-        "Q: How do I sign up for SAFE?\n"
-        "A: You have two options:\n"
-        "   • Sign in with Google (recommended)\n"
-        "   • Continue as a guest\n\n"
-
-        "2. Booking a Ride\n"
-        "Q: How do I request a ride?\n"
-        "A: Follow these steps:\n"
-        "   1. Select a service from the available options\n"
-        "   2. Choose your pickup location from:\n"
-        "      - Bob and Betty Biester\n"
-        "      - LSA\n"
-        "      - Duderstadt Center\n"
-        "   3. Set your destination using the interactive map\n"
-        "   4. Confirm your ride\n\n"
-
-        "Q: How do I track my ride?\n"
-        "A: Once your ride is confirmed, you'll see in Bookings:\n"
-        "   • Driver's real-time location\n"
-        "   • Estimated Time of Arrival (ETA)\n"
-        "   • Driver's name\n"
-        "   • Pickup and dropoff locations\n"
-        "   The app automatically updates every 10 seconds\n\n"
-
-        "3. Managing Bookings\n"
-        "Q: How can I view my ride history?\n"
-        "A: Access the Bookings tab to see:\n"
-        "   • All past and current rides\n"
-        "   • Ride status updates\n"
-        "   • Pickup and dropoff locations\n"
-        "   • Request times\n"
-        "   • Driver information\n\n"
-
-        "4. Account Management\n"
-        "Q: What account features are available?\n"
-        "A: In the Account tab, you can:\n"
-        "   • View your profile information\n"
-        "   • Add favorite locations (Home/Work)\n"
-        "   • Access support via chatbot\n"
-        "   • Sign out\n\n"
-
-        "5. Support\n"
-        "Q: How do I get help?\n"
-        "A: SAFE provides an AI-powered chatbot that can help with:\n"
-        "   • Booking rides\n"
-        "   • Safety features\n"
-        "   • Account management\n"
-        "   • General inquiries\n\n"
-
-        "6. Safety Features\n"
-        "Q: What safety features does SAFE provide?\n"
-        "A: SAFE includes:\n"
-        "   • Real-time ride tracking\n"
-        "   • Verified pickup locations\n"
-        "   • Secure Google authentication\n"
-        "   • Location services integration\n"
-        "   • Regular status updates during rides\n\n"
-
-        "7. Service Availability\n"
-        "Q: What information is shown for available services?\n"
-        "A: Each service displays:\n"
-        "   • Provider name\n"
-        "   • Service name\n"
-        "   • Cost (including free services)\n"
-        "   • Operating hours\n"
-        "   • Availability status\n\n"
-
-        "For additional support or questions, use the in-app chatbot"
-        "accessible through the Account tab."
-    )
 
 
 model = genai.GenerativeModel(
     model_name="gemini-1.5-flash",
-    system_instruction="You are a helpful customer support chatbot for SAFE, a ride-sharing " \
-        "service. You have access to the following FAQ information:\n\n{how_it_works()}\n\n" \
-        "Please use this information to help users with their questions about SAFE's services," \
-        "policies, and features. Be concise. Respond in no more than 3 sentences." \
-        "If you don't know the answer, politely say so and suggest contacting SAFE Support" \
-        "directly.",
+    system_instruction=SYSTEM_INSTRUCTION,
     generation_config={
         "temperature": 0.9,
         "top_k": 1,
@@ -100,26 +26,31 @@ model = genai.GenerativeModel(
     },
 )
 
+# Define available functions for the model to call
+FUNCTIONS = [
+    GEOCODE_ADDRESS_FUNCTION_DESCRIPTION,
+    CANCEL_RIDE_FUNCTION_DESCRIPTION,
+]
 
-@safe_backend.app.route("/api/v1/chat/", methods=["POST"])
+@app.route("/api/v1/chat/", methods=["POST"])
 def chat():
     """Handle chat messages."""
     data = request.get_json()
     messages = data.get('messages', [])
     input_text = data.get('message')
 
+    pickup_lat = data.get('lat')
+    pickup_lon = data.get('long')
+    user_id = data.get('user')
+    
     if not input_text:
-        return {"error": "Message is required"}, 400
+        return jsonify({"error": "Message is required"}), 400
 
     try:
         history = [
             {
                 "role": "model",
-                "parts": [
-                    "Hello! I'm SAFE's virtual assistant. How can I help you today?" \
-                    "I can answer questions about booking rides, safety features, " \
-                    "account management, and more."
-                ]
+                "parts": [INITIAL_GREETINGS]
             }
         ]
         for message in messages:
@@ -128,19 +59,92 @@ def chat():
             elif message['role'] == 'model':
                 history.append({"role": "model", "parts": [message['content']]})
 
-        print(history)
-        chat_var = model.start_chat(history=history)
+        print("Chat History:", history)
+        chat = model.start_chat(history=history)
 
-        response = chat_var.send_message(input_text)
+        response = chat.send_message(input_text, functions=FUNCTIONS)
         response.resolve()
 
-        return {
+        if response.function_call:
+            function_name = response.function_call["name"]
+            function_args = response.function_call["arguments"]
+
+            if function_name == "geocode_address":
+                args = json.loads(function_args)
+                address = args.get("address")
+                geocode_response = geocode_address_api(address)
+
+                if geocode_response["success"]:
+                    dropoff_lat = geocode_response["latitude"]
+                    dropoff_long = geocode_response["longitude"]
+                    
+                    
+                    booking_response = book_ride_api(
+                        pickup_lat=pickup_lat,
+                        pickup_long=pickup_lon,
+                        dropoff_lat=dropoff_lat,
+                        dropoff_long=dropoff_long,
+                        user_id= user_id,  
+                        service_name= 'passenger'
+                    )
+
+                    if booking_response["success"]:
+                        return jsonify({
+                            "response": f"Your ride has been booked successfully! Your ride ID is {booking_response['ride_id']}.",
+                            "success": True
+                        }), 200
+                    else:
+                        return jsonify({
+                            "response": f"Sorry, there was an issue booking your ride: {booking_response['error']}",
+                            "success": False
+                        }), 500
+                else:
+                    return jsonify({
+                        "response": f"Sorry, I couldn't find the location you provided: {geocode_response['error']}",
+                        "success": False
+                    }), 400
+
+            
+
+            elif function_name == "cancel_ride":
+                args = json.loads(function_args)
+                ride_id = args.get("ride_id")
+
+                if not ride_id:
+                    
+                    return jsonify({
+                        "response": ASK_RIDE_ID,
+                        "success": True
+                    }), 200
+
+                cancellation_response = cancel_ride_api(
+                    ride_id=ride_id,
+                    user_id=user_id
+                )
+
+                if cancellation_response["success"]:
+                    return jsonify({
+                        "response": CANCELLATION_SUCCESS,
+                        "success": True
+                    }), 200
+                else:
+                    return jsonify({
+                        "response": f"{CANCELLATION_FAILURE} {cancellation_response['error']}",
+                        "success": False
+                    }), 500
+
+        return jsonify({
             "response": response.text,
             "success": True
-        }, 200
+        }), 200
 
     except Exception as e:
-        return {
+        return jsonify({
             "error": f"Error processing message: {str(e)}",
             "success": False
-        }, 500
+        }), 500
+            
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

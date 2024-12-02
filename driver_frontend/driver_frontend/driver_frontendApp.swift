@@ -18,17 +18,18 @@ struct driver_frontendApp: App {
     }
     
     var body: some Scene {
-        WindowGroup {
-            if authManager.isAuthenticated {
-                ContentView()
-                    .environmentObject(authManager)
-                    .environmentObject(locationManager)
-            } else {
-                LoginView()
-                    .environmentObject(authManager)
-                    .environmentObject(locationManager)
+            WindowGroup {
+                if authManager.isAuthenticated {
+                    MenuView()
+                        .environmentObject(authManager)
+                        .environmentObject(locationManager)
+                } else {
+                    LoginView()
+                        .environmentObject(authManager)
+                        .environmentObject(locationManager)
+                }
             }
-        }
+        
     }
     
     private func configureNavigationBarAppearance() {
