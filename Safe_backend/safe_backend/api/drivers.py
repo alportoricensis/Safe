@@ -140,14 +140,14 @@ def get_vehicles():
         }
         for ride_request in global_vars.VEHICLES[vehicle_id].itinerary:
             context[vehicle_id]["itinerary"].append({
-                "passenger": ride_request.firstName + " " + ride_request.lastName,
+                "passenger": ride_request.first_name + " " + ride_request.last_name,
                 "driver": ride_request.driver,
-                "pickup": ride_request.pickupName,
-                "dropoff": ride_request.dropoffName,
+                "pickup": ride_request.pickup_name,
+                "dropoff": ride_request.dropoff_name,
                 "ETA": ride_request.eta,
                 "ETP": ride_request.etp,
                 "reqid": ride_request.request_id,
-                "isPickup": ride_request.isPickup
+                "isPickup": ride_request.is_pickup
             })
 
     # Return success
@@ -216,7 +216,7 @@ def load_unload():
                             port="5432")
         cur = conn.cursor()
         cur.execute(
-            "UPDATE REQUESTS SET pickup_time = %s WHERE ride_id = %s;",
+            "UPDATE ride_requests SET pickup_time = %s WHERE ride_id = %s;",
             (datetime.datetime.now() ,global_vars.REQUESTS[ride_id].request_id,)
         )
         conn.commit()
@@ -227,7 +227,7 @@ def load_unload():
         global_vars.VEHICLES[vehicle_id].capacity -= global_vars.REQUESTS[ride_id].numpass
         global_vars.VEHICLES[vehicle_id].itinerary = [
             ride for ride in global_vars.VEHICLES[vehicle_id].itinerary
-            if (ride.request_id != ride_id and not ride.isPickup)
+            if (ride.request_id != ride_id and not ride.is_pickup)
         ]
 
         # Return success
@@ -245,7 +245,7 @@ def load_unload():
                             port="5432")
         cur = conn.cursor()
         cur.execute(
-            "UPDATE REQUESTS SET status = %s, dropoff_time = %s WHERE ride_id = %s;",
+            "UPDATE ride_requests SET status = %s, dropoff_time = %s WHERE ride_id = %s;",
             ("Complete",datetime.datetime.now() ,global_vars.REQUESTS[ride_id].request_id, )
         )
         conn.commit()

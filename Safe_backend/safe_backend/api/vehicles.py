@@ -38,7 +38,7 @@ class Vehicle:
                         global_vars.REQUESTS[visit.shipment_label].etp = visit.start_time
                     else:
                         global_vars.REQUESTS[visit.shipment_label].eta = visit.start_time
-                        dict_copy[visit.shipment_label].isPickup = False
+                        dict_copy[visit.shipment_label].is_pickup = False
                         dict_copy[visit.shipment_label].etp = False
                         self.itinerary.append(dict_copy[visit.shipment_label])
 
