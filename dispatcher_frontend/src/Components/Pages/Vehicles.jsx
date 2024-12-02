@@ -9,12 +9,12 @@ const Vehicles = () => {
     const handleClick = async (event, vehicleName) => {
         event.preventDefault();
 
-        await fetch('http://10.0.0.161:5000/api/v1/settings/vehicles/', {method: 'delete', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({'vehicleName': vehicleName})})
+        await fetch('http://18.191.14.26/api/v1/settings/vehicles/', {method: 'delete', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({'vehicleName': vehicleName})})
             .catch(error => console.log(error));
     };
     
     useEffect(() => {
-        fetch('http://10.0.0.161:5000/api/v1/settings/vehicles/', {method: 'get', headers: {'Content-Type': 'application/json'}})
+        fetch('http://18.191.14.26/api/v1/settings/vehicles/', {method: 'get', headers: {'Content-Type': 'application/json'}})
             .then(response => response.json())
             .then(json => setVehicles(json['vehicles']))
             .catch(error => console.log(error));
@@ -48,7 +48,7 @@ const Vehicles = () => {
                     <Typography fontSize={'1em'}>
                         Register a Vehicle
                     </Typography>
-                    <form action='http://10.0.0.161:5000/api/v1/settings/vehicles/?target=/settings/vehicles' method='post' encType='multipart/form-data'>
+                    <form action='http://18.191.14.26/api/v1/settings/vehicles/?target=/settings/vehicles' method='post' encType='multipart/form-data'>
                         <FormControl variant='standard' style={{backgroundColor: 'white', width: '20vw'}}>
                             <Input name='vehicleName' type='text' startAdornment={<InputAdornment>Vehicle Name:&nbsp;</InputAdornment>} required />
                             <Input name='vehicleCapacity' type='text' startAdornment={<InputAdornment>Capacity:&nbsp;</InputAdornment>} required />

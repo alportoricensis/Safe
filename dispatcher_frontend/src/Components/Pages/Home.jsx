@@ -9,7 +9,7 @@ const Home = () => {
     const username = 'Teage Johnson'
 
     useEffect(() => {
-        fetch('http://10.0.0.161:5000/api/v1/settings/services/', {method: 'get', headers: {'Content-Type': 'application/json'}})
+        fetch('http://18.191.14.26/api/v1/settings/services/', {method: 'get', headers: {'Content-Type': 'application/json'}})
             .then(response => response.json())
             .then(json => setServices(json['services']))
             .catch(error => console.log(error));
