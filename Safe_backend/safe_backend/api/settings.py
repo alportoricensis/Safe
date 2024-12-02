@@ -336,16 +336,9 @@ def handle_faqs():
     # TODO: Authentication
 
     # Check service validity
-    service_name = flask.request.json["serviceName"]
     conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                             port="5432")
     cur = conn.cursor()
-    cur.execute("SELECT * FROM services WHERE service_name = %s", (service_name, ))
-    sel = cur.fetchone()
-    if len(sel) == 0:
-        cur.close()
-        conn.close()
-        return flask.jsonify(**{"msg": f"Service {service_name} does not exist."}), 404
 
     if flask.request.method == "GET" or flask.request.method == "OPTIONS":
         context = {"faqs": []}
@@ -354,6 +347,7 @@ def handle_faqs():
         for faq in sel:
             context["faqs"].append({
                 "qid": faq[0],
+                "service_name": faq[1],
                 "question": faq[2],
                 "answer": faq[3]
             })
@@ -362,6 +356,13 @@ def handle_faqs():
         return flask.jsonify(**(context)), 200
 
     if flask.request.method == "POST":
+        service_name = flask.request.json["serviceName"]
+        cur.execute("SELECT * FROM services WHERE service_name = %s", (service_name, ))
+        sel = cur.fetchone()
+        if len(sel) == 0:
+            cur.close()
+            conn.close()
+            return flask.jsonify(**{"msg": f"Service {service_name} does not exist."}), 404
         question = flask.request.json["question"]
         answer = flask.request.json["answer"]
         cur.execute(
