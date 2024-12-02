@@ -23,7 +23,7 @@ def vehicles():
         cur.execute("SELECT * FROM vehicles WHERE vehicle_name = %s", (vehicle_name, ))
         sel = cur.fetchone()
         if sel is not None:
-            flask.flash(f"Error: Vehicle {vehicle_name} already exists!")
+            return flask.jsonify(**{"msg": "Vehicle already exists."}), 400
         vehicle_range = flask.request.form["vehicleRange"]
         vehicle_capacity = flask.request.form["vehicleCapacity"]
         cur.execute(
