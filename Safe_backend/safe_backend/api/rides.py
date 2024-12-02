@@ -267,7 +267,7 @@ def post_ride():
         cur.execute("SELECT * FROM users WHERE uuid = %s", (user_uid, ))
         sel = cur.fetchone()
         if sel is None:
-            return flask.json(**{"msg":"Unknown UUID"}), 404
+            return flask.jsonify(**{"msg":"Unknown UUID"}), 404
         first_name = sel[1].split(" ")[0]
         last_name = sel[1].split(" ")[1]
         phone = sel[3]
