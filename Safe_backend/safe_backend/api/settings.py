@@ -33,7 +33,7 @@ def vehicles():
         conn.commit()
         cur.close()
         conn.close()
-        return flask.jsnoify(**{"msg": "Succesfully created vehicle."}), 200
+        return flask.jsonify(**{"msg": "Succesfully created vehicle."}), 200
 
     if flask.request.method == "GET":
         conn = psycopg2.connect(database="safe_backend", user="safe", password="",
