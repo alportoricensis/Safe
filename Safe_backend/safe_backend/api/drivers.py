@@ -245,7 +245,7 @@ def load_unload():
                             port="5432")
         cur = conn.cursor()
         cur.execute(
-            "UPDATE REQUESTS SET status = %s, dropoff_time = %s WHERE ride_id = %s;",
+            "UPDATE ride_requests SET status = %s, dropoff_time = %s WHERE ride_id = %s;",
             ("Complete",datetime.datetime.now() ,global_vars.REQUESTS[ride_id].request_id, )
         )
         conn.commit()
