@@ -88,7 +88,7 @@ struct LoginView: View {
     }
 
     func loginVehicle(username: String, password: String, vehicleID: String, latitude: Double, longitude: Double) async throws -> String {
-        guard let url = URL(string: "http://35.2.2.224:5000/api/v1/vehicles/login/") else {
+        guard let url = URL(string: "http://18.191.14.26/api/v1/vehicles/login/") else {
             throw URLError(.badURL)
         }
 

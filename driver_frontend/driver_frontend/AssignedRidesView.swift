@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ContentView: View {
+struct AssignedRidesView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var locationManager: LocationManager
     @State private var selectedTab: Tab = .current
@@ -12,12 +12,7 @@ struct ContentView: View {
     }
 
     var body: some View {
-        // If the user is logged out, navigate to LoginView
-        if !authManager.isAuthenticated {
-            return AnyView(LoginView()) // Navigate to LoginView if logged out
-        }
-
-        return AnyView(
+        NavigationView { // Add a NavigationView
             GeometryReader { geometry in
                 VStack(spacing: 0) {
                     VStack {
@@ -75,7 +70,8 @@ struct ContentView: View {
                 .edgesIgnoringSafeArea(.all)
                 .withSafeTopBar()
             }
-        )
+            .navigationBarTitle("Assigned Rides", displayMode: .inline) // Add navigation title
+        }
     }
 
     func logoutVehicle() {
@@ -95,7 +91,7 @@ struct ContentView: View {
     }
 
     func logoutAPI(vehicleId: String, completion: @escaping (Bool, String) -> Void) {
-        guard let url = URL(string: "http://35.2.2.224:5000/api/v1/vehicles/logout/\(vehicleId)/") else {
+        guard let url = URL(string: "http://18.191.14.26/api/v1/vehicles/logout/\(vehicleId)/") else {
             completion(false, "Invalid URL")
             return
         }
@@ -141,8 +137,4 @@ struct TabButton: View {
             .frame(maxWidth: .infinity)
         }
     }
-}
-
-#Preview {
-    ContentView()
 }

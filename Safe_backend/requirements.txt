@@ -1,7 +1,8 @@
-Flask
+flask
 datetime
-safe_backend
-psycopg2
 geopy
 google-maps-routeoptimization
 gogole-generativeai==0.8.3
+gunicorn
+apscheduler
+requests

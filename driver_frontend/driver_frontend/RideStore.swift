@@ -20,7 +20,7 @@ final class RideStore {
     var latitude: Double?
     var longitude: Double?
 
-    private let serverUrl = "http://35.2.2.224:5000/api/v1/rides/drivers/"
+    private let serverUrl = "http://18.191.14.26/api/v1/rides/drivers/"
 
 
     // Modify the function to use the vehicleId member variable

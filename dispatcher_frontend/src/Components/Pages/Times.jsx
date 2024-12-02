@@ -9,7 +9,7 @@ const Times = () => {
     const handleClick = async (event, serviceName, startTime, endTime) => {
         event.preventDefault();
 
-        await fetch('http://35.2.2.224:5000/api/v1/settings/services/', {method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({'serviceName': serviceName, 'startTime': startTime, 'endTime': endTime})})
+        await fetch('http://10.0.0.161:5000/api/v1/settings/services/', {method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({'serviceName': serviceName, 'startTime': startTime, 'endTime': endTime})})
             .catch(error => console.log(error));
     };
 
@@ -35,7 +35,7 @@ const Times = () => {
 
     
     useEffect(() => {
-        fetch('http://35.2.2.224:5000/api/v1/settings/services/', {method: 'get', headers: {'Content-Type': 'application/json'}})
+        fetch('http://10.0.0.161:5000/api/v1/settings/services/', {method: 'get', headers: {'Content-Type': 'application/json'}})
             .then(response => response.json())
             .then(json => setServices(json['services']))
             .catch(error => console.log(error));

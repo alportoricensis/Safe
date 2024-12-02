@@ -2,11 +2,14 @@
 import flask
 from flask_cors import CORS
 import psycopg2
+from dotenv import load_dotenv
 
 app = flask.Flask(__name__)
 CORS(app)
 app.config.from_object("safe_backend.config")
 app.config.from_envvar("SAFE_BACKEND_SETTINGS", silent=True)
+# load the .env file for the keys
+load_dotenv()
 
 # Set up database if it doesn't exist
 conn = psycopg2.connect(database="safe_backend", user="safe", password="",
@@ -57,18 +60,27 @@ cur.execute (
         radius_miles REAL NOT NULL, \
         isPickup BOOLEAN, \
         isDropoff BOOLEAN, \
-        service_id INTEGER REFERENCES services(service_id) \
+        service_name TEXT REFERENCES services(service_name) \
     );"
 )
 
 # Refers to the service ranges for this agency
 cur.execute (
     "CREATE TABLE IF NOT EXISTS users ( \
-        user_id SERIAL PRIMARY KEY, \
-        first_name TEXT NOT NULL, \
-        last_name TEXT NOT NULL, \
-        phone_number TEXT NOT NULL, \
+        uuid TEXT PRIMARY KEY, \
+        display_name TEXT NOT NULL, \
+        phone_number TEXT, \
         email TEXT NOT NULL \
+    );"
+)
+
+# FAQs for this service
+cur.execute (
+    "CREATE TABLE IF NOT EXISTS faqs ( \
+        question_id SERIAL PRIMARY KEY, \
+        service_name TEXT REFERENCES services(service_name), \
+        question TEXT NOT NULL, \
+        answer TEXT NOT NULL \
     );"
 )
 
@@ -93,5 +105,4 @@ conn.commit()
 cur.close()
 conn.close()
 
-import safe_backend.api
-import safe_backend.views 
+import safe_backend.api #pylint: disable=wrong-import-position

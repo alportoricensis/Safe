@@ -9,7 +9,7 @@ import Combine
 import Combine
 
 class AuthManager: ObservableObject {
-    @Published var isAuthenticated = false
+    @Published var isAuthenticated = true
     @Published var vehicleID: String?    
     var username: String?
     var password: String?
