@@ -284,8 +284,8 @@ def get_statistics():
     vehicle_id = flask.request.json["vehicle_id"]
 
     # Get the start time and end time for the usage statistics
-    start_time = flask.request.json["start_time"]
-    end_time = flask.request.json["end_time"]
+    start_time = datetime.datetime.fromtimestamp(flask.request.json["start_time"])
+    end_time = datetime.datetime.fromtimestamp(flask.request.json["end_time"])
 
     # Check that the vehicle has been logged in
     if vehicle_id not in global_vars.VEHICLES:
