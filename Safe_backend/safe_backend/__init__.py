@@ -31,8 +31,7 @@ cur.execute (
 # Refers to the vehicles used by this agency
 cur.execute (
     "CREATE TABLE IF NOT EXISTS vehicles ( \
-        vehicle_id SERIAL PRIMARY KEY, \
-        vehicle_name TEXT NOT NULL, \
+        vehicle_name TEXT PRIMARY KEY, \
         capacity INTEGER NOT NULL, \
         vrange INTEGER NOT NULL \
     );"
@@ -93,7 +92,7 @@ cur.execute (
         dropoff_lat REAL, \
         dropoff_long REAL, \
         user_id TEXT REFERENCES users(uuid), \
-        vehicle_id INTEGER REFERENCES vehicles(vehicle_id), \
+        vehicle_name TEXT REFERENCES vehicles(vehicle_name), \
         status TEXT, \
         pickup_time TIMESTAMPTZ, \
         dropoff_time TIMESTAMPTZ, \
