@@ -300,21 +300,23 @@ def get_statistics():
         WHERE vehicle_name = %s AND pickup_time > %s AND dropoff_time < %s",
         (vehicle_id, start_time, end_time,)
     )
-    cur.close()
-    conn.close()
     context = {"rides": []}
+    sel = cur.fetchall()
     num_passengers = 0
-    for ride in cur.fetchall():
-        context["rides"].append({
-            "pickupLat": ride[1],
-            "pickupLong": ride[2],
-            "dropoffLat": ride[3],
-            "dropoffLong": ride[4],
-            "pickupTime": ride[8],
-            "dropoffTime": ride[9],
-            "serviceName": ride[10],
-        })
-        num_passengers += 1
+    if sel is not None:
+        for ride in sel:
+            context["rides"].append({
+                "pickupLat": ride[1],
+                "pickupLong": ride[2],
+                "dropoffLat": ride[3],
+                "dropoffLong": ride[4],
+                "pickupTime": ride[8],
+                "dropoffTime": ride[9],
+                "serviceName": ride[10],
+            })
+            num_passengers += 1
     context["numPassengers"] = num_passengers
     context["milesTravelled"] = global_vars.VEHICLES[vehicle_id].miles_travelled
+    cur.close()
+    conn.close()
     return flask.jsonify(**context), 200
