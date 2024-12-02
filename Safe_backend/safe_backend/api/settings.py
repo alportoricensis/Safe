@@ -98,7 +98,7 @@ def locations():
         cur.execute("SELECT * FROM locations ORDER BY service_name DESC;")
         sel = cur.fetchall()
         context = {}
-        if len(sel) != 0:
+        if sel is not None:
             for loc in sel:
                 if loc[6] not in context:
                     context[loc[6]] = []
@@ -206,7 +206,7 @@ def ranges():
         cur = conn.cursor()
         cur.execute("SELECT * FROM ranges")
         sel = cur.fetchall()
-        if len(sel) == 0:
+        if sel is None:
             return flask.jsonify(**{"msg": "No ranges for this service!"}), 404
         cur.execute("DELETE FROM ranges WHERE service_name = %s", (service_name, ))
         conn.commit()
@@ -359,7 +359,7 @@ def handle_faqs():
         service_name = flask.request.json["serviceName"]
         cur.execute("SELECT * FROM services WHERE service_name = %s", (service_name, ))
         sel = cur.fetchone()
-        if len(sel) == 0:
+        if sel is None:
             cur.close()
             conn.close()
             return flask.jsonify(**{"msg": f"Service {service_name} does not exist."}), 404

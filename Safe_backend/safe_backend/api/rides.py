@@ -266,7 +266,7 @@ def post_ride():
         # Check the user has been logged in/exists
         cur.execute("SELECT * FROM users WHERE uuid = %s", (user_uid, ))
         sel = cur.fetchone()
-        if len(sel) == 0:
+        if sel is None:
             return flask.json(**{"msg":"Unknown UUID"}), 404
         first_name = sel[1].split(" ")[0]
         last_name = sel[1].split(" ")[1]
@@ -306,7 +306,7 @@ def post_ride():
         month = req_time.month
         cur.execute("SELECT * FROM users WHERE uuid = %s", (user_uid, ))
         sel = cur.fetchone()
-        if len(sel) == 0:
+        if sel is None:
             return flask.jsonify(**{"msg": "Unknown UUID."}), 404
         first_name = sel[1].split(" ")[0]
         last_name = sel[1].split(" ")[1]
