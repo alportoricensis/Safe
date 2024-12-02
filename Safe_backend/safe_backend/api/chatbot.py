@@ -5,8 +5,8 @@ import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import safe_backend.api.config
 import requests  
-from chatbot_config  import *
-from functions import *
+from safe_backend.api.chatbot_config  import *
+from safe_backend.api.functions import *
 import json
 
 app = Flask(__name__)
