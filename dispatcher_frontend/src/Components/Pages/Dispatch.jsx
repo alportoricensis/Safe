@@ -5,7 +5,7 @@ import {Autocomplete, GoogleMap, LoadScript, Marker} from '@react-google-maps/ap
 
 import {Box, Button, FormControl, Input, InputAdornment, MenuItem, Select, Typography} from '@mui/material';
 
-const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const Dispatch = () => {
     const [searchParams] = useSearchParams();
