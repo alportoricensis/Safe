@@ -16,7 +16,7 @@ def get_rides():
     """Return all currently active ride requests."""
     # TODO: Authentication
     context = {}
-    for key, value in global_vars.REQUESTS.items():
+    for key, value in global_vars.REQUESTS:
         context[key] = {
             "passenger": value.first_name + " " + value.last_name,
             "driver": value.driver,
