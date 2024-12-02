@@ -44,9 +44,9 @@ def vehicles():
         context = {"vehicles": []}
         for vehicle in sel:
             context["vehicles"].append({
-                "vehicle_id": vehicle[1],
-                "capacity": vehicle[2],
-                "vrange": vehicle[3],
+                "vehicle_id": vehicle[0],
+                "capacity": vehicle[1],
+                "vrange": vehicle[2],
             })
         return flask.jsonify(**context), 200
     return flask.jsonify(**{"msg": "Unsupported method"}), 404

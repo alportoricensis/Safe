@@ -39,8 +39,8 @@ def login_vehicle():
         return flask.jsonify(**context), 404
 
     # Query database for vehicle capacity and range
-    capacity = vehicle[2]
-    vehicle_range = vehicle[3]
+    capacity = vehicle[1]
+    vehicle_range = vehicle[2]
 
     # Get location from login request
     lat = flask.request.json["latitude"]
