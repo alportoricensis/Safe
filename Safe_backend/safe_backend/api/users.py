@@ -16,7 +16,7 @@ def login_user():
     cur = conn.cursor()
     cur.execute("SELECT * FROM ride_requests WHERE user_id = %s;", (pass_uuid, ))
     user = cur.fetchone()
-    if user is not None:
+    if user is None:
         display_name = flask.request.json["displayName"]
         email = flask.request.json["email"]
         first_name = display_name.split(" ")[0]
