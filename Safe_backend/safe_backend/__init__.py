@@ -74,6 +74,16 @@ cur.execute (
     );"
 )
 
+# FAQs for this service
+cur.execute (
+    "CREATE TABLE IF NOT EXISTS faqs ( \
+        question_id SERIAL PRIMARY KEY, \
+        service_name TEXT REFERENCES services(service_name), \
+        question TEXT NOT NULL, \
+        answer TEXT NOT NULL \
+    );"
+)
+
 # Stores the rides booked in this service
 cur.execute (
     "CREATE TABLE IF NOT EXISTS ride_requests ( \
