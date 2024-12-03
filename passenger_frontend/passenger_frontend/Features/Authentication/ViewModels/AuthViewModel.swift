@@ -38,13 +38,48 @@ class AuthViewModel: ObservableObject {
                 email: profile.email,
                 displayName: profile.name
             )
-            print("Authenticated user: \(authenticatedUser)")
-            DispatchQueue.main.async {
-                self?.user = authenticatedUser
-                self?.isAuthenticated = true
-            }
+            
+            self?.loginToBackend(user: authenticatedUser)
         }
     }
+
+    private func loginToBackend(user: User) {
+        guard let url = URL(string: "http://18.191.14.26/api/v1/users/login/") else { return }
+        
+        let body: [String: Any] = [
+            "uuid": user.id,
+            "email": user.email,
+            "displayName": user.displayName
+        ]
+        
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("❌ Login Error: \(error.localizedDescription)")
+                    self?.error = error
+                    return
+                }
+                
+                if let data = data {
+                    print("📥 Login Response Data: \(String(data: data, encoding: .utf8) ?? "No data")")
+                }
+                
+                if let httpResponse = response as? HTTPURLResponse {
+                    print("🔄 Login Response Status: \(httpResponse.statusCode)")
+                }
+                
+                self?.user = user
+                self?.isAuthenticated = true
+            }
+        }.resume()
+    }
+
     func signInAsGuest() {
         let guestId = UUID().uuidString
         self.user = User(id: guestId, email: "", displayName: "Guest")
