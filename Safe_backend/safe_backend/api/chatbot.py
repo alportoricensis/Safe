@@ -3,8 +3,7 @@ from flask import Flask, Response, request, jsonify
 import os
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
-import safe_backend.api.config
-import requests  
+import safe_backend
 from safe_backend.api.chatbot_config  import *
 from safe_backend.api.functions import *
 import json
@@ -32,7 +31,7 @@ FUNCTIONS = [
     CANCEL_RIDE_FUNCTION_DESCRIPTION,
 ]
 
-@app.route("/api/v1/chat/", methods=["POST"])
+@safe_backend.app.route("/api/v1/chat/", methods=["POST"])
 def chat():
     """Handle chat messages."""
     data = request.get_json()
