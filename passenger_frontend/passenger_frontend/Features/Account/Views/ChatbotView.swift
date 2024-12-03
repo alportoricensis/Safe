@@ -76,7 +76,10 @@ struct ChatInputView: View {
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .disabled(isLoading)
             
-            Button(action: onSend) {
+            Button(action: {
+                print(" Send button tapped") // Debug button tap
+                onSend()
+            }) {
                 if isLoading {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
