@@ -65,9 +65,9 @@ def chat():
         response = chat.send_message(input_text)
         response.resolve()
 
-        if response.function_call:
-            function_name = response.function_call["name"]
-            function_args = response.function_call["arguments"]
+        if hasattr(response, 'function_call') and response.function_call:
+            function_name = response.function_call.get("name")
+            function_args = response.function_call.get("arguments")
 
             if function_name == "geocode_address":
                 args = json.loads(function_args)
@@ -77,7 +77,6 @@ def chat():
                 if geocode_response["success"]:
                     dropoff_lat = geocode_response["latitude"]
                     dropoff_long = geocode_response["longitude"]
-                    
                     
                     booking_response = book_ride_api(
                         pickup_lat=pickup_lat,
@@ -104,14 +103,11 @@ def chat():
                         "success": False
                     }), 400
 
-            
-
             elif function_name == "cancel_ride":
                 args = json.loads(function_args)
                 ride_id = args.get("ride_id")
 
                 if not ride_id:
-                    
                     return jsonify({
                         "response": ASK_RIDE_ID,
                         "success": True
@@ -139,7 +135,9 @@ def chat():
         }), 200
 
     except Exception as e:
+        print(f"Error: {str(e)}")
         return jsonify({
             "error": f"Error processing message: {str(e)}",
             "success": False
         }), 500
+
