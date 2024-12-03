@@ -130,7 +130,7 @@ def get_vehicles():
 
     # Grab vehicle from active list and return, along with their URL
     context = {}
-    for vehicle_id in global_vars.VEHICLES.items():
+    for vehicle_id in global_vars.VEHICLES:
         context[vehicle_id] = {
             "vehicle_id": vehicle_id,
             "lat": global_vars.VEHICLES[vehicle_id].lat,
