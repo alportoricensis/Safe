@@ -6,7 +6,7 @@ class RideStore: ObservableObject {
     private init() {}
 
     @Published private(set) var rides = [Ride]()
-    @Published var isRetrieving = false 
+    @Published var isRetrieving = false
     private let synchronized = DispatchQueue(label: "synchronized", qos: .background)
 
     var username = ""
@@ -18,13 +18,53 @@ class RideStore: ObservableObject {
     private let serverUrl = "http://18.191.14.26/api/v1/rides/drivers/"
 
     func getRides() async {
-//        self.rides = [
-//                   Ride(pickupLoc: "123 Main St, Springfield", dropLoc: "456 Elm St, Springfield", passenger: "John Doe", status: "Pending", id: "ride1"),
-//                   Ride(pickupLoc: "789 Oak St, Springfield", dropLoc: "321 Pine St, Springfield", passenger: "Jane Smith", status: "In-Progress", id: "ride2"),
-//                   Ride(pickupLoc: "654 Maple St, Springfield", dropLoc: "987 Cedar St, Springfield", passenger: "Alice Johnson", status: "Completed", id: "ride3"),
-//                   Ride(pickupLoc: "111 Birch St, Springfield", dropLoc: "222 Walnut St, Springfield", passenger: "Bob Brown", status: "Pending", id: "ride4")
-//               ]
-//        return
+        self.rides = [
+        Ride(
+                    pickupLoc: "Duderstadt Center",
+                    dropLoc: "South Quad",
+                    passenger: "John Doe",
+                    status: "Pending",
+                    id: "ride1",
+                    pickupLatitude: 42.2936,
+                    pickupLongitude: -83.7166,
+                    dropOffLatitude: 42.2745,
+                    dropOffLongitude: -83.7409
+                ),
+                Ride(
+                    pickupLoc: "Michigan Union",
+                    dropLoc: "North Campus",
+                    passenger: "Jane Smith",
+                    status: "In-Progress",
+                    id: "ride2",
+                    pickupLatitude: 42.2765,
+                    pickupLongitude: -83.7412,
+                    dropOffLatitude: 42.2918,
+                    dropOffLongitude: -83.7175
+                ),
+                Ride(
+                    pickupLoc: "Hill Auditorium",
+                    dropLoc: "Ross School of Business",
+                    passenger: "Alice Johnson",
+                    status: "Completed",
+                    id: "ride3",
+                    pickupLatitude: 42.278043,
+                    pickupLongitude: -83.738224,
+                    dropOffLatitude: 42.274597,
+                    dropOffLongitude: -83.735439
+                ),
+                Ride(
+                    pickupLoc: "Diag",
+                    dropLoc: "Crisler Center",
+                    passenger: "Bob Brown",
+                    status: "Pending",
+                    id: "ride4",
+                    pickupLatitude: 42.2755,
+                    pickupLongitude: -83.7382,
+                    dropOffLatitude: 42.2650,
+                    dropOffLongitude: -83.7486
+                )
+            ]
+            return
         guard let vehicleId = vehicleId else {
             print("getRides: Vehicle ID is not set.")
             return
@@ -58,7 +98,8 @@ class RideStore: ObservableObject {
                 return
             }
 
-            guard let jsonObj = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
+            guard let jsonObj = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                  let rideOrder = jsonObj["rideOrder"] as? [String] else {
                 print("getRides: JSON deserialization failed")
                 synchronized.sync {
                     self.isRetrieving = false
@@ -67,19 +108,27 @@ class RideStore: ObservableObject {
             }
 
             var fetchedRides = [Ride]()
-            for rideData in jsonObj {
-                if let rideId = rideData["id"] as? String {
+            for rideId in rideOrder {
+                if let rideData = jsonObj[rideId] as? [String: Any] {
                     let pickup = rideData["pickup"] as? String ?? "Unknown"
                     let dropoff = rideData["dropoff"] as? String ?? "Unknown"
                     let passenger = rideData["passenger"] as? String ?? "Unknown"
                     let status = rideData["status"] as? String ?? "Pending"
+                    let pickupLatitude = rideData["pickupLatitude"] as? Double ?? 0.0
+                    let pickupLongitude = rideData["pickupLongitude"] as? Double ?? 0.0
+                    let dropOffLatitude = rideData["dropoffLatitude"] as? Double ?? 0.0
+                    let dropOffLongitude = rideData["dropoffLongitude"] as? Double ?? 0.0
 
                     fetchedRides.append(Ride(
                         pickupLoc: pickup,
                         dropLoc: dropoff,
                         passenger: passenger,
                         status: status,
-                        id: rideId
+                        id: rideId,
+                        pickupLatitude: pickupLatitude,
+                        pickupLongitude: pickupLongitude,
+                        dropOffLatitude: dropOffLatitude,
+                        dropOffLongitude: dropOffLongitude
                     ))
                 }
             }
@@ -100,7 +149,7 @@ class RideStore: ObservableObject {
     func updateRideStatus(rideId: String, status: String) {
         if let index = rides.firstIndex(where: { $0.id == rideId }) {
             rides[index].status = status
-            // Optionally, you can notify the backend about the status update here
+            // Optionally, notify the backend about the status update
         }
     }
 }

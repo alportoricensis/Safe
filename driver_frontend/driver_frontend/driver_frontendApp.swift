@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct driver_frontendApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var authManager = AuthManager()
     @StateObject private var locationManager = LocationManager()
 
