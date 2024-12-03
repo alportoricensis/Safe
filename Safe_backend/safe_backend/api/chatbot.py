@@ -69,8 +69,11 @@ def chat():
                 pickup = function_args.get("pickup")
                 dropoff = function_args.get("dropoff")
                 service = function_args.get("service")
+                print("pickup:", pickup)
+                print("dropoff:", dropoff)
+                print("service:", service)
                 booking_response = book_ride_api(pickup, dropoff, service, user_id)
-
+                print("booking_response:", booking_response)
                 if booking_response["success"]:
                     return jsonify({
                         "response": f"Your ride has been booked successfully! Your ride ID is {booking_response['ride_id']}.",
