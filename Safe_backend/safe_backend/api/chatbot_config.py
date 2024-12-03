@@ -45,37 +45,6 @@ def get_available_pickups():
     conn.close()
     return pickups
 
-def get_book_ride_function():
-    return {
-        "function_declarations": [
-            {
-                "name": "book_ride",
-                "description": "Book a ride by providing pickup and dropoff locations, service name, and user ID.",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "pickup": {
-                            "type": "string",
-                            "description": f"The address or name of the pickup location. Available options are: {get_available_pickups()}"
-                        },
-                        "dropoff": {
-                            "type": "string",
-                            "description": "The address or name of the dropoff location."
-                        },
-                        "service": {
-                            "type": "string",
-                            "description": f"The name of the service being requested. Available options are: {get_available_services()}"
-                        },
-                        "user_id": {
-                            "type": "string",
-                            "description": "The unique identifier of the user booking the ride."
-                        }
-                    },
-                    "required": ["pickup", "dropoff", "service", "user_id"]
-                }
-            }
-        ]
-    }
 
 book_ride_function = {
     "function_declarations": [
