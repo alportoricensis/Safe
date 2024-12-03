@@ -31,9 +31,9 @@ struct RideCardView: View {
                     .foregroundColor(.yellow)
             }
             
-            // Pickup Button
+            // Pickup Button (Visible only for Current Rides)
             if ride.status != "Completed" {
-                NavigationLink(destination: RideView(ride: ride).environmentObject(LocationManager())) {
+                NavigationLink(destination: RideView(ride: ride).environmentObject(RideStore.shared).environmentObject(LocationManager())) {
                     Text("Pickup")
                         .font(.headline)
                         .foregroundColor(.white)

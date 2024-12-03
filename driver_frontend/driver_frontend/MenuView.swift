@@ -10,8 +10,9 @@ enum MenuOption: String, CaseIterable {
 
 struct MenuView: View {
     @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject var rideStore: RideStore
     @State private var selectedOption: MenuOption?
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             // Header Section
@@ -28,7 +29,7 @@ struct MenuView: View {
                         .foregroundColor(.gray)
                     
                     VStack(alignment: .leading) {
-                        Text(authManager.username ?? "Unknown User")
+                        Text((((authManager.username?.isEmpty) != nil) ? "Unknown User" : authManager.username) ?? "Driver")
                             .font(.headline)
                         
                         Divider()
@@ -47,6 +48,7 @@ struct MenuView: View {
             }
             .padding()
             .background(Color(red: 2/255, green: 28/255, blue: 52/255))
+            .cornerRadius(10)
             
             // Menu Options
             VStack(alignment: .leading, spacing: 15) {
@@ -97,4 +99,3 @@ struct MenuView_Previews: PreviewProvider {
             .environmentObject(RideStore.shared)
     }
 }
-    ``  

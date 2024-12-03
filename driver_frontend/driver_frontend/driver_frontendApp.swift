@@ -18,16 +18,18 @@ struct driver_frontendApp: App {
     
     var body: some Scene {
         WindowGroup {
-            if authManager.isAuthenticated {
-                MenuView()
-                    .environmentObject(authManager)
-                    .environmentObject(locationManager)
-                    .environmentObject(rideStore) // Inject RideStore
-            } else {
-                LoginView()
-                    .environmentObject(authManager)
-                    .environmentObject(locationManager)
-                    .environmentObject(rideStore) // Inject RideStore
+            NavigationView { // Single NavigationView wrapping the content
+                if authManager.isAuthenticated {
+                    MenuView()
+                        .environmentObject(authManager)
+                        .environmentObject(locationManager)
+                        .environmentObject(rideStore) // Inject RideStore
+                } else {
+                    LoginView()
+                        .environmentObject(authManager)
+                        .environmentObject(locationManager)
+                        .environmentObject(rideStore) // Inject RideStore
+                }
             }
         }
     }
