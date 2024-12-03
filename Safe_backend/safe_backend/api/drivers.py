@@ -16,8 +16,6 @@ from safe_backend.api.utils import assign_rides
 # MODIFIES  - VEHICLES
 def login_vehicle():
     """Marks <vehicle_id> as ready to receive requests."""
-    # TODO: Authentication -  must have agency or driver level permissions
-
     # Check vehicle is not already logged in
     vehicle_id = flask.request.json["vehicle_id"]
     if vehicle_id in global_vars.VEHICLES:
@@ -72,8 +70,6 @@ def login_vehicle():
 # MODIFIES  - VEHICLES
 def pause_vehicle(vehicle_id):
     """Marks <vehicle_id> as not receiving requests."""
-    # TODO: Authentication
-
     # If vehicle is not active, return a 404
     if vehicle_id not in global_vars.VEHICLES:
         context = {
@@ -98,8 +94,6 @@ def pause_vehicle(vehicle_id):
 # MODIFIES  - VEHICLES
 def logout_vehicle(vehicle_id):
     """Marks <vehicle_id> as logged out."""
-    # TODO: Authentication
-
     # If vehicle is not active, return a 404
     if vehicle_id not in global_vars.VEHICLES:
         context = {
@@ -126,8 +120,6 @@ def logout_vehicle(vehicle_id):
 # MODIFIES  - Nothing
 def get_vehicles():
     """Return all active vehicles."""
-    # TODO: Authentication
-
     # Grab vehicle from active list and return, along with their URL
     context = {}
     for vehicle_id in global_vars.VEHICLES:
@@ -160,8 +152,6 @@ def get_vehicles():
 # MODIFIES  - Nothing
 def post_loc():
     """Marks <vehicle_id> as logged out."""
-    # TODO: Authentication
-
     # Get locations from request and update
     vehicle_id = flask.request.json["vehicle_id"]
     if vehicle_id not in global_vars.VEHICLES:
@@ -192,8 +182,6 @@ def post_loc():
 # MODIFIES  - VEHICLES, REQUESTS
 def load_unload():
     """Onboard <ride_id> to this vehicle."""
-    # TODO: Authentication
-
     # Get ride_id, vehicle_id and request type from the request json
     ride_id = flask.request.json["ride_id"]
     vehicle_id = flask.request.json["vehicle_id"]
@@ -276,8 +264,6 @@ def load_unload():
 # MODIFIES  - Nothing
 def get_statistics():
     """Return usage statistics for a vehicle."""
-    # TODO: Authentication
-
     # Get vehicle_id from the request
     vehicle_id = flask.request.json["vehicle_id"]
 

@@ -14,18 +14,19 @@ def login_user():
     conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                         port="5432")
     cur = conn.cursor()
-    cur.execute("SELECT * FROM ride_requests WHERE user_id = %s;", (pass_uuid, ))
+    cur.execute("SELECT * FROM users WHERE uuid = %s;", (pass_uuid, ))
     user = cur.fetchone()
     if user is None:
         display_name = flask.request.json["displayName"]
         email = flask.request.json["email"]
-        first_name = display_name.split(" ")[0]
-        last_name = display_name.split(" ")[1]
         cur.execute(
-            "INSERT INTO users (user_id, first_name, last_name, phone_number, email) \
-            VALUES (%s, %s, %s, %s, %s)",
-            (pass_uuid, first_name, last_name, "(000) 000-0000", email)
+            "INSERT INTO users (uuid, display_name, phone_number, email) \
+            VALUES (%s, %s, %s, %s)",
+            (pass_uuid, display_name, "(000) 000-0000", email)
         )
+        conn.commit()
+        cur.close()
+        conn.close()
     return flask.jsonify(**{"msg": "Succesfully logged {pass_uuid} in."}), 200
 
 
