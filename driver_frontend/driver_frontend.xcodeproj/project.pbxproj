@@ -15,7 +15,11 @@
 		22A5760B2CD59FF500D9A43E /* RideList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A5760A2CD59FF500D9A43E /* RideList.swift */; };
 		22A5760D2CD5ACC000D9A43E /* RideStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A5760C2CD5ACC000D9A43E /* RideStore.swift */; };
 		22A5760F2CD5BB5300D9A43E /* RideDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A5760E2CD5BB5300D9A43E /* RideDetail.swift */; };
-		90101D5B2CFEFD45005B3177 /* CurrRides.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90101D5A2CFEFD41005B3177 /* CurrRides.swift */; };
+		90101DAA2CFF92AD005B3177 /* Secrets.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 90101DA92CFF92A5005B3177 /* Secrets.xcconfig */; };
+		90101DAC2CFF9333005B3177 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90101DAB2CFF9319005B3177 /* AppDelegate.swift */; };
+		90101DB12CFF96FB005B3177 /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 90101DB02CFF96FB005B3177 /* GoogleMaps */; };
+		90101DB32CFF99BE005B3177 /* RideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90101DB22CFF99BA005B3177 /* RideView.swift */; };
+		90101DB52CFF9FC4005B3177 /* CurrRides.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90101DB42CFF9FC1005B3177 /* CurrRides.swift */; };
 		901AC6012CE0073E00FDA176 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6002CE0073400FDA176 /* LoginView.swift */; };
 		901AC6032CE0096A00FDA176 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6022CE0096500FDA176 /* AuthManager.swift */; };
 		901AC6052CE00D5900FDA176 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6042CE00D5200FDA176 /* AppState.swift */; };
@@ -36,7 +40,10 @@
 		22A5760A2CD59FF500D9A43E /* RideList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideList.swift; sourceTree = "<group>"; };
 		22A5760C2CD5ACC000D9A43E /* RideStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideStore.swift; sourceTree = "<group>"; };
 		22A5760E2CD5BB5300D9A43E /* RideDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideDetail.swift; sourceTree = "<group>"; };
-		90101D5A2CFEFD41005B3177 /* CurrRides.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrRides.swift; sourceTree = "<group>"; };
+		90101DA92CFF92A5005B3177 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+		90101DAB2CFF9319005B3177 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		90101DB22CFF99BA005B3177 /* RideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideView.swift; sourceTree = "<group>"; };
+		90101DB42CFF9FC1005B3177 /* CurrRides.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrRides.swift; sourceTree = "<group>"; };
 		901AC6002CE0073400FDA176 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		901AC6022CE0096500FDA176 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		901AC6042CE00D5200FDA176 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
@@ -53,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90101DB12CFF96FB005B3177 /* GoogleMaps in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,7 +86,10 @@
 		22A575F92CD596DB00D9A43E /* driver_frontend */ = {
 			isa = PBXGroup;
 			children = (
-				90101D5A2CFEFD41005B3177 /* CurrRides.swift */,
+				90101DB42CFF9FC1005B3177 /* CurrRides.swift */,
+				90101DB22CFF99BA005B3177 /* RideView.swift */,
+				90101DAB2CFF9319005B3177 /* AppDelegate.swift */,
+				90101DA92CFF92A5005B3177 /* Secrets.xcconfig */,
 				90EEDB762CFE661600B91030 /* CompletedRidesView.swift */,
 				9045CEF22CFC511700A58773 /* Templates.swift */,
 				9045CEF02CFC503C00A58773 /* MenuView.swift */,
@@ -152,6 +163,9 @@
 				Base,
 			);
 			mainGroup = 22A575EE2CD596DB00D9A43E;
+			packageReferences = (
+				90101DAF2CFF96FB005B3177 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */,
+			);
 			productRefGroup = 22A575F82CD596DB00D9A43E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -168,6 +182,7 @@
 			files = (
 				22A576022CD596DC00D9A43E /* Preview Assets.xcassets in Resources */,
 				22A575FF2CD596DC00D9A43E /* Assets.xcassets in Resources */,
+				90101DAA2CFF92AD005B3177 /* Secrets.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,11 +201,13 @@
 				22A575FD2CD596DB00D9A43E /* AssignedRidesView.swift in Sources */,
 				90EEDB772CFE662100B91030 /* CompletedRidesView.swift in Sources */,
 				901AC6052CE00D5900FDA176 /* AppState.swift in Sources */,
+				90101DAC2CFF9333005B3177 /* AppDelegate.swift in Sources */,
 				22A5760B2CD59FF500D9A43E /* RideList.swift in Sources */,
 				901AC6032CE0096A00FDA176 /* AuthManager.swift in Sources */,
 				9045CEF32CFC511A00A58773 /* Templates.swift in Sources */,
+				90101DB32CFF99BE005B3177 /* RideView.swift in Sources */,
 				22A576092CD5982A00D9A43E /* DriverRides.swift in Sources */,
-				90101D5B2CFEFD45005B3177 /* CurrRides.swift in Sources */,
+				90101DB52CFF9FC4005B3177 /* CurrRides.swift in Sources */,
 				22A575FB2CD596DB00D9A43E /* driver_frontendApp.swift in Sources */,
 				22A5760D2CD5ACC000D9A43E /* RideStore.swift in Sources */,
 			);
@@ -402,6 +419,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		90101DAF2CFF96FB005B3177 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googlemaps/ios-maps-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		90101DB02CFF96FB005B3177 /* GoogleMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 90101DAF2CFF96FB005B3177 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */;
+			productName = GoogleMaps;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 22A575EF2CD596DB00D9A43E /* Project object */;
 }
