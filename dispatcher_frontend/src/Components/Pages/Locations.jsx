@@ -60,31 +60,35 @@ const Locations = () => {
                     Service Locations
                 </Typography>
                 <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', flexWrap: 'wrap', width: '80vw'}}>
-                    {Object.entries(locations).map((service, index) => (
-                        <>
-                            <Typography fontSize={'2em'}>
-                                {service[0]}
-                            </Typography>
-                            <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flexWrap: 'wrap', width: '80vw'}}>
-                                {service[1].map((location, index) => (
-                                    <Box key={index} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', width: '25vw', height: '25vh'}}>
-                                        <Typography fontSize={'1.5em'}>
-                                            {location['name']}
-                                        </Typography>
-                                        <Typography fontSize={'1em'}>
-                                            Latitude: {location['lat']}
-                                        </Typography>
-                                        <Typography fontSize={'1em'}>
-                                            Longitude: {location['long']}
-                                        </Typography>
-                                        <Button onClick={(event) => handleClick(event, service[0], location['name'])} style={{color: 'black'}}>
-                                            Delete
-                                        </Button>
-                                    </Box>
-                                ))}
-                            </Box> 
-                        </>
-                    ))}
+                    {locations ?
+                        Object.entries(locations).map((service, index) => (
+                            <>
+                                <Typography fontSize={'2em'}>
+                                    {service[0]}
+                                </Typography>
+                                <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flexWrap: 'wrap', width: '80vw'}}>
+                                    {service[1].map((location, index) => (
+                                        <Box key={index} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', width: '25vw', height: '25vh'}}>
+                                            <Typography fontSize={'1.5em'}>
+                                                {location['name']}
+                                            </Typography>
+                                            <Typography fontSize={'1em'}>
+                                                Latitude: {location['lat']}
+                                            </Typography>
+                                            <Typography fontSize={'1em'}>
+                                                Longitude: {location['long']}
+                                            </Typography>
+                                            <Button onClick={(event) => handleClick(event, service[0], location['name'])} style={{color: 'black'}}>
+                                                Delete
+                                            </Button>
+                                        </Box>
+                                    ))}
+                                </Box> 
+                            </>
+                        ))
+                    :
+                        null
+                    }
                 </Box>
                 <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
                     <Typography fontSize={'1em'}>

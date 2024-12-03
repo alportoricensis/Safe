@@ -111,6 +111,8 @@ const Dispatch = () => {
                 .catch(error => console.log(error));
     }, []);
 
+    console.log(vehicles)
+
     useEffect(() => {
         const intervalId = setInterval(() => {
             fetch('http://18.191.14.26/api/v1/rides/', {method: 'get', headers: {'Content-Type': 'application/json'}})

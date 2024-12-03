@@ -7,6 +7,7 @@ import Navbar from './Components/Features/Navbar';
 
 import Home from './Components/Pages/Home';
 import Dispatch from './Components/Pages/Dispatch';
+import FAQ from './Components/Pages/FAQ';
 import Settings from './Components/Pages/Settings';
 import Services from './Components/Pages/Services';
 import Ranges from './Components/Pages/Ranges';
@@ -22,6 +23,7 @@ const App = () => {
       <Routes>
           <Route path = '/' element = {<Home />} />
           <Route path = '/dispatch' element = {<Dispatch />} />
+          <Route path = '/faq' element = {<FAQ />} />
           <Route path = '/settings' element = {<Settings />} />
           <Route path = '/settings/services' element = {<Services />} />
           <Route path = '/settings/ranges' element = {<Ranges />} />
