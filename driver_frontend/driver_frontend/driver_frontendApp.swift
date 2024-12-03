@@ -44,4 +44,3 @@ struct driver_frontendApp: App {
     }
 }
 
-

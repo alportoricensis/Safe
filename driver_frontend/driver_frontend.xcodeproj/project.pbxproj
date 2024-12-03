@@ -14,14 +14,15 @@
 		22A576092CD5982A00D9A43E /* DriverRides.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A576082CD5982A00D9A43E /* DriverRides.swift */; };
 		22A5760B2CD59FF500D9A43E /* RideList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A5760A2CD59FF500D9A43E /* RideList.swift */; };
 		22A5760D2CD5ACC000D9A43E /* RideStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A5760C2CD5ACC000D9A43E /* RideStore.swift */; };
-		22A5760F2CD5BB5300D9A43E /* CurrRidesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A5760E2CD5BB5300D9A43E /* CurrRidesView.swift */; };
+		22A5760F2CD5BB5300D9A43E /* RideDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A5760E2CD5BB5300D9A43E /* RideDetail.swift */; };
+		90101D5B2CFEFD45005B3177 /* CurrRides.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90101D5A2CFEFD41005B3177 /* CurrRides.swift */; };
 		901AC6012CE0073E00FDA176 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6002CE0073400FDA176 /* LoginView.swift */; };
 		901AC6032CE0096A00FDA176 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6022CE0096500FDA176 /* AuthManager.swift */; };
 		901AC6052CE00D5900FDA176 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6042CE00D5200FDA176 /* AppState.swift */; };
 		901AC6082CE0252100FDA176 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6072CE0251B00FDA176 /* LocationManager.swift */; };
 		9045CEF12CFC504200A58773 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9045CEF02CFC503C00A58773 /* MenuView.swift */; };
 		9045CEF32CFC511A00A58773 /* Templates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9045CEF22CFC511700A58773 /* Templates.swift */; };
-		90EEDB752CFE59D400B91030 /* PickupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90EEDB742CFE59CD00B91030 /* PickupView.swift */; };
+		90EEDB772CFE662100B91030 /* CompletedRidesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90EEDB762CFE661600B91030 /* CompletedRidesView.swift */; };
 		927EEB2C2CE147B200E300AC /* SafeTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 927EEB2B2CE147B200E300AC /* SafeTopBar.swift */; };
 /* End PBXBuildFile section */
 
@@ -34,7 +35,8 @@
 		22A576082CD5982A00D9A43E /* DriverRides.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverRides.swift; sourceTree = "<group>"; };
 		22A5760A2CD59FF500D9A43E /* RideList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideList.swift; sourceTree = "<group>"; };
 		22A5760C2CD5ACC000D9A43E /* RideStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideStore.swift; sourceTree = "<group>"; };
-		22A5760E2CD5BB5300D9A43E /* CurrRidesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrRidesView.swift; sourceTree = "<group>"; };
+		22A5760E2CD5BB5300D9A43E /* RideDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideDetail.swift; sourceTree = "<group>"; };
+		90101D5A2CFEFD41005B3177 /* CurrRides.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrRides.swift; sourceTree = "<group>"; };
 		901AC6002CE0073400FDA176 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		901AC6022CE0096500FDA176 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		901AC6042CE00D5200FDA176 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
@@ -42,7 +44,7 @@
 		901AC6072CE0251B00FDA176 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		9045CEF02CFC503C00A58773 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		9045CEF22CFC511700A58773 /* Templates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Templates.swift; sourceTree = "<group>"; };
-		90EEDB742CFE59CD00B91030 /* PickupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickupView.swift; sourceTree = "<group>"; };
+		90EEDB762CFE661600B91030 /* CompletedRidesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedRidesView.swift; sourceTree = "<group>"; };
 		927EEB2B2CE147B200E300AC /* SafeTopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeTopBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -76,7 +78,8 @@
 		22A575F92CD596DB00D9A43E /* driver_frontend */ = {
 			isa = PBXGroup;
 			children = (
-				90EEDB742CFE59CD00B91030 /* PickupView.swift */,
+				90101D5A2CFEFD41005B3177 /* CurrRides.swift */,
+				90EEDB762CFE661600B91030 /* CompletedRidesView.swift */,
 				9045CEF22CFC511700A58773 /* Templates.swift */,
 				9045CEF02CFC503C00A58773 /* MenuView.swift */,
 				927EEB2B2CE147B200E300AC /* SafeTopBar.swift */,
@@ -89,7 +92,7 @@
 				22A5760A2CD59FF500D9A43E /* RideList.swift */,
 				22A5760C2CD5ACC000D9A43E /* RideStore.swift */,
 				22A575FC2CD596DB00D9A43E /* AssignedRidesView.swift */,
-				22A5760E2CD5BB5300D9A43E /* CurrRidesView.swift */,
+				22A5760E2CD5BB5300D9A43E /* RideDetail.swift */,
 				22A575FE2CD596DC00D9A43E /* Assets.xcassets */,
 				22A576002CD596DC00D9A43E /* Preview Content */,
 				22A576082CD5982A00D9A43E /* DriverRides.swift */,
@@ -177,16 +180,17 @@
 			files = (
 				901AC6012CE0073E00FDA176 /* LoginView.swift in Sources */,
 				9045CEF12CFC504200A58773 /* MenuView.swift in Sources */,
-				22A5760F2CD5BB5300D9A43E /* CurrRidesView.swift in Sources */,
+				22A5760F2CD5BB5300D9A43E /* RideDetail.swift in Sources */,
 				927EEB2C2CE147B200E300AC /* SafeTopBar.swift in Sources */,
 				901AC6082CE0252100FDA176 /* LocationManager.swift in Sources */,
 				22A575FD2CD596DB00D9A43E /* AssignedRidesView.swift in Sources */,
+				90EEDB772CFE662100B91030 /* CompletedRidesView.swift in Sources */,
 				901AC6052CE00D5900FDA176 /* AppState.swift in Sources */,
 				22A5760B2CD59FF500D9A43E /* RideList.swift in Sources */,
-				90EEDB752CFE59D400B91030 /* PickupView.swift in Sources */,
 				901AC6032CE0096A00FDA176 /* AuthManager.swift in Sources */,
 				9045CEF32CFC511A00A58773 /* Templates.swift in Sources */,
 				22A576092CD5982A00D9A43E /* DriverRides.swift in Sources */,
+				90101D5B2CFEFD45005B3177 /* CurrRides.swift in Sources */,
 				22A575FB2CD596DB00D9A43E /* driver_frontendApp.swift in Sources */,
 				22A5760D2CD5ACC000D9A43E /* RideStore.swift in Sources */,
 			);

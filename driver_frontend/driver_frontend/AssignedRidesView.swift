@@ -12,7 +12,7 @@ struct AssignedRidesView: View {
     }
 
     var body: some View {
-        NavigationView { // Add a NavigationView
+        NavigationView {
             GeometryReader { geometry in
                 VStack(spacing: 0) {
                     VStack {
@@ -37,18 +37,14 @@ struct AssignedRidesView: View {
                         Spacer()
                         
                         HStack(spacing: 0) {
-                            TabButton(text: "Completed", isSelected: selectedTab == .completed) {
-                                selectedTab = .completed
-                            }
                             TabButton(text: "Current", isSelected: selectedTab == .current) {
                                 selectedTab = .current
                             }
+                            TabButton(text: "Completed", isSelected: selectedTab == .completed) {
+                                selectedTab = .completed
+                            }
                         }
                         .background(Color(red: 2/255, green: 28/255, blue: 52/255))
-                        
-                        .alert(isPresented: $showAlert) {
-                            Alert(title: Text("Logout Status"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
-                        }
                     }
                     .frame(width: geometry.size.width, height: geometry.size.height * 0.25)
                     .background(Color(red: 2/255, green: 28/255, blue: 52/255))
@@ -57,11 +53,8 @@ struct AssignedRidesView: View {
                         if selectedTab == .current {
                             CurrRidesView()
                         } else {
-                            Text("Completed Rides")
-                                .font(.title)
-                                .padding()
+                            CompletedRidesView()
                         }
-                        
                         Spacer()
                     }
                     .frame(width: geometry.size.width, height: geometry.size.height)
@@ -70,8 +63,12 @@ struct AssignedRidesView: View {
                 .edgesIgnoringSafeArea(.all)
                 .withSafeTopBar()
             }
-            .navigationBarTitle("Assigned Rides", displayMode: .inline) // Add navigation title
+            .navigationBarTitle("Assigned Rides", displayMode: .inline)
         }
+    }
+
+    func switchToCompletedTab() {
+        selectedTab = .completed
     }
 
     func logoutVehicle() {
@@ -80,7 +77,7 @@ struct AssignedRidesView: View {
                 DispatchQueue.main.async {
                     alertMessage = message
                     showAlert = true
-                    
+
                     if success {
                         authManager.isAuthenticated = false
                         RideStore.shared.vehicleId = nil
@@ -98,7 +95,7 @@ struct AssignedRidesView: View {
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        
+
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
 
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -122,7 +119,7 @@ struct TabButton: View {
     var text: String
     var isSelected: Bool
     var action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             VStack {
