@@ -24,6 +24,9 @@ def login_user():
             VALUES (%s, %s, %s, %s)",
             (pass_uuid, display_name, "(000) 000-0000", email)
         )
+        conn.commit()
+        cur.close()
+        conn.close()
     return flask.jsonify(**{"msg": "Succesfully logged {pass_uuid} in."}), 200
 
 
