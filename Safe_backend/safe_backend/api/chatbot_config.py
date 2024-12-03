@@ -65,13 +65,9 @@ book_ride_function = {
                     "service": {
                         "type": "string",
                         "description": f"The name of the service being requested. Available options are: {get_available_services()}"
-                    },
-                    "user_id": {
-                        "type": "string",
-                        "description": "The unique identifier of the user booking the ride."
                     }
                 },
-                "required": ["pickup", "dropoff", "service", "user_id"]
+                "required": ["pickup", "dropoff", "service"]
             }
         }
     ]

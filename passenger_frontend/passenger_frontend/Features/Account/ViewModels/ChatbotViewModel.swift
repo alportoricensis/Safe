@@ -20,8 +20,10 @@ class ChatbotViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     @Published private var currentLocation: CLLocationCoordinate2D?
+    private let authViewModel: AuthViewModel
     
-    init() {
+    init(authViewModel: AuthViewModel) {
+        self.authViewModel = authViewModel
         messages.append(ChatMessage(content: welcomeMessage, isUser: false, timestamp: Date()))
         
         locationManager.$location
@@ -61,6 +63,7 @@ class ChatbotViewModel: ObservableObject {
             "messages": messageHistory,
             "message": userMessage,
             "lat": latitude,
+            "user": authViewModel.user?.id,
             "lon": longitude
         ]
         print("📤 Request Body:", requestBody) // Debug request payload

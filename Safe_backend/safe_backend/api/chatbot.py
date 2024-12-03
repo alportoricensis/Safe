@@ -62,6 +62,8 @@ def chat():
             function_args = response.function_call.get("arguments")
 
             if function_name == "book_ride":
+                print("function_name:", function_name)
+                print("function_args:", function_args)
                 args = json.loads(function_args)
                 pickup = args.get("pickup")
                 dropoff = args.get("dropoff")
@@ -80,6 +82,8 @@ def chat():
                     }), 500
        
             elif function_name == "cancel_ride":
+                print("function_name:", function_name)
+                print("function_args:", function_args)
                 args = json.loads(function_args)
                 ride_id = args.get("ride_id")
 

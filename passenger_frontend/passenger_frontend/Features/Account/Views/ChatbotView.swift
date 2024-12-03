@@ -1,7 +1,11 @@
 import SwiftUI
 
 struct ChatbotView: View {
-    @StateObject private var viewModel = ChatbotViewModel()
+    @StateObject private var viewModel: ChatbotViewModel
+    
+    init(authViewModel: AuthViewModel) {
+        _viewModel = StateObject(wrappedValue: ChatbotViewModel(authViewModel: authViewModel))
+    }
     
     var body: some View {
         VStack(spacing: 0) {
