@@ -92,6 +92,9 @@ def get_driver_rides(vehicle_id):
 
     # If vehicle_id is receiving rides, return its current active queue
     context = {}
+    context["rideOrder"] = []
+    for label in global_vars.VEHICLES[vehicle_id].queue:
+        context["rideOrder"].append(label)
     for ride_request in global_vars.VEHICLES[vehicle_id].itinerary:
         context[str(ride_request.request_id)] = {
             "passenger": ride_request.first_name + " " + ride_request.last_name,

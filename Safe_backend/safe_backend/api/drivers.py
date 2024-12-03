@@ -224,11 +224,8 @@ def load_unload():
         conn.close()
 
         # Update vehicle_id capacity and itinerary
-        global_vars.VEHICLES[vehicle_id].capacity -= global_vars.REQUESTS[ride_id].numpass
-        global_vars.VEHICLES[vehicle_id].itinerary = [
-            ride for ride in global_vars.VEHICLES[vehicle_id].itinerary
-            if (ride.request_id != ride_id and not ride.is_pickup)
-        ]
+        global_vars.VEHICLES[vehicle_id].capacity -= int(global_vars.REQUESTS[ride_id].numpass)
+        global_vars.VEHICLES[vehicle_id].queue.remove(ride_id)
 
         # Return success
         context = {
@@ -253,11 +250,12 @@ def load_unload():
         conn.close()
 
         # Update vehicle_id capacity and itinerary
-        global_vars.VEHICLES[vehicle_id].capacity += global_vars.REQUESTS[ride_id].numpass
+        global_vars.VEHICLES[vehicle_id].capacity += int(global_vars.REQUESTS[ride_id].numpass)
         global_vars.VEHICLES[vehicle_id].itinerary = [
             ride for ride in global_vars.VEHICLES[vehicle_id].itinerary
             if ride.request_id != ride_id
         ]
+        global_vars.VEHICLES[vehicle_id].queue.remove(ride_id)
         del global_vars.REQUESTS[ride_id]
 
         # Return success
