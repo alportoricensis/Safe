@@ -1,5 +1,5 @@
-
 import flask
+import requests
 
 INITIAL_GREETINGS = (
     "Hello! I'm SAFE's virtual assistant. How can I help you today? "
@@ -24,7 +24,7 @@ def get_available_services():
     Returns:
         dict: Dictionary containing services information
     """
-    response = flask.get("/api/v1/settings/services/")
+    response = requests.get("http://localhost:8000/api/v1/settings/services/")
     return response.json()
 
 def get_available_pickups():
@@ -33,7 +33,7 @@ def get_available_pickups():
     Returns:
         dict: Dictionary containing pickup locations information
     """
-    response = flask.get("/api/v1/settings/pickups/")
+    response = requests.get("http://localhost:8000/api/v1/settings/pickups/")
     return response.json()
 # Function description for geocoding an address or spot name
 GEOCODE_ADDRESS_FUNCTION_DESCRIPTION = {
