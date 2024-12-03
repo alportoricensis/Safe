@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2257BB2D2CFF94F500005174 /* RideHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2257BB2C2CFF94F500005174 /* RideHistoryView.swift */; };
+		2257BB2F2CFF951400005174 /* TodaysRides.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2257BB2E2CFF951400005174 /* TodaysRides.swift */; };
+		2257BB312CFF952C00005174 /* RideHistoryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2257BB302CFF952C00005174 /* RideHistoryList.swift */; };
+		2257BB332CFF954A00005174 /* DriverRideHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2257BB322CFF954A00005174 /* DriverRideHistory.swift */; };
 		22A575FB2CD596DB00D9A43E /* driver_frontendApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A575FA2CD596DB00D9A43E /* driver_frontendApp.swift */; };
 		22A575FD2CD596DB00D9A43E /* AssignedRidesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A575FC2CD596DB00D9A43E /* AssignedRidesView.swift */; };
 		22A575FF2CD596DC00D9A43E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22A575FE2CD596DC00D9A43E /* Assets.xcassets */; };
@@ -31,6 +35,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2257BB2C2CFF94F500005174 /* RideHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideHistoryView.swift; sourceTree = "<group>"; };
+		2257BB2E2CFF951400005174 /* TodaysRides.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodaysRides.swift; sourceTree = "<group>"; };
+		2257BB302CFF952C00005174 /* RideHistoryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideHistoryList.swift; sourceTree = "<group>"; };
+		2257BB322CFF954A00005174 /* DriverRideHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverRideHistory.swift; sourceTree = "<group>"; };
 		22A575F72CD596DB00D9A43E /* driver_frontend.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = driver_frontend.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22A575FA2CD596DB00D9A43E /* driver_frontendApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = driver_frontendApp.swift; sourceTree = "<group>"; };
 		22A575FC2CD596DB00D9A43E /* AssignedRidesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignedRidesView.swift; sourceTree = "<group>"; };
@@ -107,6 +115,10 @@
 				22A575FE2CD596DC00D9A43E /* Assets.xcassets */,
 				22A576002CD596DC00D9A43E /* Preview Content */,
 				22A576082CD5982A00D9A43E /* DriverRides.swift */,
+				2257BB2C2CFF94F500005174 /* RideHistoryView.swift */,
+				2257BB2E2CFF951400005174 /* TodaysRides.swift */,
+				2257BB302CFF952C00005174 /* RideHistoryList.swift */,
+				2257BB322CFF954A00005174 /* DriverRideHistory.swift */,
 			);
 			path = driver_frontend;
 			sourceTree = "<group>";
@@ -194,11 +206,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				901AC6012CE0073E00FDA176 /* LoginView.swift in Sources */,
+				2257BB2F2CFF951400005174 /* TodaysRides.swift in Sources */,
+				2257BB2D2CFF94F500005174 /* RideHistoryView.swift in Sources */,
+				2257BB332CFF954A00005174 /* DriverRideHistory.swift in Sources */,
 				9045CEF12CFC504200A58773 /* MenuView.swift in Sources */,
 				22A5760F2CD5BB5300D9A43E /* RideDetail.swift in Sources */,
 				927EEB2C2CE147B200E300AC /* SafeTopBar.swift in Sources */,
 				901AC6082CE0252100FDA176 /* LocationManager.swift in Sources */,
 				22A575FD2CD596DB00D9A43E /* AssignedRidesView.swift in Sources */,
+				2257BB312CFF952C00005174 /* RideHistoryList.swift in Sources */,
 				90EEDB772CFE662100B91030 /* CompletedRidesView.swift in Sources */,
 				901AC6052CE00D5900FDA176 /* AppState.swift in Sources */,
 				90101DAC2CFF9333005B3177 /* AppDelegate.swift in Sources */,

@@ -1,7 +1,8 @@
 import {Box, Link, Typography} from '@mui/material';
 
-import BookIcon from '@mui/icons-material/Book';
 import HomeIcon from '@mui/icons-material/Home';
+import BookIcon from '@mui/icons-material/Book';
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -18,6 +19,12 @@ const Navbar = () => {
                 <BookIcon style={{color: 'white', width: '5vw', height: '5vw'}}/>
                 <Typography fontSize={'1em'}>
                     Dispatch
+                </Typography>
+            </Box>
+            <Box href='/faq' component={Link} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textDecoration: 'none', color: 'white'}}>
+                <QuestionAnswerIcon style={{color: 'white', width: '5vw', height: '5vw'}}/>
+                <Typography fontSize={'1em'}>
+                    FAQ
                 </Typography>
             </Box>
             <Box href='/settings' component={Link} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textDecoration: 'none', color: 'white'}}>
