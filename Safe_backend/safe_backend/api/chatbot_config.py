@@ -36,19 +36,23 @@ def get_available_pickups():
     response = flask.get("/api/v1/settings/pickups/")
     return response.json()
 # Function description for geocoding an address or spot name
-GEOCODE_ADDRESS_FUNCTION_DESCRIPTION = {
-    "name": "geocode_address",
-    "description": "Convert an address or spot name into latitude and longitude coordinates. Only invoke this function if a building is provided.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "address": {
-                "type": "string",
-                "description": "The full address or spot name to geocode."
+geocode_address_function = {
+    "function_declarations": [
+        {
+            "name": "geocode_address",
+            "description": "Convert an address or spot name into latitude and longitude coordinates. Only invoke this function if a building is provided.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "description": "The full address or spot name to geocode."
+                    }
+                },
+                "required": ["address"]
             }
-        },
-        "required": ["address"]
-    }
+        }
+    ]
 }
 book_ride_function = {
     "function_declarations": [
@@ -76,6 +80,21 @@ book_ride_function = {
                     }
                 },
                 "required": ["pickup", "dropoff", "service", "user_id"]
+
+cancel_ride_function = {
+    "function_declarations": [
+        {
+            "name": "cancel_ride",
+            "description": "Cancel an existing ride using the ride ID.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "ride_id": {
+                        "type": "string",
+                        "description": "The unique identifier of the ride to cancel."
+                    }
+                },
+                "required": ["ride_id"]
             }
         }
     ]

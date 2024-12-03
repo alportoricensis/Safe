@@ -133,12 +133,12 @@ const Dispatch = () => {
         <LoadScript googleMapsApiKey={apiKey} libraries={['places']}>
             <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgb(2, 28, 52)', width: '90vw'}}>
                 <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', width: '20vw', height: '100vh'}}>
-                    <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '20vw'}} sx={{padding: '1vh'}}>
+                    <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '18vw'}} sx={{padding: '1vw'}}>
                         <Typography fontSize={'1.5em'} color={'white'}>
                             Create a Booking
                         </Typography>
                     </Box>
-                    <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', backgroundColor: 'white', width: '18vw'}} sx={{paddingLeft: '1vw', paddingRight: '1vw', paddingTop: '1vh', borderRadius: 5}}>
+                    <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', backgroundColor: 'white', width: '17vw'}} sx={{paddingLeft: '1vw', paddingRight: '1vw', paddingTop: '1.5vh', borderRadius: 5}}>
                         <form action='http://18.191.14.26/api/v1/rides/' method='post' encType='multipart/form-data'>
                             <FormControl variant='standard' style={{width: '18vw'}}>
                                 <Select name='serviceName' startAdornment={<InputAdornment>Service:&nbsp;</InputAdornment>} value={serviceName} onChange={handleServiceChange}>
@@ -182,7 +182,7 @@ const Dispatch = () => {
                             </FormControl>
                         </form>
                     </Box>
-                    <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '20vw'}} sx={{padding: '1vh'}}>
+                    <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '18vw'}} sx={{padding: '1vw'}}>
                         <Typography fontSize={'1.5em'} color={'white'}>
                             Active Rides
                         </Typography>
@@ -190,7 +190,7 @@ const Dispatch = () => {
                     <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', width: '20vw'}} sx={{overflow: 'scroll'}}>
                         {rides ?
                             Object.entries(rides).map((ride, index) => (
-                                <Box key={index} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', backgroundColor: 'white', width: '18vw'}} sx={{padding: '1vw', marginBottom: '1vh', borderRadius: 5}}>
+                                <Box key={index} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', backgroundColor: 'white', width: '17vw'}} sx={{paddingLeft: '1vw', paddingRight: '1vw', paddingTop: '1.5vh', marginBottom: '1vh', borderRadius: 5}}>
                                     <Typography fontSize={'1em'}>
                                         Passenger: {ride[1]['passenger']}
                                     </Typography>
@@ -221,7 +221,7 @@ const Dispatch = () => {
                                 </Box>
                             ))
                         :
-                            <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: 'white', width: '18vw'}} sx={{padding: '1vw', borderRadius: 5}}>
+                            <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: 'white', width: '17vw'}} sx={{padding: '1vw', borderRadius: 5}}>
                                 <Typography fontSize={'1em'}>
                                     No Active Rides
                                 </Typography>
@@ -234,7 +234,7 @@ const Dispatch = () => {
                         <GoogleMap mapContainerStyle={{width: '70vw', height: '70vh'}} center={ranges[serviceName]} zoom={13}>
                             {vehicles ?
                                 Object.entries(vehicles).map((vehicle, index) => (
-                                    <Marker key={index} position={{lat: vehicle[1]['lat'], lng: vehicle[1]['long']}} icon={carIcon} />
+                                    <Marker key={index} position={{lat: vehicle[1]['lat'], lng: vehicle[1]['long']}} icon={carIcon} label={{text: vehicle[1]['vehicle_id'], color: 'red', fontSize: '1em', fontWeight: 'bold'}} />
                                     
                                 ))
                             :
@@ -244,24 +244,24 @@ const Dispatch = () => {
                     :
                         null
                     }
-                    <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '20vw', height: '5vh'}} sx={{padding: '1vh'}}>
+                    <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}} sx={{padding: '1vw'}}>
                         <Typography fontSize={'1.5em'} color={'white'}>
                             Active Vehicles
                         </Typography>
                     </Box>
-                    <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', width: '70vw', height: '25vh'}} sx={{overflow: 'scroll'}}>
+                    <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', width: '69vw', height: '25vh'}} sx={{overflow: 'scroll', paddingLeft: '0.5vw', paddingRight: '0.5vw'}}>
                         {vehicles ?
                             Object.entries(vehicles).map((vehicle, index) => (
-                                <Box key={index} style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', textAlign: 'left', backgroundColor: 'white', width: '18vw'}} sx={{padding: '1vw', marginRight: '1vw', borderRadius: 10}}>
+                                <Box key={index} style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', textAlign: 'left', backgroundColor: 'white', width: '17vw'}} sx={{paddingLeft: '1vw', paddingRight: '1vw', paddingTop: '1.5vh', paddingBottom: '1vh', marginRight: '1vw', borderRadius: 5}}>
                                     <Typography fontSize={'1.25em'} style={{alignSelf: 'center'}}>
                                         {vehicle[1]['vehicle_id']}
                                     </Typography>
                                     <Typography fontSize={'1em'} style={{alignSelf: 'center'}}>
-                                        {vehicle[1]['itinerary'].length / 2} Assigned Ride{vehicle[1]['itinerary'].length === 1 ? 's' : null}
+                                        {vehicle[1]['itinerary'].length} Assigned Ride{vehicle[1]['itinerary'].length === 1 ? null: 's'}
                                     </Typography>
                                     {vehicle[1]['itinerary'].length > 0 ?    
                                         vehicle[1]['itinerary'].filter(item => item.isPickup).map((passenger, index) => (
-                                            <Box key={index} style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'}}>
+                                            <Box key={index} style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'}} sx={{marginTop: '1vh'}}>
                                                 <Typography fontSize={'1em'}>
                                                     Passenger: {passenger['passenger']}
                                                 </Typography>
@@ -285,7 +285,7 @@ const Dispatch = () => {
                                 </Box>
                             ))
                         :
-                            <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: 'white', width: '18vw'}} sx={{padding: '1vw', borderRadius: 5}}>
+                            <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: 'white', width: '17vw'}} sx={{padding: '1vw', borderRadius: 5}}>
                                 <Typography fontSize={'1em'}>
                                     No Active Vehicles
                                 </Typography>

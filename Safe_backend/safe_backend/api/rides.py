@@ -14,7 +14,6 @@ from safe_backend.api.utils import check_time, check_dropoff, assign_rides, book
 # MODIFIES  - Nothing
 def get_rides():
     """Return all currently active ride requests."""
-    # TODO: Authentication
     context = {}
     for key, value in global_vars.REQUESTS.items():
         context[key] = {
@@ -44,8 +43,6 @@ def get_rides():
 # MODIFIES  - Nothing
 def get_passenger_ride(ride_id):
     """Return the details for ride_id."""
-    # TODO: Authentication
-
     # Check if ride_id is a currently active one
     if ride_id not in global_vars.REQUESTS:
         context = {
@@ -81,8 +78,6 @@ def get_passenger_ride(ride_id):
 # MODIFIES  - Nothing
 def get_driver_rides(vehicle_id):
     """Return the queue for driver with driver_id."""
-    # TODO: Authentication
-
     # If vehicle_id is not currently receiving rides, return a 404
     if vehicle_id not in global_vars.VEHICLES:
         context = {
@@ -92,6 +87,9 @@ def get_driver_rides(vehicle_id):
 
     # If vehicle_id is receiving rides, return its current active queue
     context = {}
+    context["rideOrder"] = []
+    for label in global_vars.VEHICLES[vehicle_id].queue:
+        context["rideOrder"].append(label)
     for ride_request in global_vars.VEHICLES[vehicle_id].itinerary:
         context[str(ride_request.request_id)] = {
             "passenger": ride_request.first_name + " " + ride_request.last_name,
@@ -116,8 +114,6 @@ def get_driver_rides(vehicle_id):
 # MODIFIES  - VEHICLES, REQUESTS
 def delete_ride_request(ride_id):
     """Delete the ride request with ride_id."""
-    # TODO: Authentication
-
     # Check if ride_id is a currently active ride_request
     if ride_id not in global_vars.REQUESTS:
         context = {
@@ -181,7 +177,6 @@ def post_ride():
     # Three options exist for booking a ride: through a call-in (dispatcher), through a
     # walk-on (driver), or through the passenger app. These follow slightly different paths.
 
-    # TODO: Authentication - can be either flask.request.args.user_id or an agency-level account
     # Check the service the user is booking for, and the service times
     conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                             port="5432")
