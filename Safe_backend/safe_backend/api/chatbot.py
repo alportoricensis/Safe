@@ -3,8 +3,7 @@ from flask import Flask, Response, request, jsonify
 import os
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
-import safe_backend.api.config
-import requests  
+import safe_backend
 from safe_backend.api.chatbot_config  import *
 from safe_backend.api.functions import *
 import json
@@ -15,6 +14,12 @@ genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
 
 
+# Define available functions for the model to call
+FUNCTIONS = [
+    geocode_address_function,
+    cancel_ride_function,
+]
+
 model = genai.GenerativeModel(
     model_name="gemini-1.5-flash",
     system_instruction=SYSTEM_INSTRUCTION,
@@ -24,15 +29,11 @@ model = genai.GenerativeModel(
         "top_p": 1,
         "max_output_tokens": 2048,
     },
+    tools=[book_ride_function, cancel_ride_function]
 )
 
-# Define available functions for the model to call
-FUNCTIONS = [
-    GEOCODE_ADDRESS_FUNCTION_DESCRIPTION,
-    CANCEL_RIDE_FUNCTION_DESCRIPTION,
-]
 
-@app.route("/api/v1/chat/", methods=["POST"])
+@safe_backend.app.route("/api/v1/chat/", methods=["POST"])
 def chat():
     """Handle chat messages."""
     data = request.get_json()
@@ -62,22 +63,23 @@ def chat():
         print("Chat History:", history)
         chat = model.start_chat(history=history)
 
-        response = chat.send_message(input_text, functions=FUNCTIONS)
+        response = chat.send_message(input_text)
         response.resolve()
 
-        if response.function_call:
-            function_name = response.function_call["name"]
-            function_args = response.function_call["arguments"]
+        if hasattr(response, 'function_call') and response.function_call:
+            function_name = response.function_call.get("name")
+            function_args = response.function_call.get("arguments")
 
-            if function_name == "geocode_address":
+            if function_name == "book_ride":
                 args = json.loads(function_args)
-                address = args.get("address")
-                geocode_response = geocode_address_api(address)
+                pickup = args.get("pickup")
+                dropoff = args.get("dropoff")
+                service = args.get("service")
+                geocode_response = book_ride_api(pickup, dropoff, service, user_id)
 
                 if geocode_response["success"]:
                     dropoff_lat = geocode_response["latitude"]
                     dropoff_long = geocode_response["longitude"]
-                    
                     
                     booking_response = book_ride_api(
                         pickup_lat=pickup_lat,
@@ -85,7 +87,7 @@ def chat():
                         dropoff_lat=dropoff_lat,
                         dropoff_long=dropoff_long,
                         user_id= user_id,  
-                        service_name= 'passenger'
+                        service_name= 'passenger' 
                     )
 
                     if booking_response["success"]:
@@ -104,14 +106,11 @@ def chat():
                         "success": False
                     }), 400
 
-            
-
             elif function_name == "cancel_ride":
                 args = json.loads(function_args)
                 ride_id = args.get("ride_id")
 
                 if not ride_id:
-                    
                     return jsonify({
                         "response": ASK_RIDE_ID,
                         "success": True
@@ -139,7 +138,9 @@ def chat():
         }), 200
 
     except Exception as e:
+        print(f"Error: {str(e)}")
         return jsonify({
             "error": f"Error processing message: {str(e)}",
             "success": False
         }), 500
+
