@@ -3,8 +3,7 @@ from flask import Flask, Response, request, jsonify
 import os
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
-import safe_backend.api.config
-import requests  
+import safe_backend
 from safe_backend.api.chatbot_config  import *
 from safe_backend.api.functions import *
 import json
@@ -15,6 +14,12 @@ genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
 
 
+# Define available functions for the model to call
+FUNCTIONS = [
+    geocode_address_function,
+    cancel_ride_function,
+]
+
 model = genai.GenerativeModel(
     model_name="gemini-1.5-flash",
     system_instruction=SYSTEM_INSTRUCTION,
@@ -24,13 +29,8 @@ model = genai.GenerativeModel(
         "top_p": 1,
         "max_output_tokens": 2048,
     },
+    tools=FUNCTIONS
 )
-
-# Define available functions for the model to call
-FUNCTIONS = [
-    GEOCODE_ADDRESS_FUNCTION_DESCRIPTION,
-    CANCEL_RIDE_FUNCTION_DESCRIPTION,
-]
 
 @safe_backend.app.route("/api/v1/chat/", methods=["POST"])
 def chat():
@@ -83,8 +83,8 @@ def chat():
                         pickup_long=pickup_lon,
                         dropoff_lat=dropoff_lat,
                         dropoff_long=dropoff_long,
-                        user_id=user_id,  
-                        service_name='passenger' 
+                        user_id= user_id,  
+                        service_name= 'passenger' 
                     )
 
                     if booking_response["success"]:
@@ -140,4 +140,4 @@ def chat():
             "error": f"Error processing message: {str(e)}",
             "success": False
         }), 500
-            
+
