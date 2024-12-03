@@ -1,5 +1,4 @@
-import flask
-import requests
+import psycopg2
 
 INITIAL_GREETINGS = (
     "Hello! I'm SAFE's virtual assistant. How can I help you today? "
@@ -19,41 +18,34 @@ CANCELLATION_SUCCESS = "Your ride has been successfully canceled."
 CANCELLATION_FAILURE = "I'm sorry, I couldn't cancel your ride. Please ensure the ride ID is correct or contact support."
 
 def get_available_services():
-    """Get list of available services by calling the existing API endpoint.
+    """Get list of available services directly from database.
     
     Returns:
-        dict: Dictionary containing services information
+        list: List of service names
     """
-    response = requests.get("http://localhost:8000/api/v1/settings/services/")
-    return response.json()
+    conn = psycopg2.connect(database="safe_backend", user="safe", password="", port="5432")
+    cur = conn.cursor()
+    cur.execute("SELECT service_name FROM services")
+    services = [service[0] for service in cur.fetchall()]
+    cur.close()
+    conn.close()
+    return services
 
 def get_available_pickups():
-    """Get list of available pickup locations by calling the existing API endpoint.
+    """Get list of available pickup locations directly from database.
     
     Returns:
-        dict: Dictionary containing pickup locations information
+        list: List of pickup location names
     """
-    response = requests.get("http://localhost:8000/api/v1/settings/pickups/")
-    return response.json()
-# Function description for geocoding an address or spot name
-geocode_address_function = {
-    "function_declarations": [
-        {
-            "name": "geocode_address",
-            "description": "Convert an address or spot name into latitude and longitude coordinates. Only invoke this function if a building is provided.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "address": {
-                        "type": "string",
-                        "description": "The full address or spot name to geocode."
-                    }
-                },
-                "required": ["address"]
-            }
-        }
-    ]
-}
+    conn = psycopg2.connect(database="safe_backend", user="safe", password="", port="5432")
+    cur = conn.cursor()
+    cur.execute("SELECT loc_name FROM locations WHERE isPickup = true")
+    pickups = [loc[0] for loc in cur.fetchall()]
+    cur.close()
+    conn.close()
+    return pickups
+
+
 book_ride_function = {
     "function_declarations": [
         {
@@ -73,36 +65,15 @@ book_ride_function = {
                     "service": {
                         "type": "string",
                         "description": f"The name of the service being requested. Available options are: {get_available_services()}"
-                    },
-                    "user_id": {
-                        "type": "string",
-                        "description": "The unique identifier of the user booking the ride."
                     }
                 },
-                "required": ["pickup", "dropoff", "service", "user_id"]
+                "required": ["pickup", "dropoff", "service"]
             }
         }
     ]
 }
 
-cancel_ride_function = {
-    "function_declarations": [
-        {
-            "name": "cancel_ride",
-            "description": "Cancel an existing ride using the ride ID.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "ride_id": {
-                        "type": "string",
-                        "description": "The unique identifier of the ride to cancel."
-                    }
-                },
-                "required": ["ride_id"]
-            }
-        }
-    ]
-}
+
 
 cancel_ride_function = {
     "function_declarations": [
