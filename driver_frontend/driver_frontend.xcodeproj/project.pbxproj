@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 71;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -236,7 +236,8 @@
 		};
 		22A576042CD596DC00D9A43E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 90101DA92CFF92A5005B3177 /* Secrets.xcconfig */;
+			baseConfigurationReferenceAnchor = 90101E052CFFB5BA005B3177 /* utils */;
+			baseConfigurationReferenceRelativePath = Secrets.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -293,7 +294,8 @@
 		};
 		22A576062CD596DC00D9A43E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 90101DA92CFF92A5005B3177 /* Secrets.xcconfig */;
+			baseConfigurationReferenceAnchor = 90101E052CFFB5BA005B3177 /* utils */;
+			baseConfigurationReferenceRelativePath = Secrets.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

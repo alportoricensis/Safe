@@ -1,30 +1,29 @@
 import SwiftUI
 
 struct CurrRidesView: View {
-    @EnvironmentObject var rideStore: RideStore
+    @EnvironmentObject var store: RideStore
     @EnvironmentObject var locationManager: LocationManager
-    private let timer = Timer.publish(every: 10, on: .main, in: .common).autoconnect()
-
+    
     var body: some View {
-        List(rideStore.rides.filter { $0.status != "Completed" }) { ride in
-            NavigationLink(destination: RideView(ride: ride)) {
-                RideList(ride: ride)
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color(red: 0/255, green: 39/255, blue: 76/255))
+        VStack {
+            if let ride = store.rides.first(where: { $0.status != "Completed" }) {
+                NavigationLink(destination: RideView(ride: ride).environmentObject(locationManager)) {
+                    RideCardView(ride: ride)
+                        .padding()
+                }
+                .buttonStyle(PlainButtonStyle()) // Removes default button styling
+            } else {
+                Text("No Current Rides Available")
+                    .foregroundColor(.white)
+                    .font(.headline)
+                    .padding()
             }
         }
-        .listStyle(.plain)
-        .refreshable {
-            await rideStore.getRides()
-        }
+        .background(Color(red: 0/255, green: 39/255, blue: 76/255))
+        .edgesIgnoringSafeArea(.all)
         .onAppear {
             Task {
-                await rideStore.getRides()
-            }
-        }
-        .onReceive(timer) { _ in
-            Task {
-                await rideStore.getRides()
+                await store.getRides()
             }
         }
     }

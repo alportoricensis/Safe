@@ -6,7 +6,7 @@ struct driver_frontendApp: App {
     
     @StateObject private var authManager = AuthManager()
     @StateObject private var locationManager = LocationManager()
-    @StateObject private var rideStore = RideStore.shared // Add RideStore as StateObject
+    @StateObject private var rideStore = RideStore.shared // Use shared instance
     
     init(){
         if let apiKey = Bundle.main.object(forInfoDictionaryKey: "GOOGLE_API_KEY") as? String {

@@ -3,7 +3,7 @@ import SwiftUI
 struct AssignedRidesView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var locationManager: LocationManager
-    @EnvironmentObject var rideStore: RideStore // Add RideStore
+    @EnvironmentObject var store: RideStore
     @State private var selectedTab: Tab = .current
     @State private var showAlert = false
     @State private var alertMessage = ""
@@ -13,67 +13,61 @@ struct AssignedRidesView: View {
     }
 
     var body: some View {
-        NavigationView {
-            GeometryReader { geometry in
-                VStack(spacing: 0) {
-                    VStack {
-                        Button(action: logoutVehicle) {
-                            Text("Logout")
-                                .font(.headline)
-                                .padding()
-                                .background(Color.yellow)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                        }
-                        .padding(.top, 20)
-                        .alert(isPresented: $showAlert) {
-                            Alert(title: Text("Logout Status"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
-                        }
-                        
-                        Text("Assigned Rides")
-                            .font(.largeTitle)
+        GeometryReader { geometry in
+            VStack(spacing: 0) {
+                VStack {
+                    Button(action: logoutVehicle) {
+                        Text("Logout")
+                            .font(.headline)
+                            .padding()
+                            .background(Color.yellow)
                             .foregroundColor(.white)
-                            .padding(.top, 30)
-                        
-                        Spacer()
-                        
-                        HStack(spacing: 0) {
-                            TabButton(text: "Current", isSelected: selectedTab == .current) {
-                                selectedTab = .current
-                            }
-                            TabButton(text: "Completed", isSelected: selectedTab == .completed) {
-                                selectedTab = .completed
-                            }
-                        }
-                        .background(Color(red: 2/255, green: 28/255, blue: 52/255))
+                            .cornerRadius(10)
                     }
-                    .frame(width: geometry.size.width, height: geometry.size.height * 0.25)
-                    .background(Color(red: 2/255, green: 28/255, blue: 52/255))
+                    .padding(.top, 20)
+                    .alert(isPresented: $showAlert) {
+                        Alert(title: Text("Logout Status"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+                    }
                     
-                    VStack {
-                        if selectedTab == .current {
-                            CurrRidesView()
-                        } else {
-                            CompletedRidesView()
+                    Text("Assigned Rides")
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                        .padding(.top, 30)
+                    
+                    Spacer()
+                    
+                    HStack(spacing: 0) {
+                        TabButton(text: "Current", isSelected: selectedTab == .current) {
+                            selectedTab = .current
                         }
-                        Spacer()
+                        TabButton(text: "Completed", isSelected: selectedTab == .completed) {
+                            selectedTab = .completed
+                        }
                     }
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-                    .background(Color(red: 0/255, green: 39/255, blue: 76/255))
+                    .background(Color(red: 2/255, green: 28/255, blue: 52/255))
                 }
-                .edgesIgnoringSafeArea(.all)
-                .withSafeTopBar()
+                .frame(width: geometry.size.width, height: geometry.size.height * 0.25)
+                .background(Color(red: 2/255, green: 28/255, blue: 52/255))
+                
+                VStack {
+                    if selectedTab == .current {
+                        CurrRidesView()
+                    } else {
+                        CompletedRidesView()
+                    }
+                    Spacer()
+                }
+                .frame(width: geometry.size.width, height: geometry.size.height)
+                .background(Color(red: 0/255, green: 39/255, blue: 76/255))
             }
-            .navigationBarTitle("Assigned Rides", displayMode: .inline)
+            .edgesIgnoringSafeArea(.all)
+            .withSafeTopBar()
         }
-    }
-
-    func switchToCompletedTab() {
-        selectedTab = .completed
+        .navigationBarTitle("Assigned Rides", displayMode: .inline) // Add navigation title
     }
 
     func logoutVehicle() {
-        if let vehicleId = rideStore.vehicleId { // Use rideStore
+        if let vehicleId = store.vehicleId {
             logoutAPI(vehicleId: vehicleId) { success, message in
                 DispatchQueue.main.async {
                     alertMessage = message
@@ -81,7 +75,7 @@ struct AssignedRidesView: View {
 
                     if success {
                         authManager.isAuthenticated = false
-                        rideStore.vehicleId = nil
+                        store.vehicleId = nil
                     }
                 }
             }
@@ -126,7 +120,7 @@ struct TabButton: View {
             VStack {
                 Text(text)
                     .foregroundColor(.white)
-                    .fontWeight(isSelected ? .bold : .regular)
+                    .font(.headline)
                     .padding(.vertical, 3)
                 Rectangle()
                     .fill(isSelected ? Color.yellow : Color.clear)

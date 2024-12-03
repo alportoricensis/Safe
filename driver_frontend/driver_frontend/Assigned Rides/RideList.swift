@@ -4,42 +4,23 @@ struct RideList: View {
     let ride: Ride
     
     var body: some View {
-        VStack(alignment: .leading) {
-            ZStack {
-                Color.white
-                    .cornerRadius(10)
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    if let pickupLoc = ride.pickupLoc {
-                        Text("Pick-up: \(pickupLoc)")
-                            .font(.headline)
-                            .foregroundColor(.primary)
-                    }
-                    
-                    if let dropLoc = ride.dropLoc {
-                        Text("Drop-off: \(dropLoc)")
-                            .font(.headline)
-                            .foregroundColor(.primary)
-                    }
-                    if let passenger = ride.passenger {
-                        Text("Passenger: \(passenger)")
-                            .font(.headline)
-                            .foregroundColor(.primary)
-                    }
-                    
-                    NavigationLink(destination: RideDetailView(ride: ride)) {
-                        Text("Pickup")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(Color.green)
-                            .cornerRadius(10)
-                    }
-                    .padding(.top, 10)
-                }
-                .padding()
-            }
-            .padding()
-        }
+        RideCardView(ride: ride)
+    }
+}
+
+struct RideList_Previews: PreviewProvider {
+    static var previews: some View {
+        RideList(ride: Ride(
+            pickupLoc: "Duderstadt Center",
+            dropLoc: "South Quad",
+            passenger: "John Doe",
+            status: "Pending",
+            id: "ride1",
+            pickupLatitude: 42.2936,
+            pickupLongitude: -83.7166,
+            dropOffLatitude: 42.2745,
+            dropOffLongitude: -83.7409
+        ))
+        .previewLayout(.sizeThatFits)
     }
 }
