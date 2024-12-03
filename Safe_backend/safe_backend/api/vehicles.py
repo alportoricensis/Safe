@@ -46,7 +46,7 @@ class Vehicle:
                                     x for x in global_vars.VEHICLES[vehicle].queue if x != visit.shipment_label
                                 ]
                                 global_vars.VEHICLES[vehicle].itinerary = [
-                                    x for x in global_vars.VEHICLES[vehicle].itinerary if x.reqid != visit.shipment_label
+                                    x for x in global_vars.VEHICLES[vehicle].itinerary if x.request_id != visit.shipment_label
                                 ]
 
 
