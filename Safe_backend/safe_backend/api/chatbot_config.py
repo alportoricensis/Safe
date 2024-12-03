@@ -70,6 +70,27 @@ def get_book_ride_function():
                             "type": "string",
                             "description": "The unique identifier of the user booking the ride."
                         }
+
+
+book_ride_function = {
+    "function_declarations": [
+        {
+            "name": "book_ride",
+            "description": "Book a ride by providing pickup and dropoff locations, service name, and user ID.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "pickup": {
+                        "type": "string",
+                        "description": f"The address or name of the pickup location. Available options are: {get_available_pickups()}"
+                    },
+                    "dropoff": {
+                        "type": "string",
+                        "description": "The address or name of the dropoff location."
+                    },
+                    "service": {
+                        "type": "string",
+                        "description": f"The name of the service being requested. Available options are: {get_available_services()}"
                     },
                     "required": ["pickup", "dropoff", "service", "user_id"]
                 }
@@ -84,6 +105,25 @@ def initialize_functions():
     """Initialize function definitions after database is ready"""
     global book_ride_function
     book_ride_function = get_book_ride_function()
+
+cancel_ride_function = {
+    "function_declarations": [
+        {
+            "name": "cancel_ride",
+            "description": "Cancel an existing ride using the ride ID.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "ride_id": {
+                        "type": "string",
+                        "description": "The unique identifier of the ride to cancel."
+                    }
+                },
+                "required": ["ride_id"]
+            }
+        }
+    ]
+}
 
 cancel_ride_function = {
     "function_declarations": [

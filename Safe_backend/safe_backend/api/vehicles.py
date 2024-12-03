@@ -15,6 +15,7 @@ class Vehicle:
         self.maxcapacity = capacity
         self.range = vrange
         self.itinerary = []
+        self.queue = []
         self.status = status
         self.lat = latin
         self.log = longin
@@ -27,20 +28,26 @@ class Vehicle:
     def response_to_queue(self, response: routeoptimization_v1.OptimizeToursResponse) -> None:
         """Transform a response from the Route Optimization API to a queue of places to visit."""
         # For each visit in the returns routes response,
-        dict_copy = copy.deepcopy(global_vars.REQUESTS)
         for route in response.routes:
             if route.vehicle_label == self.vehicle_id:
                 for visit in route.visits:
-                    if visit.is_pickup:
+                    if visit.shipment_label not in self.queue:
                         self.itinerary.append(global_vars.REQUESTS[visit.shipment_label])
-                        global_vars.REQUESTS[visit.shipment_label].status = "In-Progress"
+                        self.queue.append(visit.shipment_label)
                         global_vars.REQUESTS[visit.shipment_label].driver = self.vehicle_id
                         global_vars.REQUESTS[visit.shipment_label].etp = visit.start_time
-                    else:
+                    elif not visit.is_pickup:
+                        self.queue.append(visit.shipment_label)
                         global_vars.REQUESTS[visit.shipment_label].eta = visit.start_time
-                        dict_copy[visit.shipment_label].is_pickup = False
-                        dict_copy[visit.shipment_label].etp = False
-                        self.itinerary.append(dict_copy[visit.shipment_label])
+                    for vehicle in global_vars.VEHICLES:
+                        if vehicle != self.vehicle_id:
+                            if visit.shipment_label in global_vars.VEHICLES[vehicle].queue:
+                                global_vars.VEHICLES[vehicle].queue = [
+                                    x for x in global_vars.VEHICLES[vehicle].queue if x != visit.shipment_label
+                                ]
+                                global_vars.VEHICLES[vehicle].itinerary = [
+                                    x for x in global_vars.VEHICLES[vehicle].itinerary if x.request_id != visit.shipment_label
+                                ]
 
 
     # REQUIRES
