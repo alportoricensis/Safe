@@ -341,13 +341,14 @@ def handle_faqs():
     cur = conn.cursor()
 
     if flask.request.method == "GET" or flask.request.method == "OPTIONS":
-        context = {"faqs": []}
         cur.execute("SELECT * FROM faqs")
+        context = {}
         sel = cur.fetchall()
         for faq in sel:
-            context["faqs"].append({
+            if faq[1] not in context:
+                context[faq[1]] = []
+            context[faq[1]].append({
                 "qid": faq[0],
-                "service_name": faq[1],
                 "question": faq[2],
                 "answer": faq[3]
             })
@@ -375,7 +376,7 @@ def handle_faqs():
         return flask.jsonify(**{"msg": "Succesfully added Q&A."}), 200
 
     if flask.request.method == "DELETE":
-        qid = flask.request.json["questionID"]
+        qid = flask.request.json["qid"]
         cur.execute(
             "DELETE FROM faqs WHERE question_id = %s",
             (qid, )
