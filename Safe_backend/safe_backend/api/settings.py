@@ -357,15 +357,15 @@ def handle_faqs():
         return flask.jsonify(**(context)), 200
 
     if flask.request.method == "POST":
-        service_name = flask.request.json["serviceName"]
+        service_name = flask.request.form["serviceName"]
         cur.execute("SELECT * FROM services WHERE service_name = %s", (service_name, ))
         sel = cur.fetchone()
         if sel is None:
             cur.close()
             conn.close()
             return flask.jsonify(**{"msg": f"Service {service_name} does not exist."}), 404
-        question = flask.request.json["question"]
-        answer = flask.request.json["answer"]
+        question = flask.request.form["question"]
+        answer = flask.request.form["answer"]
         cur.execute(
             "INSERT INTO faqs (service_name, question, answer) VALUES (%s, %s, %s)",
             (service_name, question, answer)
