@@ -32,7 +32,7 @@ FUNCTIONS = [
     CANCEL_RIDE_FUNCTION_DESCRIPTION,
 ]
 
-@app.route("/api/v1/chat/", methods=["POST"])
+@safe_backend.app.route("/api/v1/chat/", methods=["POST"])
 def chat():
     """Handle chat messages."""
     data = request.get_json()
@@ -62,12 +62,12 @@ def chat():
         print("Chat History:", history)
         chat = model.start_chat(history=history)
 
-        response = chat.send_message(input_text, functions=FUNCTIONS)
+        response = chat.send_message(input_text)
         response.resolve()
 
-        if response.function_call:
-            function_name = response.function_call["name"]
-            function_args = response.function_call["arguments"]
+        if hasattr(response, 'function_call') and response.function_call:
+            function_name = response.function_call.get("name")
+            function_args = response.function_call.get("arguments")
 
             if function_name == "geocode_address":
                 args = json.loads(function_args)
@@ -78,14 +78,13 @@ def chat():
                     dropoff_lat = geocode_response["latitude"]
                     dropoff_long = geocode_response["longitude"]
                     
-                    
                     booking_response = book_ride_api(
                         pickup_lat=pickup_lat,
                         pickup_long=pickup_lon,
                         dropoff_lat=dropoff_lat,
                         dropoff_long=dropoff_long,
-                        user_id= user_id,  
-                        service_name= 'passenger'
+                        user_id=user_id,  
+                        service_name='passenger' 
                     )
 
                     if booking_response["success"]:
@@ -104,14 +103,11 @@ def chat():
                         "success": False
                     }), 400
 
-            
-
             elif function_name == "cancel_ride":
                 args = json.loads(function_args)
                 ride_id = args.get("ride_id")
 
                 if not ride_id:
-                    
                     return jsonify({
                         "response": ASK_RIDE_ID,
                         "success": True
@@ -139,12 +135,9 @@ def chat():
         }), 200
 
     except Exception as e:
+        print(f"Error: {str(e)}")
         return jsonify({
             "error": f"Error processing message: {str(e)}",
             "success": False
         }), 500
             
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
