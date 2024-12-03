@@ -80,6 +80,10 @@ book_ride_function = {
                     }
                 },
                 "required": ["pickup", "dropoff", "service", "user_id"]
+            }
+        }
+    ]
+}
 
 cancel_ride_function = {
     "function_declarations": [
