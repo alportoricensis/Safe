@@ -1,43 +1,35 @@
-//
-//  driver_frontendApp.swift
-//  driver_frontend
-//
-//  Created by Bhavesh Vuyyuru on 11/1/24.
-//
-
 import SwiftUI
 import GoogleMaps
+
 @main
 struct driver_frontendApp: App {
     
     @StateObject private var authManager = AuthManager()
     @StateObject private var locationManager = LocationManager()
-
+    @StateObject private var rideStore = RideStore.shared // Add RideStore as StateObject
     
     init(){
-            if let apiKey = Bundle.main.object(forInfoDictionaryKey: "GOOGLE_API_KEY") as? String {
-                print("Google API Key: \(apiKey)") // Debug print
-                GMSServices.provideAPIKey(apiKey)
-            } else {
-                print("Google API Key not found in Info.plist")
-            }
-            
-            configureNavigationBarAppearance()
+        if let apiKey = Bundle.main.object(forInfoDictionaryKey: "GOOGLE_API_KEY") as? String {
+            GMSServices.provideAPIKey(apiKey)
         }
+        
+        configureNavigationBarAppearance()
+    }
     
     var body: some Scene {
-            WindowGroup {
-                if authManager.isAuthenticated {
-                    MenuView()
-                        .environmentObject(authManager)
-                        .environmentObject(locationManager)
-                } else {
-                    LoginView()
-                        .environmentObject(authManager)
-                        .environmentObject(locationManager)
-                }
+        WindowGroup {
+            if authManager.isAuthenticated {
+                MenuView()
+                    .environmentObject(authManager)
+                    .environmentObject(locationManager)
+                    .environmentObject(rideStore) // Inject RideStore
+            } else {
+                LoginView()
+                    .environmentObject(authManager)
+                    .environmentObject(locationManager)
+                    .environmentObject(rideStore) // Inject RideStore
             }
-        
+        }
     }
     
     private func configureNavigationBarAppearance() {
@@ -51,4 +43,3 @@ struct driver_frontendApp: App {
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
 }
-

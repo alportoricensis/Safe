@@ -2,9 +2,9 @@ import SwiftUI
 import GoogleMaps
 import CoreLocation
 
-
 struct RideView: View {
     @EnvironmentObject var locationManager: LocationManager
+    @EnvironmentObject var rideStore: RideStore
     let ride: Ride
 
     @State private var buttonText: String = "Start"
@@ -37,6 +37,8 @@ struct RideView: View {
                 print("Driver location not available")
                 return
             }
+            print("Driver Location: \(driverLocation.latitude), \(driverLocation.longitude)")
+            print("Pickup Location: \(ride.pickupCoordinate.latitude), \(ride.pickupCoordinate.longitude)")
             drawRoute(from: driverLocation, to: ride.pickupCoordinate)
         }
     }
@@ -54,14 +56,16 @@ struct RideView: View {
         if !isAtPickup {
             isAtPickup = true
             buttonText = "Picked-Up Passenger"
-            // You may want to check if the driver has reached the pickup location
+            // Optionally, notify backend about pickup
         } else if !passengerPickedUp {
             passengerPickedUp = true
             buttonText = "Drop-Off Passenger"
             drawRoute(from: ride.pickupCoordinate, to: ride.dropOffCoordinate)
         } else {
             buttonText = "Trip Complete"
-            // Handle trip completion logic
+            // Handle trip completion logic, e.g., updating backend, moving to completed tab
+            rideStore.updateRideStatus(rideId: ride.id ?? "", status: "Completed")
+            // Optionally, navigate back or show confirmation
         }
     }
     
@@ -84,7 +88,6 @@ struct RideView: View {
                    let points = overviewPolyline["points"] as? String {
                     DispatchQueue.main.async {
                         self.drawPath(from: points)
-                        // Optionally, update the camera to show the entire route
                     }
                 } else {
                     print("No routes found")
@@ -100,19 +103,16 @@ struct RideView: View {
         route = GMSPolyline(path: path)
         route?.strokeWidth = 4
         route?.strokeColor = .blue
-        // The MapViewWrapper will automatically display this route
     }
 }
 
-
-
 extension Ride {
     var pickupCoordinate: CLLocationCoordinate2D {
-        CLLocationCoordinate2D(latitude: pickupLatitude, longitude: pickupLongitude)
+        CLLocationCoordinate2D(latitude: pickupLatitude ?? 0.0, longitude: pickupLongitude ?? 0.0)
     }
 
     var dropOffCoordinate: CLLocationCoordinate2D {
-        CLLocationCoordinate2D(latitude: dropOffLatitude, longitude: dropOffLongitude)
+        CLLocationCoordinate2D(latitude: dropOffLatitude ?? 0.0, longitude: dropOffLongitude ?? 0.0)
     }
 }
 
@@ -136,6 +136,12 @@ struct MapViewWrapper: UIViewRepresentable {
     func updateUIView(_ uiView: GMSMapView, context: Context) {
         uiView.clear()
         route?.map = uiView
+        
+        if let path = route?.path {
+            let bounds = GMSCoordinateBounds(path: path)
+            let update = GMSCameraUpdate.fit(bounds, withPadding: 50.0)
+            uiView.animate(with: update)
+        }
     }
 
     class Coordinator: NSObject {
@@ -147,4 +153,3 @@ struct MapViewWrapper: UIViewRepresentable {
         }
     }
 }
-

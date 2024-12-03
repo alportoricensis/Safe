@@ -4,22 +4,34 @@ import Combine
 class RideStore: ObservableObject {
     static let shared = RideStore()
     private init() {}
-
-    @Published private(set) var rides = [Ride]()
+    
+    @Published var rides = [Ride]()
     @Published var isRetrieving = false
     private let synchronized = DispatchQueue(label: "synchronized", qos: .background)
-
+    
     var username = ""
     var password = ""
     var vehicleId: String?
     var latitude: Double?
     var longitude: Double?
-
+    
     private let serverUrl = "http://18.191.14.26/api/v1/rides/drivers/"
-
+    
     func getRides() async {
-        self.rides = [
-        Ride(
+        guard let vehicleId = vehicleId else {
+            print("getRides: Vehicle ID is not set.")
+            return
+        }
+
+        synchronized.sync {
+            guard !self.isRetrieving else { return }
+            self.isRetrieving = true
+        }
+
+        // For testing purposes, using hardcoded rides
+        DispatchQueue.main.async {
+            self.rides = [
+                Ride(
                     pickupLoc: "Duderstadt Center",
                     dropLoc: "South Quad",
                     passenger: "John Doe",
@@ -64,17 +76,11 @@ class RideStore: ObservableObject {
                     dropOffLongitude: -83.7486
                 )
             ]
-            return
-        guard let vehicleId = vehicleId else {
-            print("getRides: Vehicle ID is not set.")
-            return
+            self.isRetrieving = false
         }
-
-        synchronized.sync {
-            guard !self.isRetrieving else { return }
-            self.isRetrieving = true
-        }
-
+        
+        // Uncomment and implement actual API call when backend is ready
+        /*
         guard let apiUrl = URL(string: "\(serverUrl)\(vehicleId)/") else {
             print("getRides: Bad URL")
             synchronized.sync {
@@ -144,12 +150,13 @@ class RideStore: ObservableObject {
                 self.isRetrieving = false
             }
         }
+        */
     }
-
+    
     func updateRideStatus(rideId: String, status: String) {
         if let index = rides.firstIndex(where: { $0.id == rideId }) {
             rides[index].status = status
-            // Optionally, notify the backend about the status update
+            // Optionally, notify backend about status change
         }
     }
 }

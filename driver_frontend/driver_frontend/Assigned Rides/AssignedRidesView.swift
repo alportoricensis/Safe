@@ -3,6 +3,7 @@ import SwiftUI
 struct AssignedRidesView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var locationManager: LocationManager
+    @EnvironmentObject var rideStore: RideStore // Add RideStore
     @State private var selectedTab: Tab = .current
     @State private var showAlert = false
     @State private var alertMessage = ""
@@ -72,7 +73,7 @@ struct AssignedRidesView: View {
     }
 
     func logoutVehicle() {
-        if let vehicleId = RideStore.shared.vehicleId {
+        if let vehicleId = rideStore.vehicleId { // Use rideStore
             logoutAPI(vehicleId: vehicleId) { success, message in
                 DispatchQueue.main.async {
                     alertMessage = message
@@ -80,7 +81,7 @@ struct AssignedRidesView: View {
 
                     if success {
                         authManager.isAuthenticated = false
-                        RideStore.shared.vehicleId = nil
+                        rideStore.vehicleId = nil
                     }
                 }
             }
@@ -133,5 +134,14 @@ struct TabButton: View {
             }
             .frame(maxWidth: .infinity)
         }
+    }
+}
+
+struct AssignedRidesView_Previews: PreviewProvider {
+    static var previews: some View {
+        AssignedRidesView()
+            .environmentObject(AuthManager())
+            .environmentObject(LocationManager())
+            .environmentObject(RideStore.shared)
     }
 }
