@@ -29,8 +29,9 @@ model = genai.GenerativeModel(
         "top_p": 1,
         "max_output_tokens": 2048,
     },
-    tools=FUNCTIONS
+    tools=[book_ride_function, cancel_ride_function]
 )
+
 
 @safe_backend.app.route("/api/v1/chat/", methods=["POST"])
 def chat():
@@ -69,10 +70,12 @@ def chat():
             function_name = response.function_call.get("name")
             function_args = response.function_call.get("arguments")
 
-            if function_name == "geocode_address":
+            if function_name == "book_ride":
                 args = json.loads(function_args)
-                address = args.get("address")
-                geocode_response = geocode_address_api(address)
+                pickup = args.get("pickup")
+                dropoff = args.get("dropoff")
+                service = args.get("service")
+                geocode_response = book_ride_api(pickup, dropoff, service, user_id)
 
                 if geocode_response["success"]:
                     dropoff_lat = geocode_response["latitude"]

@@ -1,3 +1,6 @@
+
+import flask
+
 INITIAL_GREETINGS = (
     "Hello! I'm SAFE's virtual assistant. How can I help you today? "
     "I can answer questions about booking rides, safety features, account management, and more."
@@ -15,7 +18,23 @@ CANCELLATION_SUCCESS = "Your ride has been successfully canceled."
 
 CANCELLATION_FAILURE = "I'm sorry, I couldn't cancel your ride. Please ensure the ride ID is correct or contact support."
 
+def get_available_services():
+    """Get list of available services by calling the existing API endpoint.
+    
+    Returns:
+        dict: Dictionary containing services information
+    """
+    response = flask.get("/api/v1/settings/services/")
+    return response.json()
 
+def get_available_pickups():
+    """Get list of available pickup locations by calling the existing API endpoint.
+    
+    Returns:
+        dict: Dictionary containing pickup locations information
+    """
+    response = flask.get("/api/v1/settings/pickups/")
+    return response.json()
 # Function description for geocoding an address or spot name
 geocode_address_function = {
     "function_declarations": [
@@ -35,7 +54,32 @@ geocode_address_function = {
         }
     ]
 }
-
+book_ride_function = {
+    "function_declarations": [
+        {
+            "name": "book_ride",
+            "description": "Book a ride by providing pickup and dropoff locations, service name, and user ID.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "pickup": {
+                        "type": "string",
+                        "description": f"The address or name of the pickup location. Available options are: {get_available_pickups()}"
+                    },
+                    "dropoff": {
+                        "type": "string",
+                        "description": "The address or name of the dropoff location."
+                    },
+                    "service": {
+                        "type": "string",
+                        "description": f"The name of the service being requested. Available options are: {get_available_services()}"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "description": "The unique identifier of the user booking the ride."
+                    }
+                },
+                "required": ["pickup", "dropoff", "service", "user_id"]
 
 cancel_ride_function = {
     "function_declarations": [
@@ -56,7 +100,24 @@ cancel_ride_function = {
     ]
 }
 
-
+cancel_ride_function = {
+    "function_declarations": [
+        {
+            "name": "cancel_ride",
+            "description": "Cancel an existing ride using the ride ID.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "ride_id": {
+                        "type": "string",
+                        "description": "The unique identifier of the ride to cancel."
+                    }
+                },
+                "required": ["ride_id"]
+            }
+        }
+    ]
+}
 # System instruction for Gemini model
 SYSTEM_INSTRUCTION = (
     "You are a helpful customer support chatbot for SAFE, a ride-sharing service. "

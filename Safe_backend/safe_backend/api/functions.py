@@ -30,21 +30,29 @@ def geocode_address_api(address):
     except Exception as e:
         return {"success": False, "error": str(e)}
 
-def book_ride_api(pickup_lat, pickup_long, dropoff_lat, dropoff_long, user_id):
+def book_ride_api(pickup, dropoff, service, user_id):
     """Function to call the /api/v1/rides/ endpoint to book a ride."""
     try:
+        # Geocode pickup location
+        pickup_result = geocode_address_api(pickup)
+        if not pickup_result["success"]:
+            return pickup_result
+        
+        # Geocode dropoff location
+        dropoff_result = geocode_address_api(dropoff)
+        if not dropoff_result["success"]:
+            return dropoff_result
+
         # Prepare the payload
         payload = {
-            "pickupLocation": {
-                "latitude": pickup_lat,
-                "longitude": pickup_long
-            },
-            "dropoffLocation": {
-                "latitude": dropoff_lat,
-                "longitude": dropoff_long
-            },
-            "user_id": user_id,
-            "serviceName": 'passenger'
+            "uuid": user_id,
+            "serviceName": service,
+            "pickupLocation": pickup,
+            "dropoffLocation": dropoff,
+            "dropoffLat": dropoff_result["latitude"],
+            "dropoffLong": dropoff_result["longitude"],
+            "rideOrigin": "passenger",
+            "numPassengers": 1
         }
 
         response = requests.post(
