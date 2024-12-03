@@ -6,17 +6,24 @@
 //
 
 import SwiftUI
-
+import GoogleMaps
 @main
 struct driver_frontendApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     @StateObject private var authManager = AuthManager()
     @StateObject private var locationManager = LocationManager()
 
     
     init(){
-        configureNavigationBarAppearance()
-    }
+            if let apiKey = Bundle.main.object(forInfoDictionaryKey: "GOOGLE_API_KEY") as? String {
+                print("Google API Key: \(apiKey)") // Debug print
+                GMSServices.provideAPIKey(apiKey)
+            } else {
+                print("Google API Key not found in Info.plist")
+            }
+            
+            configureNavigationBarAppearance()
+        }
     
     var body: some Scene {
             WindowGroup {
