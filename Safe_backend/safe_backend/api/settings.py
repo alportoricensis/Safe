@@ -12,8 +12,6 @@ import psycopg2
 # MODIFIES  - database
 def vehicles():
     """Create a new vehicle with given parameters."""
-    # TODO: Authentication
-
     # Get data from request
     if flask.request.method == "POST":
         vehicle_name = flask.request.form["vehicleName"]
@@ -60,8 +58,6 @@ def vehicles():
 # MODIFIES  - database
 def locations():
     """Create or get a new pickup/dropoff location."""
-    # TODO: Authentication
-
     # Get data from request
     if flask.request.method == "POST":
         location_name = flask.request.form["locationName"]
@@ -145,8 +141,6 @@ def locations():
 # MODIFIES  - database
 def ranges():
     """Create a new vehicle with given parameters."""
-    # TODO: Authentication
-
     # Get data from request
     if flask.request.method == "POST":
         lat = flask.request.form["rangeLatitude"]
@@ -246,8 +240,6 @@ def ranges():
 # MODIFIES  - database
 def services():
     """Create a new service with given parameters."""
-    # TODO: Authentication
-
     # Get data from request
     if flask.request.method == "POST":
         sname = flask.request.form["serviceName"]
@@ -333,8 +325,6 @@ def services():
 # MODIFIES  - database
 def handle_faqs():
     """Update frequently asked questions for a service."""
-    # TODO: Authentication
-
     # Check service validity
     conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                             port="5432")

@@ -14,7 +14,7 @@ def login_user():
     conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                         port="5432")
     cur = conn.cursor()
-    cur.execute("SELECT * FROM ride_requests WHERE user_id = %s;", (pass_uuid, ))
+    cur.execute("SELECT * FROM users WHERE uuid = %s;", (pass_uuid, ))
     user = cur.fetchone()
     if user is None:
         display_name = flask.request.json["displayName"]
