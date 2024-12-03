@@ -143,8 +143,3 @@ def chat():
             "error": f"Error processing message: {str(e)}",
             "success": False
         }), 500
-            
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
