@@ -22,7 +22,7 @@ def login_user():
         first_name = display_name.split(" ")[0]
         last_name = display_name.split(" ")[1]
         cur.execute(
-            "INSERT INTO users (user_id, first_name, last_name, phone_number, email) \
+            "INSERT INTO users (uuid, first_name, last_name, phone_number, email) \
             VALUES (%s, %s, %s, %s, %s)",
             (pass_uuid, first_name, last_name, "(000) 000-0000", email)
         )
