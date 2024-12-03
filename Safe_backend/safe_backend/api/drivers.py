@@ -258,7 +258,7 @@ def load_unload():
     return flask.jsonify(**context), 400
 
 
-@safe_backend.app.route("/api/v1/vehicles/statistics/", methods=["GET"])
+@safe_backend.app.route("/api/v1/vehicles/statistics/", methods=["GET", "POST"])
 # REQUIRES  - User is authenticated with driver-level permissions
 # EFFECTS   - Get the usage statistics for this vehicle 
 # MODIFIES  - Nothing
