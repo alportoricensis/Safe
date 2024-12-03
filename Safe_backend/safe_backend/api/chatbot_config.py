@@ -16,38 +16,44 @@ CANCELLATION_SUCCESS = "Your ride has been successfully canceled."
 CANCELLATION_FAILURE = "I'm sorry, I couldn't cancel your ride. Please ensure the ride ID is correct or contact support."
 
 
-
 # Function description for geocoding an address or spot name
-GEOCODE_ADDRESS_FUNCTION_DESCRIPTION = {
-    "name": "geocode_address",
-    "description": "Convert an address or spot name into latitude and longitude coordinates. Only invoke this function if a building is provided.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "address": {
-                "type": "string",
-                "description": "The full address or spot name to geocode."
+geocode_address_function = {
+    "function_declarations": [
+        {
+            "name": "geocode_address",
+            "description": "Convert an address or spot name into latitude and longitude coordinates. Only invoke this function if a building is provided.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "description": "The full address or spot name to geocode."
+                    }
+                },
+                "required": ["address"]
             }
-        },
-        "required": ["address"]
-    }
+        }
+    ]
 }
 
 
-CANCEL_RIDE_FUNCTION_DESCRIPTION = {
-    "name": "cancel_ride",
-    "description": "Cancel an existing ride using the ride ID.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "ride_id": {
-                "type": "string",
-                "description": "The unique identifier of the ride to cancel."
+cancel_ride_function = {
+    "function_declarations": [
+        {
+            "name": "cancel_ride",
+            "description": "Cancel an existing ride using the ride ID.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "ride_id": {
+                        "type": "string",
+                        "description": "The unique identifier of the ride to cancel."
+                    }
+                },
+                "required": ["ride_id"]
             }
-            
-        },
-        "required": ["ride_id"]
-    }
+        }
+    ]
 }
 
 
