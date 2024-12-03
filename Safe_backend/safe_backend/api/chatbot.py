@@ -56,18 +56,19 @@ def chat():
 
         response = chat.send_message(input_text)
         response.resolve()
-
-        if hasattr(response, 'function_call') and response.function_call:
-            function_name = response.function_call.get("name")
-            function_args = response.function_call.get("arguments")
-
+        
+        # Check if response has function call
+        if response.candidates[0].content.parts[0].function_call:
+            function_call = response.candidates[0].content.parts[0].function_call
+            function_name = function_call.name
+            function_args = function_call.args
+            
             if function_name == "book_ride":
                 print("function_name:", function_name)
                 print("function_args:", function_args)
-                args = json.loads(function_args)
-                pickup = args.get("pickup")
-                dropoff = args.get("dropoff")
-                service = args.get("service")
+                pickup = function_args.get("pickup")
+                dropoff = function_args.get("dropoff")
+                service = function_args.get("service")
                 booking_response = book_ride_api(pickup, dropoff, service, user_id)
 
                 if booking_response["success"]:
@@ -80,12 +81,11 @@ def chat():
                         "response": f"Sorry, there was an issue booking your ride: {booking_response['error']}",
                         "success": False
                     }), 500
-       
+            
             elif function_name == "cancel_ride":
                 print("function_name:", function_name)
                 print("function_args:", function_args)
-                args = json.loads(function_args)
-                ride_id = args.get("ride_id")
+                ride_id = function_args.get("ride_id")
 
                 if not ride_id:
                     return jsonify({
