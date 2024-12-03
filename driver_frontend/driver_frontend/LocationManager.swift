@@ -75,7 +75,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         let longitude = location.coordinate.longitude
         
         // API URL
-        guard let url = URL(string: "http://35.2.2.224:5000/api/v1/vehicles/location/") else { 
+        guard let url = URL(string: "http://18.191.14.26/api/v1/vehicles/location/") else { 
             print("Invalid URL")
             return
         }

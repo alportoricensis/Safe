@@ -23,7 +23,7 @@ def vehicles():
         cur.execute("SELECT * FROM vehicles WHERE vehicle_name = %s", (vehicle_name, ))
         sel = cur.fetchone()
         if sel is not None:
-            flask.flash(f"Error: Vehicle {vehicle_name} already exists!")
+            return flask.jsonify(**{"msg": "Vehicle already exists."}), 400
         vehicle_range = flask.request.form["vehicleRange"]
         vehicle_capacity = flask.request.form["vehicleCapacity"]
         cur.execute(
@@ -33,7 +33,7 @@ def vehicles():
         conn.commit()
         cur.close()
         conn.close()
-        return flask.jsnoify(**{"msg": "Succesfully created vehicle."}), 200
+        return flask.jsonify(**{"msg": "Succesfully created vehicle."}), 200
 
     if flask.request.method == "GET":
         conn = psycopg2.connect(database="safe_backend", user="safe", password="",
@@ -44,9 +44,9 @@ def vehicles():
         context = {"vehicles": []}
         for vehicle in sel:
             context["vehicles"].append({
-                "vehicle_id": vehicle[1],
-                "capacity": vehicle[2],
-                "vrange": vehicle[3],
+                "vehicle_id": vehicle[0],
+                "capacity": vehicle[1],
+                "vrange": vehicle[2],
             })
         return flask.jsonify(**context), 200
     return flask.jsonify(**{"msg": "Unsupported method"}), 404
@@ -341,13 +341,14 @@ def handle_faqs():
     cur = conn.cursor()
 
     if flask.request.method == "GET" or flask.request.method == "OPTIONS":
-        context = {"faqs": []}
         cur.execute("SELECT * FROM faqs")
+        context = {}
         sel = cur.fetchall()
         for faq in sel:
-            context["faqs"].append({
+            if faq[1] not in context:
+                context[faq[1]] = []
+            context[faq[1]].append({
                 "qid": faq[0],
-                "service_name": faq[1],
                 "question": faq[2],
                 "answer": faq[3]
             })
@@ -356,15 +357,15 @@ def handle_faqs():
         return flask.jsonify(**(context)), 200
 
     if flask.request.method == "POST":
-        service_name = flask.request.json["serviceName"]
+        service_name = flask.request.form["serviceName"]
         cur.execute("SELECT * FROM services WHERE service_name = %s", (service_name, ))
         sel = cur.fetchone()
         if sel is None:
             cur.close()
             conn.close()
             return flask.jsonify(**{"msg": f"Service {service_name} does not exist."}), 404
-        question = flask.request.json["question"]
-        answer = flask.request.json["answer"]
+        question = flask.request.form["question"]
+        answer = flask.request.form["answer"]
         cur.execute(
             "INSERT INTO faqs (service_name, question, answer) VALUES (%s, %s, %s)",
             (service_name, question, answer)
@@ -375,7 +376,7 @@ def handle_faqs():
         return flask.jsonify(**{"msg": "Succesfully added Q&A."}), 200
 
     if flask.request.method == "DELETE":
-        qid = flask.request.json["questionID"]
+        qid = flask.request.json["qid"]
         cur.execute(
             "DELETE FROM faqs WHERE question_id = %s",
             (qid, )

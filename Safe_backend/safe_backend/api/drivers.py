@@ -39,8 +39,8 @@ def login_vehicle():
         return flask.jsonify(**context), 404
 
     # Query database for vehicle capacity and range
-    capacity = vehicle[2]
-    vehicle_range = vehicle[3]
+    capacity = vehicle[1]
+    vehicle_range = vehicle[2]
 
     # Get location from login request
     lat = flask.request.json["latitude"]
@@ -130,7 +130,7 @@ def get_vehicles():
 
     # Grab vehicle from active list and return, along with their URL
     context = {}
-    for vehicle_id in global_vars.VEHICLES.items():
+    for vehicle_id in global_vars.VEHICLES:
         context[vehicle_id] = {
             "vehicle_id": vehicle_id,
             "lat": global_vars.VEHICLES[vehicle_id].lat,
@@ -216,8 +216,8 @@ def load_unload():
                             port="5432")
         cur = conn.cursor()
         cur.execute(
-            "UPDATE REQUESTS SET pickup_time = %s WHERE ride_id = %s;",
-            (datetime.datetime.now() ,global_vars.REQUESTS[ride_id].request_id,)
+            "UPDATE ride_requests SET pickup_time = %s, vehicle_name = %s WHERE ride_id = %s;",
+            (datetime.datetime.now(), vehicle_id, global_vars.REQUESTS[ride_id].request_id,)
         )
         conn.commit()
         cur.close()
@@ -245,7 +245,7 @@ def load_unload():
                             port="5432")
         cur = conn.cursor()
         cur.execute(
-            "UPDATE REQUESTS SET status = %s, dropoff_time = %s WHERE ride_id = %s;",
+            "UPDATE ride_requests SET status = %s, dropoff_time = %s WHERE ride_id = %s;",
             ("Complete",datetime.datetime.now() ,global_vars.REQUESTS[ride_id].request_id, )
         )
         conn.commit()
@@ -284,8 +284,8 @@ def get_statistics():
     vehicle_id = flask.request.json["vehicle_id"]
 
     # Get the start time and end time for the usage statistics
-    start_time = flask.request.json["start_time"]
-    end_time = flask.request.json["end_time"]
+    start_time = datetime.datetime.fromtimestamp(flask.request.json["start_time"])
+    end_time = datetime.datetime.fromtimestamp(flask.request.json["end_time"])
 
     # Check that the vehicle has been logged in
     if vehicle_id not in global_vars.VEHICLES:
@@ -297,24 +297,26 @@ def get_statistics():
     cur = conn.cursor()
     cur.execute(
         "SELECT * FROM ride_requests \
-        WHERE vehicle_id = %s AND pickup_time > %s AND dropoff_time < %s",
+        WHERE vehicle_name = %s AND pickup_time > %s AND pickup_time < %s",
         (vehicle_id, start_time, end_time,)
     )
-    cur.close()
-    conn.close()
     context = {"rides": []}
+    sel = cur.fetchall()
     num_passengers = 0
-    for ride in cur.fetchall():
-        context["rides"].append({
-            "pickupLat": ride[1],
-            "pickupLong": ride[2],
-            "dropoffLat": ride[3],
-            "dropoffLong": ride[4],
-            "pickupTime": ride[8],
-            "dropoffTime": ride[9],
-            "serviceName": ride[10],
-        })
-        num_passengers += 1
+    if sel is not None:
+        for ride in sel:
+            context["rides"].append({
+                "pickupLat": ride[1],
+                "pickupLong": ride[2],
+                "dropoffLat": ride[3],
+                "dropoffLong": ride[4],
+                "pickupTime": ride[8],
+                "dropoffTime": ride[9],
+                "serviceName": ride[10],
+            })
+            num_passengers += 1
     context["numPassengers"] = num_passengers
     context["milesTravelled"] = global_vars.VEHICLES[vehicle_id].miles_travelled
+    cur.close()
+    conn.close()
     return flask.jsonify(**context), 200

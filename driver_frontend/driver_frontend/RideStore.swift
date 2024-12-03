@@ -1,19 +1,14 @@
 import Foundation
-import Observation
+import Combine
 
-@Observable
-final class RideStore {
+class RideStore: ObservableObject {
     static let shared = RideStore()
     private init() {}
 
-    private var isRetrieving = false
+    @Published private(set) var rides = [Ride]()
+    @Published var isRetrieving = false 
     private let synchronized = DispatchQueue(label: "synchronized", qos: .background)
 
-    private(set) var rides = [Ride]()
-    private let nFields = Mirror(reflecting: Ride()).children.count - 1
-
-
-   
     var username = ""
     var password = ""
     var vehicleId: String?
@@ -22,9 +17,14 @@ final class RideStore {
 
     private let serverUrl = "http://18.191.14.26/api/v1/rides/drivers/"
 
-
-    // Modify the function to use the vehicleId member variable
     func getRides() async {
+//        self.rides = [
+//                   Ride(pickupLoc: "123 Main St, Springfield", dropLoc: "456 Elm St, Springfield", passenger: "John Doe", status: "Pending", id: "ride1"),
+//                   Ride(pickupLoc: "789 Oak St, Springfield", dropLoc: "321 Pine St, Springfield", passenger: "Jane Smith", status: "In-Progress", id: "ride2"),
+//                   Ride(pickupLoc: "654 Maple St, Springfield", dropLoc: "987 Cedar St, Springfield", passenger: "Alice Johnson", status: "Completed", id: "ride3"),
+//                   Ride(pickupLoc: "111 Birch St, Springfield", dropLoc: "222 Walnut St, Springfield", passenger: "Bob Brown", status: "Pending", id: "ride4")
+//               ]
+//        return
         guard let vehicleId = vehicleId else {
             print("getRides: Vehicle ID is not set.")
             return
@@ -34,10 +34,12 @@ final class RideStore {
             guard !self.isRetrieving else { return }
             self.isRetrieving = true
         }
-        
-        // Construct the URL with the vehicleId in the path
+
         guard let apiUrl = URL(string: "\(serverUrl)\(vehicleId)/") else {
             print("getRides: Bad URL")
+            synchronized.sync {
+                self.isRetrieving = false
+            }
             return
         }
 
@@ -47,46 +49,58 @@ final class RideStore {
 
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
-            
+
             if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
                 print("getRides: HTTP STATUS: \(httpStatus.statusCode)")
+                synchronized.sync {
+                    self.isRetrieving = false
+                }
                 return
             }
 
-            guard let jsonObj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            guard let jsonObj = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
                 print("getRides: JSON deserialization failed")
+                synchronized.sync {
+                    self.isRetrieving = false
+                }
                 return
             }
-            
+
             var fetchedRides = [Ride]()
-            for (rideID, rideData) in jsonObj {
-                if let rideInfo = rideData as? [String: Any] {
-                    let pickup = rideInfo["pickup"] as? String ?? "Unknown"
-                    let dropoff = rideInfo["dropoff"] as? String ?? "Unknown"
-                    let passenger = rideInfo["passenger"] as? String ?? "Unknown"
-                    
+            for rideData in jsonObj {
+                if let rideId = rideData["id"] as? String {
+                    let pickup = rideData["pickup"] as? String ?? "Unknown"
+                    let dropoff = rideData["dropoff"] as? String ?? "Unknown"
+                    let passenger = rideData["passenger"] as? String ?? "Unknown"
+                    let status = rideData["status"] as? String ?? "Pending"
+
                     fetchedRides.append(Ride(
                         pickupLoc: pickup,
                         dropLoc: dropoff,
                         passenger: passenger,
-                        id: rideID
+                        status: status,
+                        id: rideId
                     ))
                 }
             }
 
-            synchronized.sync {
+            DispatchQueue.main.async {
                 self.rides = fetchedRides
+                self.isRetrieving = false
             }
-            
+
         } catch {
-            print("getRides: NETWORK ERROR")
-        }
-    }
-    
-    func updateRideStatus(rideId: String, status: String) {
-        if let index = rides.firstIndex(where: { $0.id == rideId }) {
-            rides[index].status = status
+            print("getRides: NETWORK ERROR - \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                self.isRetrieving = false
+            }
         }
     }
 
+    func updateRideStatus(rideId: String, status: String) {
+        if let index = rides.firstIndex(where: { $0.id == rideId }) {
+            rides[index].status = status
+            // Optionally, you can notify the backend about the status update here
+        }
+    }
 }
