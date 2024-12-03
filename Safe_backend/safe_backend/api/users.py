@@ -21,7 +21,7 @@ def login_user():
         email = flask.request.json["email"]
         cur.execute(
             "INSERT INTO users (uuid, display_name, phone_number, email) \
-            VALUES (%s, %s, %s, %s, %s)",
+            VALUES (%s, %s, %s, %s)",
             (pass_uuid, display_name, "(000) 000-0000", email)
         )
     return flask.jsonify(**{"msg": "Succesfully logged {pass_uuid} in."}), 200
