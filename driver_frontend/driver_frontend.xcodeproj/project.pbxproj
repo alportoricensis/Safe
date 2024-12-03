@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2257BB2D2CFF94F500005174 /* RideHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2257BB2C2CFF94F500005174 /* RideHistoryView.swift */; };
+		2257BB2F2CFF951400005174 /* TodaysRides.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2257BB2E2CFF951400005174 /* TodaysRides.swift */; };
+		2257BB312CFF952C00005174 /* RideHistoryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2257BB302CFF952C00005174 /* RideHistoryList.swift */; };
+		2257BB332CFF954A00005174 /* DriverRideHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2257BB322CFF954A00005174 /* DriverRideHistory.swift */; };
 		22A575FB2CD596DB00D9A43E /* driver_frontendApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A575FA2CD596DB00D9A43E /* driver_frontendApp.swift */; };
 		22A575FD2CD596DB00D9A43E /* AssignedRidesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A575FC2CD596DB00D9A43E /* AssignedRidesView.swift */; };
 		22A575FF2CD596DC00D9A43E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22A575FE2CD596DC00D9A43E /* Assets.xcassets */; };
@@ -15,7 +19,11 @@
 		22A5760B2CD59FF500D9A43E /* RideList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A5760A2CD59FF500D9A43E /* RideList.swift */; };
 		22A5760D2CD5ACC000D9A43E /* RideStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A5760C2CD5ACC000D9A43E /* RideStore.swift */; };
 		22A5760F2CD5BB5300D9A43E /* RideDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A5760E2CD5BB5300D9A43E /* RideDetail.swift */; };
-		90101D5B2CFEFD45005B3177 /* CurrRides.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90101D5A2CFEFD41005B3177 /* CurrRides.swift */; };
+		90101DAA2CFF92AD005B3177 /* Secrets.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 90101DA92CFF92A5005B3177 /* Secrets.xcconfig */; };
+		90101DAC2CFF9333005B3177 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90101DAB2CFF9319005B3177 /* AppDelegate.swift */; };
+		90101DB12CFF96FB005B3177 /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 90101DB02CFF96FB005B3177 /* GoogleMaps */; };
+		90101DB32CFF99BE005B3177 /* RideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90101DB22CFF99BA005B3177 /* RideView.swift */; };
+		90101DB52CFF9FC4005B3177 /* CurrRides.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90101DB42CFF9FC1005B3177 /* CurrRides.swift */; };
 		901AC6012CE0073E00FDA176 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6002CE0073400FDA176 /* LoginView.swift */; };
 		901AC6032CE0096A00FDA176 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6022CE0096500FDA176 /* AuthManager.swift */; };
 		901AC6052CE00D5900FDA176 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901AC6042CE00D5200FDA176 /* AppState.swift */; };
@@ -27,6 +35,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2257BB2C2CFF94F500005174 /* RideHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideHistoryView.swift; sourceTree = "<group>"; };
+		2257BB2E2CFF951400005174 /* TodaysRides.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodaysRides.swift; sourceTree = "<group>"; };
+		2257BB302CFF952C00005174 /* RideHistoryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideHistoryList.swift; sourceTree = "<group>"; };
+		2257BB322CFF954A00005174 /* DriverRideHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverRideHistory.swift; sourceTree = "<group>"; };
 		22A575F72CD596DB00D9A43E /* driver_frontend.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = driver_frontend.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22A575FA2CD596DB00D9A43E /* driver_frontendApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = driver_frontendApp.swift; sourceTree = "<group>"; };
 		22A575FC2CD596DB00D9A43E /* AssignedRidesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignedRidesView.swift; sourceTree = "<group>"; };
@@ -36,7 +48,10 @@
 		22A5760A2CD59FF500D9A43E /* RideList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideList.swift; sourceTree = "<group>"; };
 		22A5760C2CD5ACC000D9A43E /* RideStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideStore.swift; sourceTree = "<group>"; };
 		22A5760E2CD5BB5300D9A43E /* RideDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideDetail.swift; sourceTree = "<group>"; };
-		90101D5A2CFEFD41005B3177 /* CurrRides.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrRides.swift; sourceTree = "<group>"; };
+		90101DA92CFF92A5005B3177 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+		90101DAB2CFF9319005B3177 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		90101DB22CFF99BA005B3177 /* RideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideView.swift; sourceTree = "<group>"; };
+		90101DB42CFF9FC1005B3177 /* CurrRides.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrRides.swift; sourceTree = "<group>"; };
 		901AC6002CE0073400FDA176 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		901AC6022CE0096500FDA176 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		901AC6042CE00D5200FDA176 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
@@ -53,6 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90101DB12CFF96FB005B3177 /* GoogleMaps in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,7 +94,10 @@
 		22A575F92CD596DB00D9A43E /* driver_frontend */ = {
 			isa = PBXGroup;
 			children = (
-				90101D5A2CFEFD41005B3177 /* CurrRides.swift */,
+				90101DB42CFF9FC1005B3177 /* CurrRides.swift */,
+				90101DB22CFF99BA005B3177 /* RideView.swift */,
+				90101DAB2CFF9319005B3177 /* AppDelegate.swift */,
+				90101DA92CFF92A5005B3177 /* Secrets.xcconfig */,
 				90EEDB762CFE661600B91030 /* CompletedRidesView.swift */,
 				9045CEF22CFC511700A58773 /* Templates.swift */,
 				9045CEF02CFC503C00A58773 /* MenuView.swift */,
@@ -96,6 +115,10 @@
 				22A575FE2CD596DC00D9A43E /* Assets.xcassets */,
 				22A576002CD596DC00D9A43E /* Preview Content */,
 				22A576082CD5982A00D9A43E /* DriverRides.swift */,
+				2257BB2C2CFF94F500005174 /* RideHistoryView.swift */,
+				2257BB2E2CFF951400005174 /* TodaysRides.swift */,
+				2257BB302CFF952C00005174 /* RideHistoryList.swift */,
+				2257BB322CFF954A00005174 /* DriverRideHistory.swift */,
 			);
 			path = driver_frontend;
 			sourceTree = "<group>";
@@ -152,6 +175,9 @@
 				Base,
 			);
 			mainGroup = 22A575EE2CD596DB00D9A43E;
+			packageReferences = (
+				90101DAF2CFF96FB005B3177 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */,
+			);
 			productRefGroup = 22A575F82CD596DB00D9A43E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -168,6 +194,7 @@
 			files = (
 				22A576022CD596DC00D9A43E /* Preview Assets.xcassets in Resources */,
 				22A575FF2CD596DC00D9A43E /* Assets.xcassets in Resources */,
+				90101DAA2CFF92AD005B3177 /* Secrets.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -179,18 +206,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				901AC6012CE0073E00FDA176 /* LoginView.swift in Sources */,
+				2257BB2F2CFF951400005174 /* TodaysRides.swift in Sources */,
+				2257BB2D2CFF94F500005174 /* RideHistoryView.swift in Sources */,
+				2257BB332CFF954A00005174 /* DriverRideHistory.swift in Sources */,
 				9045CEF12CFC504200A58773 /* MenuView.swift in Sources */,
 				22A5760F2CD5BB5300D9A43E /* RideDetail.swift in Sources */,
 				927EEB2C2CE147B200E300AC /* SafeTopBar.swift in Sources */,
 				901AC6082CE0252100FDA176 /* LocationManager.swift in Sources */,
 				22A575FD2CD596DB00D9A43E /* AssignedRidesView.swift in Sources */,
+				2257BB312CFF952C00005174 /* RideHistoryList.swift in Sources */,
 				90EEDB772CFE662100B91030 /* CompletedRidesView.swift in Sources */,
 				901AC6052CE00D5900FDA176 /* AppState.swift in Sources */,
+				90101DAC2CFF9333005B3177 /* AppDelegate.swift in Sources */,
 				22A5760B2CD59FF500D9A43E /* RideList.swift in Sources */,
 				901AC6032CE0096A00FDA176 /* AuthManager.swift in Sources */,
 				9045CEF32CFC511A00A58773 /* Templates.swift in Sources */,
+				90101DB32CFF99BE005B3177 /* RideView.swift in Sources */,
 				22A576092CD5982A00D9A43E /* DriverRides.swift in Sources */,
-				90101D5B2CFEFD45005B3177 /* CurrRides.swift in Sources */,
+				90101DB52CFF9FC4005B3177 /* CurrRides.swift in Sources */,
 				22A575FB2CD596DB00D9A43E /* driver_frontendApp.swift in Sources */,
 				22A5760D2CD5ACC000D9A43E /* RideStore.swift in Sources */,
 			);
@@ -402,6 +435,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		90101DAF2CFF96FB005B3177 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googlemaps/ios-maps-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		90101DB02CFF96FB005B3177 /* GoogleMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 90101DAF2CFF96FB005B3177 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */;
+			productName = GoogleMaps;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 22A575EF2CD596DB00D9A43E /* Project object */;
 }
