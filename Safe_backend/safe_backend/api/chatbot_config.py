@@ -70,7 +70,12 @@ def get_book_ride_function():
                             "type": "string",
                             "description": "The unique identifier of the user booking the ride."
                         }
-
+                    },
+                    "required": ["pickup", "dropoff", "service", "user_id"]
+                }
+            }
+        ]
+    }
 
 book_ride_function = {
     "function_declarations": [
@@ -95,35 +100,11 @@ book_ride_function = {
                     "required": ["pickup", "dropoff", "service", "user_id"]
                 }
             }
-        ]
-    }
-
-# Initialize as None, will be set when initialize_functions is called
-book_ride_function = None
-
-def initialize_functions():
-    """Initialize function definitions after database is ready"""
-    global book_ride_function
-    book_ride_function = get_book_ride_function()
-
-cancel_ride_function = {
-    "function_declarations": [
-        {
-            "name": "cancel_ride",
-            "description": "Cancel an existing ride using the ride ID.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "ride_id": {
-                        "type": "string",
-                        "description": "The unique identifier of the ride to cancel."
-                    }
-                },
-                "required": ["ride_id"]
-            }
         }
     ]
 }
+
+
 
 cancel_ride_function = {
     "function_declarations": [

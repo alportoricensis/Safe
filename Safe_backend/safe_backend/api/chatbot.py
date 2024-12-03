@@ -14,12 +14,6 @@ genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
 
 
-# Define available functions for the model to call
-FUNCTIONS = [
-    geocode_address_function,
-    cancel_ride_function,
-]
-
 model = genai.GenerativeModel(
     model_name="gemini-1.5-flash",
     system_instruction=SYSTEM_INSTRUCTION,
