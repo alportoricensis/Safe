@@ -14,7 +14,7 @@ struct RideHistoryView: View {
                 VStack(spacing: 0) {
                     VStack {
                         
-                        Text("Ride History")
+                        Text("Ride Stats History")
                             .font(.largeTitle)
                             .foregroundColor(.white)
                             .padding(.top, 30)

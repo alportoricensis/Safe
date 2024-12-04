@@ -2,7 +2,7 @@ import SwiftUI
 
 enum MenuOption: String, CaseIterable {
     case assignedRides = "Assigned Rides"
-    case rideHistory = "Ride History"
+    case rideHistory = "Ride Stats History"
     case settings = "Settings"
     case support = "Support"
     case messages = "Messages"
@@ -72,7 +72,7 @@ struct MenuView: View {
                 NavigationLink(destination: RideHistoryView()
                     .environmentObject(authManager)
                 ) {
-                    Text("Ride History")
+                    Text("Ride Stats History")
                         .foregroundColor(.white)
                         .font(.headline)
                 }
@@ -151,7 +151,6 @@ struct MenuView: View {
                 if success {
                     authManager.isAuthenticated = false
                     rideStore.vehicleId = nil
-                    // Optionally, clear other sensitive data or perform additional cleanup here
                 }
             }
         }
