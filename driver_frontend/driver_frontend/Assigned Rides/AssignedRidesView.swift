@@ -28,9 +28,8 @@ struct AssignedRidesView: View {
                             .bold()
                             .foregroundColor(.white)
                         
-                        Text("Hello, \(((authManager.username?.isEmpty) != nil) ? "Driver" : authManager.username)!")
-                            .font(.headline)
-                            .foregroundColor(.white)
+                        
+
                     }
                 }
             }

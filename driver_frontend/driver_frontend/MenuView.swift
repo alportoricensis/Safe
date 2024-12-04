@@ -12,7 +12,8 @@ struct MenuView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var rideStore: RideStore
     @State private var selectedOption: MenuOption?
-    
+    @EnvironmentObject var locationManager: LocationManager
+
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             // Header Section
@@ -29,12 +30,14 @@ struct MenuView: View {
                         .foregroundColor(.gray)
                     
                     VStack(alignment: .leading) {
-                        Text((((authManager.username?.isEmpty) != nil) ? "Unknown User" : authManager.username) ?? "Driver")
+                        Text((authManager.username ?? "").isEmpty ? "Driver" : authManager.username ?? "Driver")
                             .font(.headline)
                         
                         Divider()
                         
-                        NavigationLink(destination: MessagesView()) {
+                        NavigationLink(destination: MessagesView()
+                            .environmentObject(authManager)
+                        ) {
                             HStack {
                                 Text("Messages")
                                 Spacer()
@@ -52,12 +55,18 @@ struct MenuView: View {
             
             // Menu Options
             VStack(alignment: .leading, spacing: 15) {
-                NavigationLink(destination: AssignedRidesView()) {
+                NavigationLink(destination: AssignedRidesView()
+                    .environmentObject(rideStore)
+                    .environmentObject(authManager)
+                    .environmentObject(locationManager)
+                ) {
                     Text("Assigned Rides")
                         .foregroundColor(.white)
                         .font(.headline)
                 }
-                NavigationLink(destination: RideHistoryView()) {
+                NavigationLink(destination: RideHistoryView()
+                    .environmentObject(rideStore)
+                ) {
                     Text("Ride History")
                         .foregroundColor(.white)
                         .font(.headline)
