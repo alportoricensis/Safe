@@ -159,10 +159,10 @@ struct BookingCard: View {
         case "requested": return .blue
         case "accepted": return .green
         case "completed": return .gray
+        case "scheduled": return .purple
         default: return .orange
         }
     }
-    
     private func formatDateTime(_ dateString: String) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSSSSZ"
