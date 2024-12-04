@@ -4,31 +4,48 @@ import GoogleMaps
 struct MapViewWrapper: UIViewRepresentable {
     @Binding var route: GMSPolyline?
     var initialCamera: CLLocationCoordinate2D
-    var zoom: Float = 15.0
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
+    var zoom: Float
 
     func makeUIView(context: Context) -> GMSMapView {
-        let camera = GMSCameraPosition.camera(withLatitude: initialCamera.latitude, longitude: initialCamera.longitude, zoom: zoom)
-        let mapView = GMSMapView(frame: .zero, camera: camera)
-        mapView.isMyLocationEnabled = true
-        context.coordinator.mapView = mapView
-        return mapView
-    }
+           // Create the camera for the map view
+           let camera = GMSCameraPosition.camera(withLatitude: initialCamera.latitude,
+                                                 longitude: initialCamera.longitude,
+                                                 zoom: zoom)
+           
+           // Initialize the map view
+           let mapView = GMSMapView(frame: .zero, camera: camera)
+           
+           // Enable location tracking if needed
+           mapView.isMyLocationEnabled = true
+           
+           return mapView
+       }
 
-    func updateUIView(_ uiView: GMSMapView, context: Context) {
-        uiView.clear() // Remove existing overlays
-        route?.map = uiView // Add the route overlay to the map
-    }
+    func updateUIView(_ mapView: GMSMapView, context: Context) {
+        // Clear the map before drawing the new route
+        mapView.clear()
 
-    class Coordinator: NSObject {
-        var parent: MapViewWrapper
-        var mapView: GMSMapView?
+        // Draw the route if it exists
+        if let route = route {
+            route.map = mapView
 
-        init(_ parent: MapViewWrapper) {
-            self.parent = parent
+            // Zoom to fit the polyline on the map
+            if let path = route.path {
+                let bounds = GMSCoordinateBounds(path: path)
+                let cameraUpdate = GMSCameraUpdate.fit(bounds, withPadding: 50.0)
+                mapView.moveCamera(cameraUpdate)
+            }
         }
     }
+
+    
+    // Create a Coordinator to manage the map view lifecycle
+    class Coordinator: NSObject {
+        var mapView: GMSMapView?
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        return Coordinator()
+    }
 }
+

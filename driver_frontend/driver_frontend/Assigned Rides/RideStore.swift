@@ -37,8 +37,8 @@ class RideStore: ObservableObject {
                             id: "ride1",
                             pickupLatitude: 42.2936,
                             pickupLongitude: -83.7166,
-                            dropOffLatitude: 42.2745,
-                            dropOffLongitude: -83.7409
+                            dropOffLatitude: 42.2695,
+                            dropOffLongitude: -83.7423
                         ),
                         Ride(
                             pickupLoc: "Michigan Union",
