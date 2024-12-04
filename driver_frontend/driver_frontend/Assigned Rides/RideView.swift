@@ -69,10 +69,12 @@ struct RideView: View {
         if !isAtPickup {
             isAtPickup = true
             buttonText = "Picked-Up Passenger"
+            sendLoadRequest()
         } else if !passengerPickedUp {
             passengerPickedUp = true
             buttonText = "Drop-Off Passenger"
             drawRoute(from: ride.pickupCoordinate, to: ride.dropOffCoordinate)
+            sendUnloadRequest()
         } else {
             buttonText = "Trip Complete"
             completeTrip()
@@ -194,8 +196,7 @@ struct RideView: View {
     
     private func completeTrip() {
         store.updateRideStatus(rideId: ride.id, status: "Completed")
-        sendUnloadRequest()
-        
+        print("completed the ride")
     }
     
 }
