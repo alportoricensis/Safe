@@ -1,14 +1,6 @@
 import SwiftUI
 
-//struct RideHistoryView: View {
-//    var body: some View {
-//        Text("Ride History")
-//            .font(.largeTitle)
-//            .foregroundColor(.white)
-//            .background(Color(red: 0/255, green: 39/255, blue: 76/255))
-//            .navigationBarTitle("Ride History", displayMode: .inline) // Add navigation title
-//    }
-//}
+
 
 
 struct SettingsView: View {

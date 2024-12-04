@@ -39,14 +39,15 @@ class Vehicle:
                     elif not visit.is_pickup:
                         self.queue.append(visit.shipment_label)
                         global_vars.REQUESTS[visit.shipment_label].eta = visit.start_time
-                    for vehicle in global_vars.VEHICLES and vehicle != self.vehicle_id:
-                        if visit.shipment_label in global_vars.VEHICLES[vehicle].queue:
-                            global_vars.VEHICLES[vehicle].queue = [
-                                x for x in global_vars.VEHICLES[vehicle].queue if x != visit.shipment_label
-                            ]
-                            global_vars.VEHICLES[vehicle].itinerary = [
-                                x for x in global_vars.VEHICLES[vehicle].queue if x.reqid != visit.shipment_label
-                            ]
+                    for vehicle in global_vars.VEHICLES:
+                        if vehicle != self.vehicle_id:
+                            if visit.shipment_label in global_vars.VEHICLES[vehicle].queue:
+                                global_vars.VEHICLES[vehicle].queue = [
+                                    x for x in global_vars.VEHICLES[vehicle].queue if x != visit.shipment_label
+                                ]
+                                global_vars.VEHICLES[vehicle].itinerary = [
+                                    x for x in global_vars.VEHICLES[vehicle].itinerary if x.request_id != visit.shipment_label
+                                ]
 
 
     # REQUIRES

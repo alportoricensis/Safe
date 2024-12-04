@@ -1,36 +1,37 @@
-//
-//  driver_frontendApp.swift
-//  driver_frontend
-//
-//  Created by Bhavesh Vuyyuru on 11/1/24.
-//
-
 import SwiftUI
+import GoogleMaps
 
 @main
 struct driver_frontendApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     @StateObject private var authManager = AuthManager()
     @StateObject private var locationManager = LocationManager()
-
+    @StateObject private var rideStore = RideStore.shared // Use shared instance
     
     init(){
+        if let apiKey = Bundle.main.object(forInfoDictionaryKey: "GOOGLE_API_KEY") as? String {
+            GMSServices.provideAPIKey(apiKey)
+        }
+        
         configureNavigationBarAppearance()
     }
     
     var body: some Scene {
-            WindowGroup {
+        WindowGroup {
+            NavigationView { // Single NavigationView wrapping the content
                 if authManager.isAuthenticated {
                     MenuView()
                         .environmentObject(authManager)
                         .environmentObject(locationManager)
+                        .environmentObject(rideStore) // Inject RideStore
                 } else {
                     LoginView()
                         .environmentObject(authManager)
                         .environmentObject(locationManager)
+                        .environmentObject(rideStore) // Inject RideStore
                 }
             }
-        
+        }
     }
     
     private func configureNavigationBarAppearance() {
@@ -44,4 +45,3 @@ struct driver_frontendApp: App {
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
 }
-

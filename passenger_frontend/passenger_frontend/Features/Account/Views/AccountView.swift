@@ -62,7 +62,7 @@ struct AccountView: View {
                             .font(.subheadline)
                     }
                     
-                    NavigationLink(destination: ChatbotView()) {
+                    NavigationLink(destination: ChatbotView(authViewModel: authViewModel)) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Support")
                                 .foregroundColor(.white)

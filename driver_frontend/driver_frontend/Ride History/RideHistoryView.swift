@@ -37,7 +37,7 @@ struct RideHistoryView: View {
                     
                     VStack {
                         if selectedTab == .today {
-                            TodaysRides()
+                            TodaysRides().environmentObject(authManager)
                         } else {
                             Text("Completed Rides")
                                 .font(.title)
@@ -78,4 +78,6 @@ struct HistoryTabButton: View {
 }
 #Preview {
     RideHistoryView()
+        .environmentObject(AuthManager())
+        .environmentObject(LocationManager())
 }

@@ -1,7 +1,11 @@
 import SwiftUI
 
 struct ChatbotView: View {
-    @StateObject private var viewModel = ChatbotViewModel()
+    @StateObject private var viewModel: ChatbotViewModel
+    
+    init(authViewModel: AuthViewModel) {
+        _viewModel = StateObject(wrappedValue: ChatbotViewModel(authViewModel: authViewModel))
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -76,7 +80,10 @@ struct ChatInputView: View {
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .disabled(isLoading)
             
-            Button(action: onSend) {
+            Button(action: {
+                print(" Send button tapped") // Debug button tap
+                onSend()
+            }) {
                 if isLoading {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
