@@ -133,11 +133,12 @@ def delete_ride_request(ride_id):
 
     # Remove from the passenger requests
     del global_vars.REQUESTS[ride_id]
-
+    print(ride_id)
+    print(type(ride_id))
     conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                         port="5432")
     cur = conn.cursor()
-    cur.execute("UPDATE REQUESTS SET status = %s WHERE ride_id = %s;", ("Cancelled", ride_id, ))
+    cur.execute("UPDATE ride_requests SET status = %s WHERE ride_id = %s;", ("Cancelled", ride_id, ))
     conn.commit()
     cur.close()
     conn.close()

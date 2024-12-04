@@ -8,7 +8,6 @@ from safe_backend.api.chatbot_config  import *
 from safe_backend.api.functions import *
 import json
 
-app = Flask(__name__)
 
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
@@ -23,7 +22,7 @@ model = genai.GenerativeModel(
         "top_p": 1,
         "max_output_tokens": 2048,
     },
-    tools=[book_ride_function, cancel_ride_function]
+    tools=[book_ride_function, cancel_ride_function, get_bookings_function]
 )
 
 
@@ -96,10 +95,7 @@ def chat():
                         "success": True
                     }), 200
 
-                cancellation_response = cancel_ride_api(
-                    ride_id=ride_id,
-                    user_id=user_id
-                )
+                cancellation_response = cancel_ride_api(ride_id)
 
                 if cancellation_response["success"]:
                     return jsonify({
@@ -109,6 +105,48 @@ def chat():
                 else:
                     return jsonify({
                         "response": f"{CANCELLATION_FAILURE} {cancellation_response['error']}",
+                        "success": False
+                    }), 500
+
+            elif function_name == "get_user_bookings":
+                print("function_name:", function_name)
+                print("function_args:", function_args)
+                limit = function_args.get("limit", 5)
+                
+                bookings_response = get_user_bookings_api(user_id, limit)
+                
+                if bookings_response["success"]:
+                    bookings = bookings_response["bookings"]
+                    if not bookings:
+                        return jsonify({
+                            "response": "You don't have any past bookings.",
+                            "success": True
+                        }), 200
+                        
+                    # Format the booking information in a user-friendly way
+                    response_text = "Here are your recent rides:\n\n"
+                    for booking in bookings:
+                        pickup_time = booking["pickup_time"].split(".")[0] if booking["pickup_time"] != "None" else "Not started"
+                        dropoff_time = booking["dropoff_time"].split(".")[0] if booking["dropoff_time"] != "None" else "Not completed"
+                        request_time = booking["request_time"].split(".")[0]
+                        
+                        response_text += f" Ride #{booking['ride_id']}\n"
+                        response_text += f"Service: {booking['service_name']}\n"
+                        response_text += f"Status: {booking['status']}\n"
+                        response_text += f"Pickup: {booking.get('pickup_address', 'Address unavailable')}\n"
+                        response_text += f"Dropoff: {booking.get('dropoff_address', 'Address unavailable')}\n"
+                        response_text += f"Request Time: {request_time}\n"
+                        response_text += f"Pickup Time: {pickup_time}\n"
+                        response_text += f"Dropoff Time: {dropoff_time}\n"
+                        response_text += "─────────────────────\n"
+                    
+                    return jsonify({
+                        "response": response_text,
+                        "success": True
+                    }), 200
+                else:
+                    return jsonify({
+                        "response": "Sorry, I couldn't retrieve your booking history. Please try again later.",
                         "success": False
                     }), 500
 
