@@ -43,7 +43,7 @@ const Times = () => {
 
     return (
         <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '90vw'}}>
-            <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', width: '80vw', minHeight: '80vh'}}>
+            <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', width: '80vw', minHeight: '80vh', height: '100vh'}} sx={{overflow: 'scroll'}}>
                 <Typography fontSize={'3em'}>
                     Service Times
                 </Typography>

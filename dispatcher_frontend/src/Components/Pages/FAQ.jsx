@@ -36,7 +36,7 @@ const FAQ = () => {
     console.log(faqs)
 
     return (
-        <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '90vw'}}>
+        <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '90vw', height: '100vh'}} sx={{overflow: 'scroll'}}>
             <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', width: '80vw', minHeight: '80vh'}}>
                 <Typography fontSize={'3em'}>
                     Frequently Asked Questions
@@ -48,16 +48,16 @@ const FAQ = () => {
                                 <Typography fontSize={'2em'}>
                                     {faq[0]}
                                 </Typography>
-                                <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', flexWrap: 'wrap', width: '80vw'}}>
+                                <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', flexWrap: 'wrap', width: '80vw'}}>
                                     {faq[1].map((q, index) => (
-                                        <Box key={index} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', width: '15vw', height: '15vh'}}>
+                                        <Box key={index} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', width: '25vw'}} sx={{paddingTop: '5vh'}}>
                                             <Typography fontSize={'1em'}>
                                                 Q: {q['question']}
                                             </Typography>
                                             <Typography fontSize={'1em'}>
                                                 A: {q['answer']}
                                             </Typography>
-                                            <Button onClick={(event) => handleClick(event, q['qid'])} style={{color: 'black'}}>
+                                            <Button onClick={(event) => handleClick(event, q['qid'])} style={{alignSelf: 'center', color: 'black'}}>
                                                 Delete
                                             </Button>
                                         </Box>
