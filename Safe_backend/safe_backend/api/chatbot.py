@@ -8,7 +8,6 @@ from safe_backend.api.chatbot_config  import *
 from safe_backend.api.functions import *
 import json
 
-app = Flask(__name__)
 
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 

@@ -98,14 +98,13 @@ get_bookings_function = {
     "function_declarations": [
         {
             "name": "get_user_bookings",
-            "description": "Retrieve a user's past ride bookings",
+            "description": "Retrieve a user's past ride bookings (defaults to last 5 bookings if limit not specified)",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "limit": {
                         "type": "integer",
-                        "description": "Maximum number of bookings to return (default: 5)",
-                        "default": 5
+                        "description": "Maximum number of bookings to return"
                     }
                 },
                 "required": []
