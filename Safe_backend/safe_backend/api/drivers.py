@@ -296,7 +296,7 @@ def get_statistics():
                 "dropoffLong": ride[4],
                 "pickupTime": ride[8],
                 "dropoffTime": ride[9],
-                "serviceName": ride[10],
+                "serviceName": ride[11],
             })
             num_passengers += 1
     context["numPassengers"] = num_passengers

@@ -21,7 +21,7 @@ const Services = () => {
     }, []);
 
     return (
-        <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '90vw'}}>
+        <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '90vw', height: '100vh'}} sx={{overflow: 'scroll'}}>
             <Box style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', width: '80vw', minHeight: '80vh'}}>
                 <Typography fontSize={'3em'}>
                     Services

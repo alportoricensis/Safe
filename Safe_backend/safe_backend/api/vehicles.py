@@ -30,8 +30,10 @@ class Vehicle:
         # For each visit in the returns routes response,
         for route in response.routes:
             if route.vehicle_label == self.vehicle_id:
+                self.itinerary = []
+                self.queue = []
                 for visit in route.visits:
-                    if visit.shipment_label not in self.queue:
+                    if visit.shipment_label not in self.queue and visit.is_pickup:
                         self.itinerary.append(global_vars.REQUESTS[visit.shipment_label])
                         self.queue.append(visit.shipment_label)
                         global_vars.REQUESTS[visit.shipment_label].driver = self.vehicle_id
@@ -39,15 +41,6 @@ class Vehicle:
                     elif not visit.is_pickup:
                         self.queue.append(visit.shipment_label)
                         global_vars.REQUESTS[visit.shipment_label].eta = visit.start_time
-                    for vehicle in global_vars.VEHICLES:
-                        if vehicle != self.vehicle_id:
-                            if visit.shipment_label in global_vars.VEHICLES[vehicle].queue:
-                                global_vars.VEHICLES[vehicle].queue = [
-                                    x for x in global_vars.VEHICLES[vehicle].queue if x != visit.shipment_label
-                                ]
-                                global_vars.VEHICLES[vehicle].itinerary = [
-                                    x for x in global_vars.VEHICLES[vehicle].itinerary if x.request_id != visit.shipment_label
-                                ]
 
 
     # REQUIRES
