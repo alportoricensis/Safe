@@ -69,15 +69,72 @@ struct RideView: View {
         if !isAtPickup {
             isAtPickup = true
             buttonText = "Picked-Up Passenger"
-            // Optionally, start monitoring location to detect arrival at pickup
         } else if !passengerPickedUp {
             passengerPickedUp = true
             buttonText = "Drop-Off Passenger"
             drawRoute(from: ride.pickupCoordinate, to: ride.dropOffCoordinate)
         } else {
             buttonText = "Trip Complete"
-            // Handle trip completion logic, e.g., update ride status
             completeTrip()
+        }
+    }
+    
+    private func sendLoadUnloadAPI(rideId: String, vehicleId: String, reqType: String) async -> Bool {
+        guard let url = URL(string: "http://18.191.14.26/api/v1/vehicles/load_unload/") else {
+            return false
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let requestBody: [String: Any] = [
+            "ride_id": rideId,
+            "vehicle_id": vehicleId,
+            "type": reqType // either "boarding" or "unloading"
+        ]
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: requestBody, options: [])
+            
+            let (_, response) = try await URLSession.shared.data(for: request)
+            
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                return true
+            } else {
+                print("Failed to load/unload ride. Status code: \((response as? HTTPURLResponse)?.statusCode ?? 0)")
+                return false
+            }
+        } catch {
+            print("Error sending load/unload request: \(error.localizedDescription)")
+            return false
+        }
+    }
+
+    
+    private func sendLoadRequest() {
+        Task {
+            let success = await sendLoadUnloadAPI(rideId: ride.id, vehicleId: store.vehicleId ?? "", reqType: "boarding")
+            DispatchQueue.main.async {
+                if success {
+                    print("Successfully onboarded passenger.")
+                } else {
+                    print("Failed to board passenger.")
+                }
+            }
+        }
+    }
+
+    private func sendUnloadRequest() {
+        Task {
+            let success = await sendLoadUnloadAPI(rideId: ride.id, vehicleId: store.vehicleId ?? "", reqType: "unloading")
+            DispatchQueue.main.async {
+                if success {
+                    print("Successfully offboarded passenger.")
+                } else {
+                    print("Failed to offboard passenger.")
+                }
+            }
         }
     }
     
@@ -100,16 +157,15 @@ struct RideView: View {
     
             do {
                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                    print("JSON is valid: \(json)")  // Check if JSON is properly parsed
+                    print("JSON is valid: \(json)")
                     
                     if let routes = json["routes"] as? [[String: Any]] {
-                        print("Routes found: \(routes)")  // Check if "routes" exists and is an array
+                        print("Routes found: \(routes)")
                         
                         if let overviewPolyline = routes.first?["overview_polyline"] as? [String: Any] {
-                            print("Overview polyline found: \(overviewPolyline)")  // Check if "overview_polyline" exists
-                            
+                            print("Overview polyline found: \(overviewPolyline)")
                             if let points = overviewPolyline["points"] as? String {
-                                print("Points found: \(points)")  // Check if "points" exists as a string
+                                print("Points found: \(points)")
                                 DispatchQueue.main.async {
                                     self.drawPath(from: points)
                                 }
@@ -143,17 +199,13 @@ struct RideView: View {
     }
     
     private func completeTrip() {
-        // Update the ride status to "Completed"
         store.updateRideStatus(rideId: ride.id, status: "Completed")
-        
-        // Optionally, make an API call to update the backend
-        Task {
+                sendUnloadRequest()
+                Task {
             let success = await completeRideAPI(rideId: ride.id)
             DispatchQueue.main.async {
                 if success {
-                    // Navigate back or show confirmation
-                } else {
-                    // Handle failure
+                    // Navigate back to list of currently assigned rides
                 }
             }
         }
