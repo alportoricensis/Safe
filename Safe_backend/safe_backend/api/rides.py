@@ -133,7 +133,8 @@ def delete_ride_request(ride_id):
 
     # Remove from the passenger requests
     del global_vars.REQUESTS[ride_id]
-
+    print(ride_id)
+    print(type(ride_id))
     conn = psycopg2.connect(database="safe_backend", user="safe", password="",
                         port="5432")
     cur = conn.cursor()
