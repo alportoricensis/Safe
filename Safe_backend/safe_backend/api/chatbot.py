@@ -96,10 +96,7 @@ def chat():
                         "success": True
                     }), 200
 
-                cancellation_response = cancel_ride_api(
-                    ride_id=ride_id,
-                    user_id=user_id
-                )
+                cancellation_response = cancel_ride_api(ride_id)
 
                 if cancellation_response["success"]:
                     return jsonify({
