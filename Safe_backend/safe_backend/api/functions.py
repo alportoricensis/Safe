@@ -4,7 +4,7 @@ import flask
 import datetime
 from safe_backend.api.utils import check_time, check_dropoff, assign_rides, book_passenger
 import safe_backend.api.config as global_vars
-from safe_backend.api.requests import RideRequests
+import safe_backend
 import psycopg2
 from geopy.geocoders import Nominatim
 
