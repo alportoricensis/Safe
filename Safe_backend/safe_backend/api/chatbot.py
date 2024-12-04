@@ -124,12 +124,21 @@ def chat():
                         }), 200
                         
                     # Format the booking information in a user-friendly way
-                    response_text = "Here are your recent rides:\n"
+                    response_text = "Here are your recent rides:\n\n"
                     for booking in bookings:
-                        pickup_time = booking["pickup_time"].split(".")[0] if booking["pickup_time"] else "N/A"
-                        status = booking["status"]
-                        service = booking["service_name"]
-                        response_text += f"• {service} ride on {pickup_time} - Status: {status}\n"
+                        pickup_time = booking["pickup_time"].split(".")[0] if booking["pickup_time"] != "None" else "Not started"
+                        dropoff_time = booking["dropoff_time"].split(".")[0] if booking["dropoff_time"] != "None" else "Not completed"
+                        request_time = booking["request_time"].split(".")[0]
+                        
+                        response_text += f" Ride #{booking['ride_id']}\n"
+                        response_text += f"Service: {booking['service_name']}\n"
+                        response_text += f"Status: {booking['status']}\n"
+                        response_text += f"Pickup: {booking.get('pickup_address', 'Address unavailable')}\n"
+                        response_text += f"Dropoff: {booking.get('dropoff_address', 'Address unavailable')}\n"
+                        response_text += f"Request Time: {request_time}\n"
+                        response_text += f"Pickup Time: {pickup_time}\n"
+                        response_text += f"Dropoff Time: {dropoff_time}\n"
+                        response_text += "─────────────────────\n"
                     
                     return jsonify({
                         "response": response_text,
