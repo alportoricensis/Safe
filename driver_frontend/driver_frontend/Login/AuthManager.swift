@@ -6,8 +6,6 @@
 //
 import Combine
 
-import Combine
-
 class AuthManager: ObservableObject {
     @Published var isAuthenticated = false
     @Published var vehicleID: String?

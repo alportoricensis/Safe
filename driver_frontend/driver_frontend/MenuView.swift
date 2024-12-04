@@ -70,8 +70,7 @@ struct MenuView: View {
                         .font(.headline)
                 }
                 NavigationLink(destination: RideHistoryView()
-                    .environmentObject(rideStore)
-                    .environmentObject(locationManager)
+                    .environmentObject(authManager)
                 ) {
                     Text("Ride History")
                         .foregroundColor(.white)
