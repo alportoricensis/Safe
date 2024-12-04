@@ -1,5 +1,11 @@
 import os
 import requests
+import flask
+import datetime
+from safe_backend.api.utils import check_time, check_dropoff, assign_rides, book_passenger
+import safe_backend.api.config as global_vars
+from safe_backend.api.requests import RideRequests
+import psycopg2
 from geopy.geocoders import Nominatim
 
 def geocode_address_api(address):
@@ -9,7 +15,7 @@ def geocode_address_api(address):
     return {"success": True, "latitude": getLoc.latitude, "longitude": getLoc.longitude}
 
 def book_ride_api(pickup, dropoff, service, user_id):
-    """Function to call the /api/v1/rides/ endpoint to book a ride."""
+    """Function to book a ride."""
     try:
         # Geocode pickup location
         pickup_result = geocode_address_api(pickup)
@@ -21,7 +27,7 @@ def book_ride_api(pickup, dropoff, service, user_id):
         if not dropoff_result["success"]:
             return dropoff_result
 
-        # Prepare the payload
+        # Create payload
         payload = {
             "uuid": user_id,
             "serviceName": service,
@@ -33,16 +39,19 @@ def book_ride_api(pickup, dropoff, service, user_id):
             "numPassengers": 1
         }
 
-        response = requests.post(
-            "http://18.191.14.26/api/v1/rides/",
-            json=payload  
-        )
+        # Use Flask's test client to make the internal request
+        with safe_backend.app.test_client() as client:
+            response = client.post(
+                "/api/v1/rides/",
+                json=payload
+            )
+            
+            if response.status_code == 200:
+                data = response.get_json()
+                return {"success": True, "ride_id": data.get("ride_id")}
+            else:
+                return {"success": False, "error": response.get_json().get("msg", "Unknown error")}
 
-        if response.status_code == 200:
-            data = response.json()
-            return {"success": True, "ride_id": data.get("ride_id")}
-        else:
-            return {"success": False, "error": response.json().get("msg", "Unknown error")}
     except Exception as e:
         return {"success": False, "error": str(e)}
 
@@ -69,3 +78,5 @@ def cancel_ride_api(ride_id, user_id):
 
     except Exception as e:
         return {"success": False, "error": str(e)}
+    
+    
