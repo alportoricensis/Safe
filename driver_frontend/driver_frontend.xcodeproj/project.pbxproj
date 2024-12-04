@@ -48,6 +48,7 @@
 			children = (
 				22A575F92CD596DB00D9A43E /* driver_frontend */,
 				22A575F82CD596DB00D9A43E /* Products */,
+				92A2A3FF2CFFD0F00085A221 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -81,6 +82,14 @@
 				22A576012CD596DC00D9A43E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		92A2A3FF2CFFD0F00085A221 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				90101DA92CFF92A5005B3177 /* Secrets.xcconfig */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -172,7 +181,8 @@
 /* Begin XCBuildConfiguration section */
 		22A576032CD596DC00D9A43E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 90101DA92CFF92A5005B3177 /* Secrets.xcconfig */;
+			baseConfigurationReferenceAnchor = 90101E052CFFB5BA005B3177 /* utils */;
+			baseConfigurationReferenceRelativePath = Secrets.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

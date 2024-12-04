@@ -14,10 +14,11 @@ struct RideView: View {
 
     var body: some View {
         ZStack {
-            // Google Map View
+            // Google Map View as Background
             MapViewWrapper(route: $route, initialCamera: driverLocation, zoom: 15.0)
                 .edgesIgnoringSafeArea(.all)
             
+            // Foreground UI
             VStack {
                 Spacer()
                 VStack(spacing: 10) {
@@ -54,15 +55,15 @@ struct RideView: View {
             drawRoute(from: driverLocation, to: ride.pickupCoordinate)
         }
     }
-    
+
     private var driverLocation: CLLocationCoordinate2D {
         if let location = locationManager.location?.coordinate {
             return location
         } else {
-            // Fallback to pickup location if driver location is unavailable
             return ride.pickupCoordinate
         }
     }
+
 
     private func handleButtonPress() {
         if !isAtPickup {
@@ -90,7 +91,7 @@ struct RideView: View {
         let destinationString = "\(destination.latitude),\(destination.longitude)"
         let urlString = "https://maps.googleapis.com/maps/api/directions/json?origin=\(originString)&destination=\(destinationString)&key=\(apiKey)"
         guard let url = URL(string: urlString) else { return }
-    
+        print(url)
         URLSession.shared.dataTask(with: url) { data, _, error in
             guard let data = data, error == nil else {
                 print("Failed to fetch route data: \(error?.localizedDescription ?? "Unknown error")")
@@ -98,20 +99,36 @@ struct RideView: View {
             }
     
             do {
-                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                   let routes = json["routes"] as? [[String: Any]],
-                   let overviewPolyline = routes.first?["overview_polyline"] as? [String: Any],
-                   let points = overviewPolyline["points"] as? String {
-                    DispatchQueue.main.async {
-                        self.drawPath(from: points)
-                        // Optionally, update the camera to show the entire route
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    print("JSON is valid: \(json)")  // Check if JSON is properly parsed
+                    
+                    if let routes = json["routes"] as? [[String: Any]] {
+                        print("Routes found: \(routes)")  // Check if "routes" exists and is an array
+                        
+                        if let overviewPolyline = routes.first?["overview_polyline"] as? [String: Any] {
+                            print("Overview polyline found: \(overviewPolyline)")  // Check if "overview_polyline" exists
+                            
+                            if let points = overviewPolyline["points"] as? String {
+                                print("Points found: \(points)")  // Check if "points" exists as a string
+                                DispatchQueue.main.async {
+                                    self.drawPath(from: points)
+                                }
+                            } else {
+                                print("No 'points' found in overview_polyline.")
+                            }
+                        } else {
+                            print("No 'overview_polyline' found in first route.")
+                        }
+                    } else {
+                        print("No 'routes' found in JSON.")
                     }
                 } else {
-                    print("No routes found in Directions API response.")
+                    print("Failed to parse JSON.")
                 }
             } catch {
                 print("Error decoding route data: \(error)")
             }
+
         }.resume()
     }
     
