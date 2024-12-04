@@ -93,13 +93,34 @@ cancel_ride_function = {
         }
     ]
 }
+
+get_bookings_function = {
+    "function_declarations": [
+        {
+            "name": "get_user_bookings",
+            "description": "Retrieve a user's past ride bookings",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "limit": {
+                        "type": "integer",
+                        "description": "Maximum number of bookings to return (default: 5)",
+                        "default": 5
+                    }
+                },
+                "required": []
+            }
+        }
+    ]
+}
+
 # System instruction for Gemini model
 SYSTEM_INSTRUCTION = (
     "You are a helpful customer support chatbot for SAFE, a ride-sharing service. "
     "You have access to the following FAQ information:\n\n{faq}\n\n"
     "Please use this information to help users with their questions about SAFE's services, policies, and features. "
-    "Be concise. Respond in no more than 3 sentences. If you don't know the answer, politely say so and suggest contacting SAFE Support directly."
-    "You also have the ability to use function calling to book rides. IF the user requests to book a ride, such as 'I want to book a ride to the Big House' or 'Book a ride to 1687 Broadway St' you have the ability to genreate params to feed into a rest api. If the user is vague in their drop-off location, dont invoke a function call, instead return 'please provide a address', if you have trouble converting a buidling name to an address, then just ask the user for an address."
+    "Be concise. Respond in no more than 3 sentences. If you don't know the answer, politely say so and suggest contacting SAFE Support directly. "
+    "You can help users book rides, cancel rides, and view their booking history. For booking history queries, use natural language to describe the pickup/dropoff locations and times."
 )
 def how_it_works():
     return (

@@ -23,7 +23,7 @@ model = genai.GenerativeModel(
         "top_p": 1,
         "max_output_tokens": 2048,
     },
-    tools=[book_ride_function, cancel_ride_function]
+    tools=[book_ride_function, cancel_ride_function, get_bookings_function]
 )
 
 
@@ -106,6 +106,39 @@ def chat():
                 else:
                     return jsonify({
                         "response": f"{CANCELLATION_FAILURE} {cancellation_response['error']}",
+                        "success": False
+                    }), 500
+
+            elif function_name == "get_user_bookings":
+                print("function_name:", function_name)
+                print("function_args:", function_args)
+                limit = function_args.get("limit", 5)
+                
+                bookings_response = get_user_bookings_api(user_id, limit)
+                
+                if bookings_response["success"]:
+                    bookings = bookings_response["bookings"]
+                    if not bookings:
+                        return jsonify({
+                            "response": "You don't have any past bookings.",
+                            "success": True
+                        }), 200
+                        
+                    # Format the booking information in a user-friendly way
+                    response_text = "Here are your recent rides:\n"
+                    for booking in bookings:
+                        pickup_time = booking["pickup_time"].split(".")[0] if booking["pickup_time"] else "N/A"
+                        status = booking["status"]
+                        service = booking["service_name"]
+                        response_text += f"• {service} ride on {pickup_time} - Status: {status}\n"
+                    
+                    return jsonify({
+                        "response": response_text,
+                        "success": True
+                    }), 200
+                else:
+                    return jsonify({
+                        "response": "Sorry, I couldn't retrieve your booking history. Please try again later.",
                         "success": False
                     }), 500
 
