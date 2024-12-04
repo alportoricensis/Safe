@@ -9,11 +9,12 @@ struct RideRequestView: View {
 
     @Environment(\.dismiss) private var dismiss
 
+    @Binding var selectedTab: MainTabView.Tab
+
     @State private var pickupLocationName: String = "Enter pickup point"
     @State private var isDestinationMapPresented = false
     @State private var destinationLocation: CLLocationCoordinate2D?
     @State private var destinationLocationName: String = "Where to?"
-    @State private var navigateToWaiting = false
     @State private var isScheduledRide = false
     @State private var scheduledDateTime = Date().addingTimeInterval(15 * 60)
 
@@ -141,7 +142,8 @@ struct RideRequestView: View {
                                 isScheduled: isScheduledRide,
                                 scheduledTime: isScheduledRide ? scheduledDateTime : nil
                             )
-                            navigateToWaiting = true
+                            dismiss()
+                            selectedTab = .bookings
                         }) {
                             Text(isScheduledRide ? "Schedule Ride" : "Confirm Destination")
                                 .font(.headline)
@@ -156,23 +158,20 @@ struct RideRequestView: View {
                 }
                 .padding()
             }
-            .navigationDestination(isPresented: $navigateToWaiting) {
-                WaitingView(viewModel: viewModel)
-            }
-            .alert("Error", isPresented: .init(
-                get: { if case .error(_) = viewModel.state { return true } else { return false } },
-                set: { _ in viewModel.state = .idle }
-            )) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                if case .error(let message) = viewModel.state {
-                    Text(message)
-                }
-            }
         }
         .onAppear {
             viewModel.authViewModel = authViewModel
             viewModel.fetchPickupLocations()
+        }
+        .alert("Error", isPresented: .init(
+            get: { if case .error(_) = viewModel.state { return true } else { return false } },
+            set: { _ in viewModel.state = .idle }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            if case .error(let message) = viewModel.state {
+                Text(message)
+            }
         }
     }
 

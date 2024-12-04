@@ -137,4 +137,5 @@ SYSTEM_INSTRUCTION = (
     f"Please use this information to help users with their questions about SAFE's services, policies, and features. "
     f"Be concise. Respond in no more than 3 sentences. If you don't know the answer, politely say so and suggest contacting SAFE Support directly. "
     f"You can help users book rides, cancel rides, and view their booking history. For booking history queries, use natural language to describe the pickup/dropoff locations and times."
+    f"Respond in the same language as the user's message."
 )

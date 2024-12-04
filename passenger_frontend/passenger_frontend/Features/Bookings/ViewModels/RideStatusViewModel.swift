@@ -6,14 +6,17 @@ class RideStatusViewModel: ObservableObject {
     @Published var rideStatus: RideStatus?
     @Published var error: Error?
     @Published var driverItinerary: [ItineraryStop] = []
+    @Published var driverHasArrived: Bool = false
     
     private var timer: Timer?
     private let rideId: Int
+    private let locationManager: LocationManager
     
     private let geocoder = CLGeocoder()
     
-    init(rideId: Int) {
+    init(rideId: Int, locationManager: LocationManager) {
         self.rideId = rideId
+        self.locationManager = locationManager
         startPolling()
     }
     
@@ -73,6 +76,9 @@ class RideStatusViewModel: ObservableObject {
                     if var status = response[String(self?.rideId ?? 0)] {
                         self?.rideStatus = status
                         print("✅ Updated ride status")
+                        
+                        // Check if driver has arrived
+                        self?.checkDriverArrival(driverLat: status.driverLat, driverLong: status.driverLong)
                         
                         // Fetch driver itinerary after getting ride status
                         self?.fetchDriverItinerary(status: status)
@@ -194,6 +200,32 @@ class RideStatusViewModel: ObservableObject {
                 }
             }
         }.resume()
+    }
+    
+    private func checkDriverArrival(driverLat: Double, driverLong: Double) {
+        guard let userLocation = locationManager.location else {
+            print("📍 User location not available")
+            return
+        }
+        
+        let driverLocation = CLLocation(latitude: driverLat, longitude: driverLong)
+        let userCLLocation = CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude)
+        
+        let distance = driverLocation.distance(from: userCLLocation)
+        let distanceInFeet = distance * 3.28084  // Convert meters to feet
+        
+        print("📍 User location: (\(userLocation.latitude), \(userLocation.longitude))")
+        print("🚗 Driver location: (\(driverLat), \(driverLong))")
+        print("📏 Distance: \(Int(distanceInFeet))ft (\(Int(distance))m)")
+        
+        DispatchQueue.main.async {
+            self.driverHasArrived = distanceInFeet <= 1000
+            if self.driverHasArrived {
+                print("✨ Driver has arrived! Distance: \(Int(distanceInFeet))ft")
+            } else {
+                print("🚶‍♂️ Driver is \(Int(distanceInFeet))ft away")
+            }
+        }
     }
 }
 

@@ -4,10 +4,11 @@ import MapKit
 struct RideStatusView: View {
     let rideId: Int
     @StateObject private var viewModel: RideStatusViewModel
+    @StateObject private var locationManager = LocationManager()
     
     init(rideId: Int) {
         self.rideId = rideId
-        self._viewModel = StateObject(wrappedValue: RideStatusViewModel(rideId: rideId))
+        self._viewModel = StateObject(wrappedValue: RideStatusViewModel(rideId: rideId, locationManager: LocationManager()))
     }
     
     var body: some View {
@@ -82,15 +83,17 @@ struct RideStatusView: View {
             
             // Bottom status bar
             VStack(alignment: .leading, spacing: 4) {
-                Text("YOUR DRIVER IS ON THEIR WAY")
+                Text(viewModel.driverHasArrived ? "YOUR DRIVER HAS ARRIVED!" : "YOUR DRIVER IS ON THEIR WAY")
                     .font(.subheadline)
                     .foregroundColor(.white.opacity(0.7))
                 
                 if let status = viewModel.rideStatus {
-                    Text("ETA: \(status.ETA, formatter: DateFormatter.timeOnly)")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.white)
+                    if !viewModel.driverHasArrived {
+                        Text("ETA: \(status.ETA, formatter: DateFormatter.timeOnly)")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                    }
                 }
                 
                 HStack {
@@ -101,10 +104,15 @@ struct RideStatusView: View {
                 .font(.subheadline)
             }
             .padding()
-            .background(Color(hex: "00274C"))
+            .background(Color(hex: viewModel.driverHasArrived ? "006400" : "00274C"))
             .shadow(radius: 2)
         }
         .background(Color(hex: "00274C"))
+        .alert("Driver Has Arrived!", isPresented: .constant(viewModel.driverHasArrived)) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("Your driver is waiting nearby.")
+        }
     }
     
     private func region(for status: RideStatus) -> MKCoordinateRegion {

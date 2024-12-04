@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RideServicesView: View {
     @StateObject private var viewModel = RideServicesViewModel()
+    @Binding var selectedTab: MainTabView.Tab
     
     var body: some View {
         NavigationStack {
@@ -18,7 +19,7 @@ struct RideServicesView: View {
                     }
                 } else {
                     List(viewModel.services) { service in
-                        NavigationLink(destination: RideRequestView(service: service)) {
+                        NavigationLink(destination: RideRequestView(service: service, selectedTab: $selectedTab)) {
                             ServiceCardView(service: service)
                                 .padding(.vertical, 8)
                         }
