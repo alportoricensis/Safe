@@ -10,7 +10,9 @@ enum MenuOption: String, CaseIterable {
 
 struct MenuView: View {
     @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject var rideStore: RideStore
     @State private var selectedOption: MenuOption?
+    @EnvironmentObject var locationManager: LocationManager
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -28,12 +30,14 @@ struct MenuView: View {
                         .foregroundColor(.gray)
                     
                     VStack(alignment: .leading) {
-                        Text(authManager.username ?? "Unknown User")
+                        Text((authManager.username ?? "").isEmpty ? "Driver" : authManager.username ?? "Driver")
                             .font(.headline)
                         
                         Divider()
                         
-                        NavigationLink(destination: MessagesView()) {
+                        NavigationLink(destination: MessagesView()
+                            .environmentObject(authManager)
+                        ) {
                             HStack {
                                 Text("Messages")
                                 Spacer()
@@ -47,15 +51,22 @@ struct MenuView: View {
             }
             .padding()
             .background(Color(red: 2/255, green: 28/255, blue: 52/255))
+            .cornerRadius(10)
             
             // Menu Options
             VStack(alignment: .leading, spacing: 15) {
-                NavigationLink(destination: AssignedRidesView()) {
+                NavigationLink(destination: AssignedRidesView()
+                    .environmentObject(rideStore)
+                    .environmentObject(authManager)
+                    .environmentObject(locationManager)
+                ) {
                     Text("Assigned Rides")
                         .foregroundColor(.white)
                         .font(.headline)
                 }
-                NavigationLink(destination: RideHistoryView()) {
+                NavigationLink(destination: RideHistoryView()
+                    .environmentObject(rideStore)
+                ) {
                     Text("Ride History")
                         .foregroundColor(.white)
                         .font(.headline)
@@ -97,4 +108,3 @@ struct MenuView_Previews: PreviewProvider {
             .environmentObject(RideStore.shared)
     }
 }
-    ``  

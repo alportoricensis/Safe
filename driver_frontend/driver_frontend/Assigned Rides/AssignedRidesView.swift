@@ -1,132 +1,72 @@
 import SwiftUI
 
 struct AssignedRidesView: View {
-    @EnvironmentObject var authManager: AuthManager
-    @EnvironmentObject var locationManager: LocationManager
     @EnvironmentObject var store: RideStore
-    @State private var selectedTab: Tab = .current
-    @State private var showAlert = false
-    @State private var alertMessage = ""
+    @EnvironmentObject var locationManager: LocationManager
+    @EnvironmentObject var authManager: AuthManager
     
-    enum Tab {
-        case current, completed
+    @State private var selectedTab: RideTab = .current
+    
+    enum RideTab: String, CaseIterable {
+        case current = "Current Rides"
+        case completed = "Completed Rides"
     }
-
+    
     var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: 0) {
-                VStack {
-                    Button(action: logoutVehicle) {
-                        Text("Logout")
-                            .font(.headline)
-                            .padding()
-                            .background(Color.yellow)
+        VStack {
+            // Header Section
+            VStack(alignment: .leading, spacing: 20) {
+                HStack {
+                    Image(systemName: "car.fill")
+                        .resizable()
+                        .frame(width: 50, height: 50)
+                        .foregroundColor(.yellow)
+                    
+                    VStack(alignment: .leading) {
+                        Text("Assigned Rides")
+                            .font(.largeTitle)
+                            .bold()
                             .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
-                    .padding(.top, 20)
-                    .alert(isPresented: $showAlert) {
-                        Alert(title: Text("Logout Status"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
-                    }
-                    
-                    Text("Assigned Rides")
-                        .font(.largeTitle)
-                        .foregroundColor(.white)
-                        .padding(.top, 30)
-                    
-                    Spacer()
-                    
-                    HStack(spacing: 0) {
-                        TabButton(text: "Current", isSelected: selectedTab == .current) {
-                            selectedTab = .current
-                        }
-                        TabButton(text: "Completed", isSelected: selectedTab == .completed) {
-                            selectedTab = .completed
-                        }
-                    }
-                    .background(Color(red: 2/255, green: 28/255, blue: 52/255))
-                }
-                .frame(width: geometry.size.width, height: geometry.size.height * 0.25)
-                .background(Color(red: 2/255, green: 28/255, blue: 52/255))
-                
-                VStack {
-                    if selectedTab == .current {
-                        CurrRidesView()
-                    } else {
-                        CompletedRidesView()
-                    }
-                    Spacer()
-                }
-                .frame(width: geometry.size.width, height: geometry.size.height)
-                .background(Color(red: 0/255, green: 39/255, blue: 76/255))
-            }
-            .edgesIgnoringSafeArea(.all)
-            .withSafeTopBar()
-        }
-        .navigationBarTitle("Assigned Rides", displayMode: .inline) // Add navigation title
-    }
+                        
+                        
 
-    func logoutVehicle() {
-        if let vehicleId = store.vehicleId {
-            logoutAPI(vehicleId: vehicleId) { success, message in
-                DispatchQueue.main.async {
-                    alertMessage = message
-                    showAlert = true
-
-                    if success {
-                        authManager.isAuthenticated = false
-                        store.vehicleId = nil
                     }
                 }
             }
-        }
-    }
-
-    func logoutAPI(vehicleId: String, completion: @escaping (Bool, String) -> Void) {
-        guard let url = URL(string: "http://18.191.14.26/api/v1/vehicles/logout/\(vehicleId)/") else {
-            completion(false, "Invalid URL")
-            return
-        }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-
-        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
-
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(false, "Error: \(error.localizedDescription)")
-                return
+            .padding()
+            .background(Color(red: 2/255, green: 28/255, blue: 52/255))
+            .cornerRadius(10)
+            
+            // Segmented Control for Tabs
+            Picker("Rides", selection: $selectedTab) {
+                ForEach(RideTab.allCases, id: \.self) { tab in
+                    Text(tab.rawValue).tag(tab)
+                }
             }
-
-            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
-                completion(true, "Successfully logged out.")
+            .pickerStyle(SegmentedPickerStyle())
+            .padding()
+            .background(Color(red: 2/255, green: 28/255, blue: 52/255))
+            .cornerRadius(10)
+            .padding(.horizontal)
+            
+            // Rides List
+            if selectedTab == .current {
+                CurrRidesView()
+                    .environmentObject(store)
+                    .environmentObject(locationManager)
             } else {
-                completion(false, "Failed to log out. Vehicle may not be active.")
+                CompletedRidesView()
+                    .environmentObject(store)
             }
+            
+            Spacer()
         }
-
-        task.resume()
-    }
-}
-
-struct TabButton: View {
-    var text: String
-    var isSelected: Bool
-    var action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            VStack {
-                Text(text)
-                    .foregroundColor(.white)
-                    .font(.headline)
-                    .padding(.vertical, 3)
-                Rectangle()
-                    .fill(isSelected ? Color.yellow : Color.clear)
-                    .frame(height: 2)
+        .background(Color(red: 0/255, green: 39/255, blue: 76/255).edgesIgnoringSafeArea(.all))
+        .onAppear {
+            Task {
+                await store.getRides()
+                print("Rides loaded: \(store.rides)")
             }
-            .frame(maxWidth: .infinity)
         }
     }
 }
@@ -134,8 +74,8 @@ struct TabButton: View {
 struct AssignedRidesView_Previews: PreviewProvider {
     static var previews: some View {
         AssignedRidesView()
-            .environmentObject(AuthManager())
-            .environmentObject(LocationManager())
             .environmentObject(RideStore.shared)
+            .environmentObject(LocationManager())
+            .environmentObject(AuthManager())
     }
 }

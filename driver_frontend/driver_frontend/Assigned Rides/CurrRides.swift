@@ -5,27 +5,30 @@ struct CurrRidesView: View {
     @EnvironmentObject var locationManager: LocationManager
     
     var body: some View {
-        VStack {
-            if let ride = store.rides.first(where: { $0.status != "Completed" }) {
-                NavigationLink(destination: RideView(ride: ride).environmentObject(locationManager)) {
-                    RideCardView(ride: ride)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 10) {
+                let currentRides = store.rides.filter { $0.status != "Completed" }
+                
+                if currentRides.isEmpty {
+                    Text("No Current Rides Available")
+                        .foregroundColor(.gray)
+                        .italic()
                         .padding()
+                } else {
+                    ForEach(currentRides) { ride in
+                        NavigationLink(destination: RideView(ride: ride)
+                                        .environmentObject(store)
+                                        .environmentObject(locationManager)) {
+                            RideCardView(ride: ride)
+                                .padding(.horizontal)
+                        }
+                        .buttonStyle(PlainButtonStyle()) // Removes default button styling
+                    }
                 }
-                .buttonStyle(PlainButtonStyle()) // Removes default button styling
-            } else {
-                Text("No Current Rides Available")
-                    .foregroundColor(.white)
-                    .font(.headline)
-                    .padding()
             }
+            .padding(.top)
         }
         .background(Color(red: 0/255, green: 39/255, blue: 76/255))
-        .edgesIgnoringSafeArea(.all)
-        .onAppear {
-            Task {
-                await store.getRides()
-            }
-        }
     }
 }
 
