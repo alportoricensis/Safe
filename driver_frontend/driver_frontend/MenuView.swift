@@ -11,9 +11,13 @@ enum MenuOption: String, CaseIterable {
 struct MenuView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var rideStore: RideStore
-    @State private var selectedOption: MenuOption?
     @EnvironmentObject var locationManager: LocationManager
-
+    @State private var selectedOption: MenuOption?
+    
+    // State variables for alert handling
+    @State private var showAlert: Bool = false
+    @State private var alertMessage: String = ""
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             // Header Section
@@ -37,6 +41,7 @@ struct MenuView: View {
                         
                         NavigationLink(destination: MessagesView()
                             .environmentObject(authManager)
+                            .environmentObject(locationManager)
                         ) {
                             HStack {
                                 Text("Messages")
@@ -65,18 +70,22 @@ struct MenuView: View {
                         .font(.headline)
                 }
                 NavigationLink(destination: RideHistoryView()
-                    .environmentObject(rideStore)
+                    .environmentObject(authManager)
                 ) {
                     Text("Ride History")
                         .foregroundColor(.white)
                         .font(.headline)
                 }
-                NavigationLink(destination: SettingsView()) {
+                NavigationLink(destination: SettingsView()
+                    .environmentObject(locationManager)
+                ) {
                     Text("Settings")
                         .foregroundColor(.white)
                         .font(.headline)
                 }
-                NavigationLink(destination: SupportView()) {
+                NavigationLink(destination: SupportView()
+                    .environmentObject(locationManager)
+                ) {
                     Text("Support")
                         .foregroundColor(.white)
                         .font(.headline)
@@ -87,7 +96,28 @@ struct MenuView: View {
             
             Spacer()
             
-            // Footer Section
+            // Footer Section with Logout Button
+            VStack {
+                Divider()
+                Button(action: logoutVehicle) {
+                    HStack {
+                        Image(systemName: "arrow.backward.circle.fill")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundColor(.red)
+                        Text("Logout")
+                            .foregroundColor(.white)
+                            .font(.headline)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color(red: 2/255, green: 28/255, blue: 52/255))
+                    .cornerRadius(10)
+                }
+            }
+            .padding(.horizontal)
+            
+            // Footer Text
             HStack {
                 Text("Legal")
                 Spacer()
@@ -98,6 +128,60 @@ struct MenuView: View {
             .foregroundColor(.white)
         }
         .background(Color(red: 0/255, green: 39/255, blue: 76/255))
+        // Alert Modifier
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Logout"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+        }
+    }
+    
+    // MARK: - Logout Functions
+    
+    func logoutVehicle() {
+        guard let vehicleId = rideStore.vehicleId else {
+            self.alertMessage = "Vehicle ID not found."
+            self.showAlert = true
+            return
+        }
+        
+        logoutAPI(vehicleId: vehicleId) { success, message in
+            DispatchQueue.main.async {
+                self.alertMessage = message
+                self.showAlert = true
+                
+                if success {
+                    authManager.isAuthenticated = false
+                    rideStore.vehicleId = nil
+                    // Optionally, clear other sensitive data or perform additional cleanup here
+                }
+            }
+        }
+    }
+    
+    func logoutAPI(vehicleId: String, completion: @escaping (Bool, String) -> Void) {
+        guard let url = URL(string: "http://18.191.14.26/api/v1/vehicles/logout/\(vehicleId)/") else {
+            completion(false, "Invalid URL")
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(false, "Error: \(error.localizedDescription)")
+                return
+            }
+            
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                completion(true, "Successfully logged out.")
+            } else {
+                completion(false, "Failed to log out. Vehicle may not be active.")
+            }
+        }
+        
+        task.resume()
     }
 }
 
@@ -106,5 +190,6 @@ struct MenuView_Previews: PreviewProvider {
         MenuView()
             .environmentObject(AuthManager())
             .environmentObject(RideStore.shared)
+            .environmentObject(LocationManager())
     }
 }
