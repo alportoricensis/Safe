@@ -56,22 +56,19 @@ def book_ride_api(pickup, dropoff, service, user_id):
     except Exception as e:
         return {"success": False, "error": str(e)}
 
-def cancel_ride_api(ride_id, user_id):
+def cancel_ride_api(ride_id):
     """Function to cancel a ride."""
     try:
         # Use Flask's test client to make the internal request
         with safe_backend.app.test_client() as client:
             response = client.delete(
-                f"/api/v1/rides/passengers/{ride_id}/",
-                json={'user_id': user_id}
+                f"/api/v1/rides/passengers/{ride_id}/"
             )
-
+            
             if response.status_code == 200:
-                return {"success": True}
+                return {"success": True, "message": "Ride successfully cancelled"}
             else:
-                error_msg = response.get_json().get("msg", "Unknown error")
-                return {"success": False, "error": error_msg}
+                return {"success": False, "error": response.get_json().get("msg", "Unknown error")}
 
     except Exception as e:
         return {"success": False, "error": str(e)}
-    
