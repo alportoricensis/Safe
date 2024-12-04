@@ -32,7 +32,6 @@ class RideStore: ObservableObject {
                     ]
                     self.isRetrieving = false
                 }
-        return
         
         guard let apiUrl = URL(string: "\(serverUrl)\(vehicleId)/") else {
             print("getRides: Bad URL")

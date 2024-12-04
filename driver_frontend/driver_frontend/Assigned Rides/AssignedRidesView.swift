@@ -65,7 +65,7 @@ struct AssignedRidesView: View {
         .onAppear {
             Task {
                 await store.getRides()
-                print("Rides loaded: \(store.rides)")
+//                print("Rides loaded: \(store.rides)")
             }
         }
     }

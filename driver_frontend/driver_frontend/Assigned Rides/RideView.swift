@@ -148,7 +148,7 @@ struct RideView: View {
         let destinationString = "\(destination.latitude),\(destination.longitude)"
         let urlString = "https://maps.googleapis.com/maps/api/directions/json?origin=\(originString)&destination=\(destinationString)&key=\(apiKey)"
         guard let url = URL(string: urlString) else { return }
-        print(url)
+//        print(url)
         URLSession.shared.dataTask(with: url) { data, _, error in
             guard let data = data, error == nil else {
                 print("Failed to fetch route data: \(error?.localizedDescription ?? "Unknown error")")
@@ -157,15 +157,9 @@ struct RideView: View {
     
             do {
                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                    print("JSON is valid: \(json)")
-                    
                     if let routes = json["routes"] as? [[String: Any]] {
-                        print("Routes found: \(routes)")
-                        
                         if let overviewPolyline = routes.first?["overview_polyline"] as? [String: Any] {
-                            print("Overview polyline found: \(overviewPolyline)")
                             if let points = overviewPolyline["points"] as? String {
-                                print("Points found: \(points)")
                                 DispatchQueue.main.async {
                                     self.drawPath(from: points)
                                 }
@@ -200,50 +194,8 @@ struct RideView: View {
     
     private func completeTrip() {
         store.updateRideStatus(rideId: ride.id, status: "Completed")
-                sendUnloadRequest()
-                Task {
-            let success = await completeRideAPI(rideId: ride.id)
-            DispatchQueue.main.async {
-                if success {
-                    // Navigate back to list of currently assigned rides
-                }
-            }
-        }
+        sendUnloadRequest()
+        
     }
     
-    private func completeRideAPI(rideId: String) async -> Bool {
-        guard let vehicleId = store.vehicleId else {
-            return false
-        }
-        
-        guard let url = URL(string: "http://18.191.14.26/api/v1/vehicles/complete_ride/") else { // Update with correct endpoint
-            return false
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        let requestBody: [String: Any] = [
-            "ride_id": rideId,
-            "vehicle_id": vehicleId
-        ]
-        
-        do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: requestBody, options: [])
-            
-            let (data, response) = try await URLSession.shared.data(for: request)
-            
-            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
-                // Optionally, parse response if needed
-                return true
-            } else {
-                print("Failed to mark ride as completed. Status code: \((response as? HTTPURLResponse)?.statusCode ?? 0)")
-                return false
-            }
-        } catch {
-            print("Error completing ride: \(error.localizedDescription)")
-            return false
-        }
-    }
 }
