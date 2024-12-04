@@ -29,50 +29,6 @@ class RideStore: ObservableObject {
         }
         DispatchQueue.main.async {
                     self.rides = [
-                        Ride(
-                            pickupLoc: "Duderstadt Center",
-                            dropLoc: "South Quad",
-                            passenger: "John Doe",
-                            status: "Pending",
-                            id: "ride1",
-                            pickupLatitude: 42.2936,
-                            pickupLongitude: -83.7166,
-                            dropOffLatitude: 42.2695,
-                            dropOffLongitude: -83.7423
-                        ),
-                        Ride(
-                            pickupLoc: "Michigan Union",
-                            dropLoc: "North Campus",
-                            passenger: "Jane Smith",
-                            status: "In-Progress",
-                            id: "ride2",
-                            pickupLatitude: 42.2765,
-                            pickupLongitude: -83.7412,
-                            dropOffLatitude: 42.2918,
-                            dropOffLongitude: -83.7175
-                        ),
-                        Ride(
-                            pickupLoc: "Hill Auditorium",
-                            dropLoc: "Ross School of Business",
-                            passenger: "Alice Johnson",
-                            status: "Completed",
-                            id: "ride3",
-                            pickupLatitude: 42.278043,
-                            pickupLongitude: -83.738224,
-                            dropOffLatitude: 42.274597,
-                            dropOffLongitude: -83.735439
-                        ),
-                        Ride(
-                            pickupLoc: "Diag",
-                            dropLoc: "Crisler Center",
-                            passenger: "Bob Brown",
-                            status: "Pending",
-                            id: "ride4",
-                            pickupLatitude: 42.2755,
-                            pickupLongitude: -83.7382,
-                            dropOffLatitude: 42.2650,
-                            dropOffLongitude: -83.7486
-                        )
                     ]
                     self.isRetrieving = false
                 }
