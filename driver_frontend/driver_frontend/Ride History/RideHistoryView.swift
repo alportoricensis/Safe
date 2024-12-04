@@ -25,7 +25,7 @@ struct RideHistoryView: View {
                             HistoryTabButton(text: "Today", isSelected: selectedTab == .today) {
                                 selectedTab = .today
                             }
-                            HistoryTabButton(text: "Previous Shifts", isSelected: selectedTab == .previous) {
+                            HistoryTabButton(text: "Previous Week", isSelected: selectedTab == .previous) {
                                 selectedTab = .previous
                             }
                         }
@@ -39,9 +39,7 @@ struct RideHistoryView: View {
                         if selectedTab == .today {
                             TodaysRides().environmentObject(authManager)
                         } else {
-                            Text("Completed Rides")
-                                .font(.title)
-                                .padding()
+                            PreviousWeekRides().environmentObject(authManager)
                         }
                         
                         Spacer()
