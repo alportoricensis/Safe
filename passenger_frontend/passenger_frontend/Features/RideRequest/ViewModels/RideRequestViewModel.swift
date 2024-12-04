@@ -29,6 +29,8 @@ class RideRequestViewModel: ObservableObject {
     @Published var authViewModel: AuthViewModel?
     @Published var currentRideId: Int?
     @Published var validPickupLocations: [PickupLocation] = []
+    @Published var isScheduledRide = false
+    @Published var scheduledDateTime: Date = Date().addingTimeInterval(15 * 60) // Default to 15 mins from now
     
     struct RideRequestResponse: Codable {
         let msg: String
@@ -73,6 +75,7 @@ class RideRequestViewModel: ObservableObject {
         let dropoffLong: Double
         let rideOrigin: String
         let numPassengers: Int
+        let requestedTime: Int?  // Optional Unix timestamp for scheduled rides
     }
     
     init() {
@@ -121,13 +124,23 @@ class RideRequestViewModel: ObservableObject {
         service: Service,
         pickupLocation: String,
         dropoffLocationName: String,
-        dropoffLocation: CLLocationCoordinate2D
+        dropoffLocation: CLLocationCoordinate2D,
+        isScheduled: Bool = false,
+        scheduledTime: Date? = nil
     ) {
         state = .loading
         
         guard let userId = authViewModel?.user?.id else {
             state = .error("User not authenticated")
             return
+        }
+        
+        // Calculate Unix timestamp if scheduled
+        let requestedTime: Int?
+        if isScheduled, let scheduledTime = scheduledTime {
+            requestedTime = Int(scheduledTime.timeIntervalSince1970)
+        } else {
+            requestedTime = nil
         }
         
         let requestBody = RideRequestBody(
@@ -137,8 +150,9 @@ class RideRequestViewModel: ObservableObject {
             dropoffLocation: dropoffLocationName,
             dropoffLat: dropoffLocation.latitude,
             dropoffLong: dropoffLocation.longitude,
-            rideOrigin: "passenger",
-            numPassengers: 1
+            rideOrigin: isScheduled ? "future" : "passenger",
+            numPassengers: 1,
+            requestedTime: requestedTime
         )
         
         guard let url = URL(string: "http://18.191.14.26/api/v1/rides/") else {

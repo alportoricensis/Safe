@@ -14,6 +14,8 @@ struct RideRequestView: View {
     @State private var destinationLocation: CLLocationCoordinate2D?
     @State private var destinationLocationName: String = "Where to?"
     @State private var navigateToWaiting = false
+    @State private var isScheduledRide = false
+    @State private var scheduledDateTime = Date().addingTimeInterval(15 * 60)
 
     var body: some View {
         NavigationStack {
@@ -110,6 +112,23 @@ struct RideRequestView: View {
                         .cornerRadius(8)
                     }
 
+                    Toggle("Schedule for later", isOn: $isScheduledRide)
+                        .foregroundColor(.white)
+                        .padding(.horizontal)
+                    
+                    if isScheduledRide {
+                        DatePicker(
+                            "Pick-up time",
+                            selection: $scheduledDateTime,
+                            in: Date()...,
+                            displayedComponents: [.date, .hourAndMinute]
+                        )
+                        .datePickerStyle(.compact)
+                        .foregroundColor(.white)
+                        .padding(.horizontal)
+                        .tint(.yellow)
+                    }
+
                     Spacer()
 
                     if pickupLocationName != "Enter pickup point" && destinationLocation != nil {
@@ -118,11 +137,13 @@ struct RideRequestView: View {
                                 service: service,
                                 pickupLocation: pickupLocationName,
                                 dropoffLocationName: destinationLocationName,
-                                dropoffLocation: destinationLocation!
+                                dropoffLocation: destinationLocation!,
+                                isScheduled: isScheduledRide,
+                                scheduledTime: isScheduledRide ? scheduledDateTime : nil
                             )
                             navigateToWaiting = true
                         }) {
-                            Text("Confirm Destination")
+                            Text(isScheduledRide ? "Schedule Ride" : "Confirm Destination")
                                 .font(.headline)
                                 .foregroundColor(.yellow)
                                 .frame(maxWidth: .infinity)
