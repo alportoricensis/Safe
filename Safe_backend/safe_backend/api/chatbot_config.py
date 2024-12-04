@@ -113,84 +113,28 @@ get_bookings_function = {
     ]
 }
 
+
+def how_it_works():
+    # Get all the Q&As for each service from the database
+    conn = psycopg2.connect(database="safe_backend", user="safe", password="",
+                        port="5432")
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT * FROM faqs"
+    )
+    faqs = cur.fetchall()
+    faq_str = "SAFE Ride-Sharing App: Freqquently Asked Questions\n\n"
+    for faq in faqs:
+        faq_str = faq_str + "Q: " + faq[1] + "\n" + "A: " + faq[2] + "\n\n"
+    cur.close()
+    conn.close()
+    return faq_str
+
 # System instruction for Gemini model
 SYSTEM_INSTRUCTION = (
-    "You are a helpful customer support chatbot for SAFE, a ride-sharing service. "
-    "You have access to the following FAQ information:\n\n{faq}\n\n"
-    "Please use this information to help users with their questions about SAFE's services, policies, and features. "
-    "Be concise. Respond in no more than 3 sentences. If you don't know the answer, politely say so and suggest contacting SAFE Support directly. "
-    "You can help users book rides, cancel rides, and view their booking history. For booking history queries, use natural language to describe the pickup/dropoff locations and times."
+    f"You are a helpful customer support chatbot for SAFE, a ride-sharing service. "
+    f"You have access to the following FAQ information:\n\n{how_it_works()}\n\n"
+    f"Please use this information to help users with their questions about SAFE's services, policies, and features. "
+    f"Be concise. Respond in no more than 3 sentences. If you don't know the answer, politely say so and suggest contacting SAFE Support directly. "
+    f"You can help users book rides, cancel rides, and view their booking history. For booking history queries, use natural language to describe the pickup/dropoff locations and times."
 )
-def how_it_works():
-    return (
-        "SAFE Ride-Sharing App: How It Works\n\n"
-        "1. Getting Started\n"
-        "Q: How do I sign up for SAFE?\n"
-        "A: You have two options:\n"
-        "   • Sign in with Google (recommended)\n"
-        "   • Continue as a guest\n\n"
-        
-        "2. Booking a Ride\n"
-        "Q: How do I request a ride?\n"
-        "A: Follow these steps:\n"
-        "   1. Select a service from the available options\n"
-        "   2. Choose your pickup location from:\n"
-        "      - Bob and Betty Biester\n"
-        "      - LSA\n"
-        "      - Duderstadt Center\n"
-        "   3. Set your destination using the interactive map\n"
-        "   4. Confirm your ride\n\n"
-        
-        "Q: How do I track my ride?\n"
-        "A: Once your ride is confirmed, you'll see in Bookings:\n"
-        "   • Driver's real-time location\n"
-        "   • Estimated Time of Arrival (ETA)\n"
-        "   • Driver's name\n"
-        "   • Pickup and dropoff locations\n"
-        "   The app automatically updates every 10 seconds\n\n"
-        
-        "3. Managing Bookings\n"
-        "Q: How can I view my ride history?\n"
-        "A: Access the Bookings tab to see:\n"
-        "   • All past and current rides\n"
-        "   • Ride status updates\n"
-        "   • Pickup and dropoff locations\n"
-        "   • Request times\n"
-        "   • Driver information\n\n"
-        
-        "4. Account Management\n"
-        "Q: What account features are available?\n"
-        "A: In the Account tab, you can:\n"
-        "   • View your profile information\n"
-        "   • Add favorite locations (Home/Work)\n"
-        "   • Access support via chatbot\n"
-        "   • Sign out\n\n"
-        
-        "5. Support\n"
-        "Q: How do I get help?\n"
-        "A: SAFE provides an AI-powered chatbot that can help with:\n"
-        "   • Booking rides\n"
-        "   • Safety features\n"
-        "   • Account management\n"
-        "   • General inquiries\n\n"
-        
-        "6. Safety Features\n"
-        "Q: What safety features does SAFE provide?\n"
-        "A: SAFE includes:\n"
-        "   • Real-time ride tracking\n"
-        "   • Verified pickup locations\n"
-        "   • Secure Google authentication\n"
-        "   • Location services integration\n"
-        "   • Regular status updates during rides\n\n"
-        
-        "7. Service Availability\n"
-        "Q: What information is shown for available services?\n"
-        "A: Each service displays:\n"
-        "   • Provider name\n"
-        "   • Service name\n"
-        "   • Cost (including free services)\n"
-        "   • Operating hours\n"
-        "   • Availability status\n\n"
-        
-        "For additional support or questions, use the in-app chatbot accessible through the Account tab."
-    )
