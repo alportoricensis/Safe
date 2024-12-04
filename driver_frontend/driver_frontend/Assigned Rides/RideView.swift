@@ -5,12 +5,15 @@ import CoreLocation
 struct RideView: View {
     @EnvironmentObject var locationManager: LocationManager
     @EnvironmentObject var store: RideStore
+    @EnvironmentObject var authManager: AuthManager
+    @Environment(\.presentationMode) var presentationMode
     let ride: Ride
 
-    @State private var buttonText: String = "Start"
+    @State private var buttonText: String = "Go to pickup"
     @State private var route: GMSPolyline?
     @State private var isAtPickup = false
     @State private var passengerPickedUp = false
+    @State private var started = false
 
     var body: some View {
         ZStack {
@@ -22,15 +25,6 @@ struct RideView: View {
             VStack {
                 Spacer()
                 VStack(spacing: 10) {
-                    if isAtPickup {
-                        Text(passengerPickedUp ? "Successfully dropped off passenger" : "You have arrived at the pickup location")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(Color.black.opacity(0.6))
-                            .cornerRadius(10)
-                    }
-                    
                     Button(action: handleButtonPress) {
                         Text(buttonText)
                             .font(.headline)
@@ -66,17 +60,22 @@ struct RideView: View {
 
 
     private func handleButtonPress() {
-        if !isAtPickup {
+        if !started{
+            started=true
+            buttonText="Picked-up Passenger"
+        }
+        else if !isAtPickup {
             isAtPickup = true
-            buttonText = "Picked-Up Passenger"
-            sendLoadRequest()
-        } else if !passengerPickedUp {
-            passengerPickedUp = true
             buttonText = "Drop-Off Passenger"
             drawRoute(from: ride.pickupCoordinate, to: ride.dropOffCoordinate)
+            sendLoadRequest()
+        }
+        else if !passengerPickedUp {
+            passengerPickedUp = true
+            buttonText = "Trip Completed"
             sendUnloadRequest()
-        } else {
-            buttonText = "Trip Complete"
+        }
+        else{
             completeTrip()
         }
     }
@@ -197,6 +196,7 @@ struct RideView: View {
     private func completeTrip() {
         store.updateRideStatus(rideId: ride.id, status: "Completed")
         print("completed the ride")
+        presentationMode.wrappedValue.dismiss()
     }
     
 }

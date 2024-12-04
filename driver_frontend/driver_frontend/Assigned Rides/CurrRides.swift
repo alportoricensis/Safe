@@ -3,7 +3,7 @@ import SwiftUI
 struct CurrRidesView: View {
     @EnvironmentObject var store: RideStore
     @EnvironmentObject var locationManager: LocationManager
-    
+    @EnvironmentObject var authManager: AuthManager
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
@@ -18,9 +18,13 @@ struct CurrRidesView: View {
                     ForEach(currentRides) { ride in
                         NavigationLink(destination: RideView(ride: ride)
                                         .environmentObject(store)
-                                        .environmentObject(locationManager)) {
+                                        .environmentObject(locationManager)
+                                        .environmentObject(authManager)) {
                             RideCardView(ride: ride)
                                 .padding(.horizontal)
+                                .environmentObject(store)
+                                .environmentObject(locationManager)
+                                .environmentObject(authManager)
                         }
                         .buttonStyle(PlainButtonStyle()) // Removes default button styling
                     }
