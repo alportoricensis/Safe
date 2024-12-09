@@ -8,9 +8,10 @@ import safe_backend.api.config as global_vars
 from safe_backend.api.requests import RideRequests
 
 
-# REQUIRES  -
-# EFFECTS   -
-# MODIFIES  -
+# REQUIRES  - location_name is the human-readable address
+#           - coordinates is a tuple specifying (latitude, longitude)
+# EFFECTS   - Returns true if this is a valid pickup location
+# MODIFIES  - Nothing
 def check_pickup(location_name = "", coordinates = (0.0, 0.0)) -> bool:
     """Check that name or coordinates is a valid pickup location."""
     # Connect to database
@@ -35,9 +36,10 @@ def check_pickup(location_name = "", coordinates = (0.0, 0.0)) -> bool:
     return False
 
 
-# REQUIRES  -
-# EFFECTS   -
-# MODIFIES  -
+# REQUIRES  - location_name is the human-readable address
+#           - coordinates is a tuple specifying (latitude, longitude)
+# EFFECTS   - Returns true if this is a valid dropoff location
+# MODIFIES  - Nothing
 def check_dropoff(location_name = "", coordinates = (0.0, 0.0)) -> bool:
     """Check that name or coordinates is a valid pickup location."""
     # Connect to database
@@ -62,9 +64,9 @@ def check_dropoff(location_name = "", coordinates = (0.0, 0.0)) -> bool:
     return False
 
 
-# REQUIRES  -
-# EFFECTS   -
-# MODIFIES  -
+# REQUIRES  - start_time, end_time and current_time are valid datetime.datetimes
+# EFFECTS   - Returns true current_time is within the service time range
+# MODIFIES  - Nothing
 def check_time(start_time, end_time, current_time) -> bool:
     """Verify currentTime is within start and end; return false otherwise."""
     if start_time < end_time:
@@ -72,17 +74,18 @@ def check_time(start_time, end_time, current_time) -> bool:
     return start_time <= current_time or current_time <= end_time
 
 
-# REQUIRES  -
-# EFFECTS   -
-# MODIFIES  -
+# REQUIRES  - location, center are a tuple of (lat, long)
+# EFFECTS   - Calculates distance between two coordinates
+# MODIFIES  - Nothing
 def calc_distance(location, center) -> float:
     """Calculate distance between location and center."""
     return dist.distance(location, center).miles
 
 
-# REQUIRES  -
-# EFFECTS   -
-# MODIFIES  -
+# REQUIRES  - Nothing
+# EFFECTS   - Sets up and queries a Google Route Optimization for
+#             assigning passengers to vehicles
+# MODIFIES  - VEHICLES, REQUESTS
 def assign_rides():
     """Assign rides to vehicles."""
     # Create the shipment model
@@ -106,9 +109,10 @@ def assign_rides():
         global_vars.VEHICLES[vehicle].response_to_queue(response)
 
 
-# REQUIRES
-# EFFECTS
-# MODIFIES
+# REQUIRES - Nothing
+# EFFECTS  - Turns the current ride requests and vehicle locations into a ShipmentModel
+#            required to query Google's Route Optimization API
+# MODIFIES - Nothing
 def bookings_to_model() -> routeoptimization_v1.ShipmentModel:
     """Create the model needed by the Route Optimization API."""
     shipment_model = routeoptimization_v1.ShipmentModel()

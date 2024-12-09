@@ -1,9 +1,13 @@
 """Request class definition in a micro-transit service."""
 class RideRequests:
     """Object representing a ride request in a micro-transit service."""
-    # REQUIRES
-    # EFFECTS
-    # MODIFIES
+    # REQUIRES - dropoff_name, rider_id, status, vehicle_id, pickup_name, first_name, last_name
+    #            are valid strings
+    #          - numpass is a positive integer
+    #          - request time is a valid datetime.datetime
+    #          - picup_coord, dropoff_coord are tuples containing (lat, long) pairs
+    # EFFECTS  - Initializes a RideRequest
+    # MODIFIES - Nothing
     def __init__(self, dropoff_name, request_time, rider_id, status, phone, vehicle_id, numpass,
                     pickup_name, pickup_coord, dropoff_coord, first_name, last_name, request_id):
         """Initialize self to be a request."""
@@ -25,9 +29,9 @@ class RideRequests:
         self.is_pickup = True
 
 
-    # REQUIRES
-    # EFFECTS
-    # MODIFIES
+    # REQUIRES - self and other are valid RideRequests
+    # EFFECTS  - Returns true if these RideRequests have the same request_id
+    # MODIFIES - Nothing
     def __eq__(self, other):
-        """Initialize self to be a request."""
+        """Return true if two request_ids are the same."""
         return self.request_id == other.request_id

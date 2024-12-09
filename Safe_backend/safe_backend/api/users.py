@@ -5,6 +5,9 @@ import safe_backend.api.config
 
 # Routes
 @safe_backend.app.route("/api/v1/users/login/", methods=["POST"])
+# REQUIRES  - uuid, displayName, and email are in the request
+# EFFECTS   - Logs in a user with this agency
+# MODIFIES  - users relation
 def login_user():
     """Log in a user with the uuid from the request."""
     # Get uuid from request
@@ -30,17 +33,10 @@ def login_user():
     return flask.jsonify(**{"msg": "Succesfully logged {pass_uuid} in."}), 200
 
 
-@safe_backend.app.route("/api/v1/users/delete/", methods=["POST"])
-def delete_acct():
-    #"""Delete a user with the uuid from the request."""
-    pass
-
-@safe_backend.app.route("/api/v1/users/update/", methods=["POST"])
-def update_acct():
-    #"""Update a user with the uuid from the request."""
-    pass
-
 @safe_backend.app.route("/api/v1/users/bookings/", methods=["GET"])
+# REQUIRES  - uuid is in the request
+# EFFECTS   - Returns prior bookings for this user
+# MODIFIES  - Nothing
 def get_bookings():
     """Return bookings this user has made."""
     # Get UUID from the request
