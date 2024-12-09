@@ -2,7 +2,9 @@ import SwiftUI
 
 struct RideCardView: View {
     let ride: Ride
-    
+    @EnvironmentObject var locationManager: LocationManager
+    @EnvironmentObject var store: RideStore
+    @EnvironmentObject var authManager: AuthManager
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
@@ -33,7 +35,7 @@ struct RideCardView: View {
             
             // Pickup Button (Visible only for Current Rides)
             if ride.status != "Completed" {
-                NavigationLink(destination: RideView(ride: ride).environmentObject(RideStore.shared).environmentObject(LocationManager())) {
+                NavigationLink(destination: RideView(ride: ride).environmentObject(RideStore.shared).environmentObject(locationManager).environmentObject(authManager)) {
                     Text("Pickup")
                         .font(.headline)
                         .foregroundColor(.white)

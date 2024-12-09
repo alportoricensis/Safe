@@ -7,6 +7,8 @@ struct AssignedRidesView: View {
     
     @State private var selectedTab: RideTab = .current
     
+    private let timer = Timer.publish(every: 10, on: .main, in: .common).autoconnect()
+    
     enum RideTab: String, CaseIterable {
         case current = "Current Rides"
         case completed = "Completed Rides"
@@ -54,6 +56,7 @@ struct AssignedRidesView: View {
                 CurrRidesView()
                     .environmentObject(store)
                     .environmentObject(locationManager)
+                    .environmentObject(authManager)
             } else {
                 CompletedRidesView()
                     .environmentObject(store)
@@ -65,9 +68,14 @@ struct AssignedRidesView: View {
         .onAppear {
             Task {
                 await store.getRides()
-                print("Rides loaded: \(store.rides)")
+//                print("Rides loaded: \(store.rides)")
             }
         }
+//        .onReceive(timer) { _ in
+//            Task {
+//                await store.getRides()
+//            }
+//        }
     }
 }
 

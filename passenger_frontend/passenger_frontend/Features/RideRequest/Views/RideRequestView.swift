@@ -9,11 +9,14 @@ struct RideRequestView: View {
 
     @Environment(\.dismiss) private var dismiss
 
+    @Binding var selectedTab: MainTabView.Tab
+
     @State private var pickupLocationName: String = "Enter pickup point"
     @State private var isDestinationMapPresented = false
     @State private var destinationLocation: CLLocationCoordinate2D?
     @State private var destinationLocationName: String = "Where to?"
-    @State private var navigateToWaiting = false
+    @State private var isScheduledRide = false
+    @State private var scheduledDateTime = Date().addingTimeInterval(15 * 60)
 
     var body: some View {
         NavigationStack {
@@ -110,6 +113,23 @@ struct RideRequestView: View {
                         .cornerRadius(8)
                     }
 
+                    Toggle("Schedule for later", isOn: $isScheduledRide)
+                        .foregroundColor(.white)
+                        .padding(.horizontal)
+                    
+                    if isScheduledRide {
+                        DatePicker(
+                            "Pick-up time",
+                            selection: $scheduledDateTime,
+                            in: Date()...,
+                            displayedComponents: [.date, .hourAndMinute]
+                        )
+                        .datePickerStyle(.compact)
+                        .foregroundColor(.white)
+                        .padding(.horizontal)
+                        .tint(.yellow)
+                    }
+
                     Spacer()
 
                     if pickupLocationName != "Enter pickup point" && destinationLocation != nil {
@@ -118,11 +138,14 @@ struct RideRequestView: View {
                                 service: service,
                                 pickupLocation: pickupLocationName,
                                 dropoffLocationName: destinationLocationName,
-                                dropoffLocation: destinationLocation!
+                                dropoffLocation: destinationLocation!,
+                                isScheduled: isScheduledRide,
+                                scheduledTime: isScheduledRide ? scheduledDateTime : nil
                             )
-                            navigateToWaiting = true
+                            dismiss()
+                            selectedTab = .bookings
                         }) {
-                            Text("Confirm Destination")
+                            Text(isScheduledRide ? "Schedule Ride" : "Confirm Destination")
                                 .font(.headline)
                                 .foregroundColor(.yellow)
                                 .frame(maxWidth: .infinity)
@@ -135,23 +158,20 @@ struct RideRequestView: View {
                 }
                 .padding()
             }
-            .navigationDestination(isPresented: $navigateToWaiting) {
-                WaitingView(viewModel: viewModel)
-            }
-            .alert("Error", isPresented: .init(
-                get: { if case .error(_) = viewModel.state { return true } else { return false } },
-                set: { _ in viewModel.state = .idle }
-            )) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                if case .error(let message) = viewModel.state {
-                    Text(message)
-                }
-            }
         }
         .onAppear {
             viewModel.authViewModel = authViewModel
             viewModel.fetchPickupLocations()
+        }
+        .alert("Error", isPresented: .init(
+            get: { if case .error(_) = viewModel.state { return true } else { return false } },
+            set: { _ in viewModel.state = .idle }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            if case .error(let message) = viewModel.state {
+                Text(message)
+            }
         }
     }
 

@@ -12,7 +12,6 @@ struct driver_frontendApp: App {
         if let apiKey = Bundle.main.object(forInfoDictionaryKey: "GOOGLE_API_KEY") as? String {
             GMSServices.provideAPIKey(apiKey)
         }
-        
         configureNavigationBarAppearance()
     }
     

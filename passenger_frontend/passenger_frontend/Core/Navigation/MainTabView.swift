@@ -14,7 +14,7 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            RideServicesView()
+            RideServicesView(selectedTab: $selectedTab)
                 .tabItem {
                     Label {
                         Text("Services")

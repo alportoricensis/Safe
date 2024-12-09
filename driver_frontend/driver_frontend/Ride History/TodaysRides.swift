@@ -4,7 +4,6 @@ import Combine
 struct TodaysRides: View {
     @EnvironmentObject var authManager: AuthManager
     @State private var tdrides = [DriverRideHistory]()
-    //@State private var vehicleId = authManager.vehicleID
     var body: some View {
         VStack {
             List(tdrides) { ride in
@@ -46,10 +45,8 @@ struct TodaysRides: View {
             let calendar = Calendar.current
             let startOfDay = calendar.startOfDay(for: now)
             print(startOfDay)
-            let startTime = Int(startOfDay.timeIntervalSince1970) // Start time as Unix timestamp
-            let endTime = Int(now.timeIntervalSince1970) // Current time as Unix timestamp
-
-            // Create the request body with vehicle_id, start_time, and end_time
+            let startTime = Int(startOfDay.timeIntervalSince1970)
+            let endTime = Int(now.timeIntervalSince1970)
             let parameters: [String: Any] = [
                 "vehicle_id": vehicleId,
                 "start_time": startTime,
@@ -72,7 +69,6 @@ struct TodaysRides: View {
                     print("getTodaysRides: HTTP request was successful. STATUS: \(httpStatus.statusCode)")
                 }
             }
-            // Parse the JSON response
             guard let jsonObj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
                        print("getTodaysRides: JSON deserialization failed")
                        return
@@ -80,19 +76,6 @@ struct TodaysRides: View {
 
             var fetchedRides = [DriverRideHistory]()
             print(jsonObj)
-//            for rideData in jsonObj {
-//                if let rideId = UIUD() as? String {
-//                    let miles = rideData.milesTravelled as? Double ?? 0.0
-//                    let passengerCount = rideData.numPassengers as? Int ?? 0
-//
-//                    fetchedRides.append(DriverRideHistory(
-//                        rideDate: String(endTime),
-//                        passCount: String(passengerCount),
-//                        miles: String(miles),
-//                        id: rideId
-//                    ))
-//                }
-//            }
             guard let numPassengers = jsonObj["numPassengers"] as? Int,
                   let milesTravelled = jsonObj["milesTravelled"] as? Double else {
                 print("getTodaysRides: Missing required fields in JSON response")

@@ -5,12 +5,15 @@ import CoreLocation
 struct RideView: View {
     @EnvironmentObject var locationManager: LocationManager
     @EnvironmentObject var store: RideStore
+    @EnvironmentObject var authManager: AuthManager
+    @Environment(\.presentationMode) var presentationMode
     let ride: Ride
 
-    @State private var buttonText: String = "Start"
+    @State private var buttonText: String = "Go to pickup"
     @State private var route: GMSPolyline?
     @State private var isAtPickup = false
     @State private var passengerPickedUp = false
+    @State private var started = false
 
     var body: some View {
         ZStack {
@@ -22,15 +25,6 @@ struct RideView: View {
             VStack {
                 Spacer()
                 VStack(spacing: 10) {
-                    if isAtPickup {
-                        Text(passengerPickedUp ? "Successfully dropped off passenger" : "You have arrived at the pickup location")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(Color.black.opacity(0.6))
-                            .cornerRadius(10)
-                    }
-                    
                     Button(action: handleButtonPress) {
                         Text(buttonText)
                             .font(.headline)
@@ -66,18 +60,82 @@ struct RideView: View {
 
 
     private func handleButtonPress() {
-        if !isAtPickup {
+        if !started{
+            started=true
+            buttonText="Picked-up Passenger"
+        }
+        else if !isAtPickup {
             isAtPickup = true
-            buttonText = "Picked-Up Passenger"
-            // Optionally, start monitoring location to detect arrival at pickup
-        } else if !passengerPickedUp {
-            passengerPickedUp = true
             buttonText = "Drop-Off Passenger"
             drawRoute(from: ride.pickupCoordinate, to: ride.dropOffCoordinate)
-        } else {
-            buttonText = "Trip Complete"
-            // Handle trip completion logic, e.g., update ride status
+            sendLoadRequest()
+        }
+        else if !passengerPickedUp {
+            passengerPickedUp = true
+            buttonText = "Trip Completed"
+            sendUnloadRequest()
+        }
+        else{
             completeTrip()
+        }
+    }
+    
+    private func sendLoadUnloadAPI(rideId: String, vehicleId: String, reqType: String) async -> Bool {
+        guard let url = URL(string: "http://18.191.14.26/api/v1/vehicles/load_unload/") else {
+            return false
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let requestBody: [String: Any] = [
+            "ride_id": rideId,
+            "vehicle_id": vehicleId,
+            "type": reqType // either "boarding" or "unloading"
+        ]
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: requestBody, options: [])
+            
+            let (_, response) = try await URLSession.shared.data(for: request)
+            
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                return true
+            } else {
+                print("Failed to load/unload ride. Status code: \((response as? HTTPURLResponse)?.statusCode ?? 0)")
+                return false
+            }
+        } catch {
+            print("Error sending load/unload request: \(error.localizedDescription)")
+            return false
+        }
+    }
+
+    
+    private func sendLoadRequest() {
+        Task {
+            let success = await sendLoadUnloadAPI(rideId: ride.id, vehicleId: store.vehicleId ?? "", reqType: "boarding")
+            DispatchQueue.main.async {
+                if success {
+                    print("Successfully onboarded passenger.")
+                } else {
+                    print("Failed to board passenger.")
+                }
+            }
+        }
+    }
+
+    private func sendUnloadRequest() {
+        Task {
+            let success = await sendLoadUnloadAPI(rideId: ride.id, vehicleId: store.vehicleId ?? "", reqType: "unloading")
+            DispatchQueue.main.async {
+                if success {
+                    print("Successfully offboarded passenger.")
+                } else {
+                    print("Failed to offboard passenger.")
+                }
+            }
         }
     }
     
@@ -91,7 +149,7 @@ struct RideView: View {
         let destinationString = "\(destination.latitude),\(destination.longitude)"
         let urlString = "https://maps.googleapis.com/maps/api/directions/json?origin=\(originString)&destination=\(destinationString)&key=\(apiKey)"
         guard let url = URL(string: urlString) else { return }
-        print(url)
+//        print(url)
         URLSession.shared.dataTask(with: url) { data, _, error in
             guard let data = data, error == nil else {
                 print("Failed to fetch route data: \(error?.localizedDescription ?? "Unknown error")")
@@ -100,16 +158,9 @@ struct RideView: View {
     
             do {
                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                    print("JSON is valid: \(json)")  // Check if JSON is properly parsed
-                    
                     if let routes = json["routes"] as? [[String: Any]] {
-                        print("Routes found: \(routes)")  // Check if "routes" exists and is an array
-                        
                         if let overviewPolyline = routes.first?["overview_polyline"] as? [String: Any] {
-                            print("Overview polyline found: \(overviewPolyline)")  // Check if "overview_polyline" exists
-                            
                             if let points = overviewPolyline["points"] as? String {
-                                print("Points found: \(points)")  // Check if "points" exists as a string
                                 DispatchQueue.main.async {
                                     self.drawPath(from: points)
                                 }
@@ -143,55 +194,9 @@ struct RideView: View {
     }
     
     private func completeTrip() {
-        // Update the ride status to "Completed"
         store.updateRideStatus(rideId: ride.id, status: "Completed")
-        
-        // Optionally, make an API call to update the backend
-        Task {
-            let success = await completeRideAPI(rideId: ride.id)
-            DispatchQueue.main.async {
-                if success {
-                    // Navigate back or show confirmation
-                } else {
-                    // Handle failure
-                }
-            }
-        }
+        print("completed the ride")
+        presentationMode.wrappedValue.dismiss()
     }
     
-    private func completeRideAPI(rideId: String) async -> Bool {
-        guard let vehicleId = store.vehicleId else {
-            return false
-        }
-        
-        guard let url = URL(string: "http://18.191.14.26/api/v1/vehicles/complete_ride/") else { // Update with correct endpoint
-            return false
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        let requestBody: [String: Any] = [
-            "ride_id": rideId,
-            "vehicle_id": vehicleId
-        ]
-        
-        do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: requestBody, options: [])
-            
-            let (data, response) = try await URLSession.shared.data(for: request)
-            
-            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
-                // Optionally, parse response if needed
-                return true
-            } else {
-                print("Failed to mark ride as completed. Status code: \((response as? HTTPURLResponse)?.statusCode ?? 0)")
-                return false
-            }
-        } catch {
-            print("Error completing ride: \(error.localizedDescription)")
-            return false
-        }
-    }
 }
