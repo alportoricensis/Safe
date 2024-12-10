@@ -7,7 +7,7 @@
 <img src="https://github.com/alportoricensis/Safe/blob/main/ElevatorPitch.png">
 <img src="https://github.com/alportoricensis/Safe/blob/main/TeamRoster.PNG">
 
-[video]: https://youtu.be/sample
+[video]: https://youtu.be/Oa0iJvp4Un0
 [wiki]: https://github.com/alportoricensis/Safe/wiki
 [agile]: https://trello.com/b/UrC5oCyz/safe
 
